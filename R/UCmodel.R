@@ -227,14 +227,14 @@ UCsetup = function(y, u = NULL, model = "?/none/?/?", h = NA, outlier = NA, tTes
                  criteria = NA,
                  # Other variables
                  hidden = list(grad = NA,
-                     d_t = NA,
+                     d_t = 0,
                      estimOk = "Not estimated",
                      objFunValue = 0,
                      innVariance = 1,
                      nonStationaryTerms = NA,
                      ns = NA,
                      nPar = NA,
-                     harmonics = NA,
+                     harmonics = 0,
                      constPar = NA,
                      typePar = NA,
                      cycleLimits = NA,
@@ -324,12 +324,13 @@ UCmodel = function(y, u = NULL, model = "?/none/?/?", h = NA, outlier = NA, tTes
 #' @rdname UC
 #' @export
 UC = function(y, u = NULL, model = "?/none/?/?", h = NA, outlier = NA, tTest = FALSE, criterion = "aic",
-              periods = NA, verbose = FALSE, stepwise = FALSE, p0 = NA, cLlik = TRUE, arma = TRUE){
+              periods = NA, verbose = TRUE, stepwise = FALSE, p0 = NA, cLlik = TRUE, arma = TRUE){
     m1 = UCsetup(y, u, model, h, outlier, tTest, criterion, 
                  periods, verbose, stepwise, p0, cLlik, arma)
     m1 = UCestim(m1)
-    m1 = UCdisturb(m1)
     m1 = UCvalidate(m1)
+    m1 = UCdisturb(m1)
+    m1 = UCsmooth(m1)
     m1 = UCcomponents(m1)
     return(m1)
 }

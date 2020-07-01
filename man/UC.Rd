@@ -13,7 +13,7 @@ UC(
   tTest = FALSE,
   criterion = "aic",
   periods = NA,
-  verbose = FALSE,
+  verbose = TRUE,
   stepwise = FALSE,
   p0 = NA,
   cLlik = TRUE,

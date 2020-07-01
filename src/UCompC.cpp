@@ -111,7 +111,7 @@ SEXP UCompC(SEXP commands, SEXP ys, SEXP us, SEXP models, SEXP periodss, SEXP rh
     inputsBSM.nPar = rubbish3.col(1);
     if (harmonics.has_nan()){
         inputsBSM.harmonics.resize(1);
-        inputsBSM.harmonics(0) = datum::nan;
+        inputsBSM.harmonics(0) = 0;
     } else {
         inputsBSM.harmonics = conv_to<uvec>::from(harmonics);
     }

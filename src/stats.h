@@ -216,12 +216,19 @@ void selectAR(vec& y, double maxAR, string criterion, vec& arOrder, vec& eBest, 
 void selectARMA(vec y, double period, double maxAR, string criterion, vec& orders, vec& betaOpt){
   vec arOrder;
   double minCritAR;
-  vec eBest;
-  vec arBeta;
-  selectAR(y, maxAR, criterion, arOrder, eBest, minCritAR, arBeta);
-  vec maxOrders(2); maxOrders.fill((int)period - 1);
+  vec eBest, arBeta, maxOrders(2); 
+  maxOrders.fill((int)period - 1);
   orders.zeros(2);
   betaOpt.fill(0);
+  selectAR(y, maxAR, criterion, arOrder, eBest, minCritAR, arBeta);
+  if (arOrder(0) == 0){
+    return ;
+  }
+  if (arOrder(0) < 3){
+    orders(0) = arOrder(0);
+    betaOpt = -arBeta;
+    return ;
+  }  
   // AR identification
   mat X = lag(y, regspace(0, maxAR));
   vec stdBeta, e;

@@ -353,13 +353,9 @@ void SSmodel::validate(bool show){
   }
   uvec ind = find_finite(inputs.y);
   inputs.table.push_back("-------------------------------------------------------------\n");
-  sprintf(str, "                  AIC: %12.4f\n", inputs.criteria(1));
+  sprintf(str, "  AIC: %12.4f   BIC: %12.4f   AICc: %12.4f\n", inputs.criteria(1), inputs.criteria(2), inputs.criteria(3));
   inputs.table.push_back(str);
-  sprintf(str, "                  BIC: %12.4f\n", inputs.criteria(2));
-  inputs.table.push_back(str);
-  sprintf(str, "                 AICc: %12.4f\n", inputs.criteria(3));
-  inputs.table.push_back(str);
-  sprintf(str, "       Log-Likelihood: %12.4f\n", inputs.criteria(0));
+  sprintf(str, "           Log-Likelihood: %12.4f\n", inputs.criteria(0));
   inputs.table.push_back(str);
   inputs.table.push_back("-------------------------------------------------------------\n");
   // Recovering innovations for tests
@@ -1232,54 +1228,34 @@ void outputTable(vec v, vector<string>& table){
   // Table
   char str[70];
   ind = ind + 1;
-  sprintf(str, "  Missing data points: %12.0i\n", nNan);
+  sprintf(str, "        Missing data: %5.0i\n", nNan);
   table.push_back(str);
-  sprintf(str, "                Q(%2.0i): %12.4f\n", (int)ind(0), Q1(0));
+  sprintf(str, "        Q(%2.0i): %12.4f         Q(%2.0i): %12.4f\n", (int)ind(0), Q1(0), (int)ind(1), Q1(1));
   table.push_back(str);
-  sprintf(str, "                Q(%2.0i): %12.4f\n", (int)ind(1), Q1(1));
-  table.push_back(str);
-  sprintf(str, "                Q(%2.0i): %12.4f\n", (int)ind(2), Q1(2));
-  table.push_back(str);
-  sprintf(str, "                Q(%2.0i): %12.4f\n", (int)ind(3), Q1(3));
+  sprintf(str, "        Q(%2.0i): %12.4f         Q(%2.0i): %12.4f\n", (int)ind(2), Q1(2), (int)ind(3), Q1(3));
   table.push_back(str);
   if (ind.n_rows > 4){
-    sprintf(str, "                Q(24): %12.4f\n", Q1(4));
-    table.push_back(str);
-    sprintf(str, "               Q(168): %12.4f\n", Q1(5));
+    sprintf(str, "        Q(%2.0i): %12.4f         Q(%2.0i): %12.4f\n", (int)ind(4), Q1(4), (int)ind(5), Q1(5));
     table.push_back(str);
   }
-  sprintf(str, "          Bera-Jarque: %12.4f\n", bj1);
+  sprintf(str,   "  Bera-Jarque: %12.4f       P-value: %12.4f\n", bj1, pbj1);
   table.push_back(str);
-  sprintf(str, "              P-value: %12.4f\n", pbj1);
-  table.push_back(str);
-  sprintf(str, "              H(%4.0i): %12.4f\n", df1, F1);
-  table.push_back(str);
-  sprintf(str, "              P-value: %12.4f\n", pF1);
+  sprintf(str,   "      H(%4.0i): %12.4f       P-value: %12.4f\n", df1, F1, pF1);
   table.push_back(str);
   if (nOutliers > 0){
-    sprintf(str, "   Outliers (>2.7 ES): %12.0i\n", nOutliers);
+    sprintf(str, "  Outliers (>2.7 ES): %5.0i\n", nOutliers);
     table.push_back(str);
-    sprintf(str, "                Q(%2.0i): %12.4f\n", (int)ind(0), Q2(0));
+    sprintf(str, "        Q(%2.0i): %12.4f         Q(%2.0i): %12.4f\n", (int)ind(0), Q2(0), (int)ind(1), Q2(1));
     table.push_back(str);
-    sprintf(str, "                Q(%2.0i): %12.4f\n", (int)ind(1), Q2(1));
-    table.push_back(str);
-    sprintf(str, "                Q(%2.0i): %12.4f\n", (int)ind(2), Q2(2));
-    table.push_back(str);
-    sprintf(str, "                Q(%2.0i): %12.4f\n", (int)ind(3), Q2(3));
+    sprintf(str, "        Q(%2.0i): %12.4f         Q(%2.0i): %12.4f\n", (int)ind(2), Q2(2), (int)ind(3), Q2(3));
     table.push_back(str);
     if (ind.n_rows > 4){
-      sprintf(str, "                Q(24): %12.4f\n", Q2(4));
-      table.push_back(str);
-      sprintf(str, "               Q(168): %12.4f\n", Q2(5));
+      sprintf(str, "        Q(%2.0i): %12.4f         Q(%2.0i): %12.4f\n", (int)ind(4), Q2(4), (int)ind(5), Q2(5));
       table.push_back(str);
     }
-    sprintf(str, "          Bera-Jarque: %12.4f\n", bj2);
+    sprintf(str,   "  Bera-Jarque: %12.4f       P-value: %12.4f\n", bj2, pbj2);
     table.push_back(str);
-    sprintf(str, "              P-value: %12.4f\n", pbj2);
-    table.push_back(str);
-    sprintf(str, "              H(%4.0i): %12.4f\n", df2, F2);
-    table.push_back(str);
-    sprintf(str, "              P-value: %12.4f\n", pF2);
+    sprintf(str,   "      H(%4.0i): %12.4f       P-value: %12.4f\n", df2, F2, pF2);
     table.push_back(str);
   }
 }

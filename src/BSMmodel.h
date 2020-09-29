@@ -1144,9 +1144,9 @@ void BSMmodel::validate(){
     // for (auto i = SSmodel::inputs.table.begin(); i != SSmodel::inputs.table.end(); i++){
     //     cout << *i << " ";
     // }
-    for (unsigned int i = 0; i < SSmodel::inputs.table.size(); i++){
-      Rprintf("%s ", SSmodel::inputs.table[i].c_str());
-    }
+    //for (unsigned int i = 0; i < SSmodel::inputs.table.size(); i++){
+    //  Rprintf("%s ", SSmodel::inputs.table[i].c_str());
+    //}
 }
 // Disturbance smoother (to recover just trend and epsilons)
 void BSMmodel::disturb(){

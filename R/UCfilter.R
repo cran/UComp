@@ -40,10 +40,11 @@ filter_ = function(sys, command){
     # }
     # Re-building matrices to their original sizes
     n = length(sys$y) + sys$h
-    m = length(output$a) / n
+    # m = length(output$a) / n
+    m = sum(sys$hidden$ns)
     if (is.ts(sys$y)){
-        sY = start(sys$y)
         fY = frequency(sys$y)
+        sY = start(sys$y, frequency = fY)
         # aux = ts(matrix(NA, length(sys$y) + 1, 1), sY, frequency = fY)
         # sys$yFor = ts(output$yFor, end(aux), frequency = fY)
         # sys$yForV = ts(output$yForV, end(aux), frequency = fY)
@@ -83,7 +84,7 @@ filter_ = function(sys, command){
 #' @title UCfilter
 #' @description Runs the Kalman Filter for UC models
 #'
-#' @param sys an object of type \code{UComp} created with \code{UCmodel}
+#' @param sys an object of type \code{UComp} created with \code{UC}
 #' 
 #' @return The same input object with the appropriate fields 
 #' filled in, in particular:
@@ -98,7 +99,7 @@ filter_ = function(sys, command){
 #'          \code{\link{UCsmooth}}, \code{\link{UCdisturb}}, \code{\link{UCcomponents}}
 #'          
 #' @examples
-#' m1 <- UCmodel(log(AirPassengers))
+#' m1 <- UC(log(AirPassengers))
 #' m1 <- UCfilter(m1)
 #' @rdname UCfilter
 #' @export
@@ -109,7 +110,7 @@ UCfilter = function(sys){
 #' @title UCsmooth
 #' @description Runs the Fixed Interval Smoother for UC models
 #'
-#' @param sys an object of type \code{UComp} created with \code{UCmodel}
+#' @param sys an object of type \code{UComp} created with \code{UC}
 #' 
 #' @return The same input object with the appropriate fields 
 #' filled in, in particular:
@@ -124,7 +125,7 @@ UCfilter = function(sys){
 #'          \code{\link{UCdisturb}}, \code{\link{UCcomponents}}
 #'          
 #' @examples
-#' m1 <- UCmodel(log(AirPassengers))
+#' m1 <- UC(log(AirPassengers))
 #' m1 <- UCsmooth(m1)
 #' @rdname UCsmooth
 #' @export
@@ -135,7 +136,7 @@ UCsmooth = function(sys){
 #' @title UCdisturb
 #' @description Runs the Disturbance Smoother for UC models
 #'
-#' @param sys an object of type \code{UComp} created with \code{UCmodel}
+#' @param sys an object of type \code{UComp} created with \code{UC}
 #' 
 #' @return The same input object with the appropriate fields 
 #' filled in, in particular:
@@ -152,7 +153,7 @@ UCsmooth = function(sys){
 #'          \code{\link{UCsmooth}}, \code{\link{UCcomponents}}
 #'          
 #' @examples
-#' m1 <- UCmodel(log(AirPassengers))
+#' m1 <- UC(log(AirPassengers))
 #' m1 <- UCdisturb(m1)
 #' @rdname UCdisturb
 #' @export

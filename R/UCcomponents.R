@@ -1,7 +1,7 @@
 #' @title UCcomponents
 #' @description Estimates components of UC models
 #'
-#' @param sys an object of type \code{UComp} created with \code{UCmodel}
+#' @param sys an object of type \code{UComp} created with \code{UC}
 #' 
 #' @return The same input object with the appropriate fields 
 #' filled in, in particular:
@@ -51,8 +51,8 @@ UCcomponents= function(sys){
     # Re-building matrices to their original sizes
     n = length(sys$comp) / m
     if (is.ts(sys$y)){
-        sys$comp = ts(t(matrix(sys$comp, m, n)), start(sys$y), frequency = frequency(sys$y))
-        sys$compV = ts(t(matrix(sys$compV, m, n)), start(sys$y), frequency = frequency(sys$y))
+        sys$comp = ts(t(matrix(sys$comp, m, n)), start(sys$y, frequency = frequency(sys$y)), frequency = frequency(sys$y))
+        sys$compV = ts(t(matrix(sys$compV, m, n)), start(sys$y, frequency = frequency(sys$y)), frequency = frequency(sys$y))
     } else {
         sys$comp = t(matrix(sys$comp, m, n))
         sys$compV = t(matrix(sys$compV, m, n))

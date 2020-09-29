@@ -4,7 +4,7 @@
 #' @details \code{UCestim} estimates and forecasts a time series using an
 #' UC model
 #'
-#' @param sys an object of type \code{UComp} created with \code{UCmodel}
+#' @param sys an object of type \code{UComp} created with \code{UC}
 #' 
 #' @return The same input object with the appropriate fields 
 #' filled in, in particular:
@@ -50,8 +50,8 @@ UCestim = function(sys){
                     sys$hidden$nonStationaryTerms, rubbish3, sys$hidden$harmonics,
                     as.vector(sys$criteria), sys$hidden$cycleLimits, 
                     cbind(sys$hidden$beta, sys$hidden$betaV), sys$hidden$typeOutliers)
-        sY = start(sys$y)
         fY = frequency(sys$y)
+        sY = start(sys$y, frequency = fY)
         # sys$v = ts(output$v, sY, frequency = fY)
         # sys$vV = ts(output$vV, sY, frequency = fY)
         aux = ts(matrix(NA, length(sys$y) + 1, 1), sY, frequency = fY)

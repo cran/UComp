@@ -255,11 +255,11 @@ void SSmodel::forecast(){
     inputs.yFor = SSmodel::inputs.yFit.tail_rows(SSmodel::inputs.h);
     inputs.FFor = SSmodel::inputs.F.tail_rows(SSmodel::inputs.h);
   } else {
-    if (abs(inputs.innVariance - 1) > 1e-4){
+    // if (abs(inputs.innVariance - 1) > 1e-4){
       Pt = inputs.PEnd * inputs.innVariance;
-    } else {
-      Pt = inputs.PEnd; // * inputs.innVariance;
-    }
+    // } else {
+    //   Pt = inputs.PEnd; // * inputs.innVariance;
+    // }
     mat P0 = Pt;
     if (k > 0){
       int npar = inputs.betaAug.n_elem;
@@ -273,9 +273,9 @@ void SSmodel::forecast(){
       inputs.FFor(span(i)) = inputs.system.Z * Pt * inputs.system.Z.t() + CHCt;
       KFprediction(false, true, inputs.system.T, RQRt, at, Pt, P0);
     }
-    if (abs(inputs.innVariance - 1) < 1e-4){
-      inputs.FFor *= inputs.innVariance;
-    }
+    // if (abs(inputs.innVariance - 1) < 1e-4){
+    //   inputs.FFor *= inputs.innVariance;
+    // }
   }
 }
 // Kalman filter pass
@@ -372,13 +372,12 @@ void SSmodel::validate(bool show){
   inputs.table.push_back("-------------------------------------------------------------\n");
   // Show Table
   if (show){
-      // for (auto i = inputs.table.begin(); i != inputs.table.end(); i++){
-      //   cout << *i << " ";
+      // // for (auto i = inputs.table.begin(); i != inputs.table.end(); i++){
+      // //   cout << *i << " ";
+      // // }
+      // for (unsigned int i = 0; i < inputs.table.size(); i++){
+      //   Rprintf("%s ", inputs.table[i].c_str());
       // }
-      for (unsigned int i = 0; i < inputs.table.size(); i++){
-        Rprintf("%s ", inputs.table[i].c_str());
-      }
-      
   }
 }
 /*************************************************************
@@ -1016,6 +1015,12 @@ void auxFilter(unsigned int smooth, SSinputs& data){
         colapsed = true;
         data.d_t = t;
     }
+    // Storing final state and covariance for forecasting
+    if (t == ny - 1){
+      data.PEnd = Pt;
+      data.aEnd = at;
+    }
+    
   }
   // Smoothing loop
   data.F = data_F;   // For final normalization of innovations
@@ -1148,9 +1153,9 @@ void auxFilter(unsigned int smooth, SSinputs& data){
     data.innVariance = v2F(0, 0) / nTrue;
   }
   data.y = data.y.rows(0, ny - 1);
-  data.F = data.F * data.innVariance;
-  data.P = data.P * data.innVariance;
-  data.FFor = data.FFor * data.innVariance; // * scale;
+  data_F *= data.innVariance;
+  data.P *= data.innVariance;
+  data.FFor *= data.innVariance; // * scale;
   // Cleaning innovations
   if ((uword)data.d_t < n - 10){
     data.v(span(0, data.d_t)).fill(datum::nan);
@@ -1167,7 +1172,7 @@ void auxFilter(unsigned int smooth, SSinputs& data){
   } else {
     data.F = data_F.rows(min(ind), max(ind));
     data.v = data.v.rows(min(ind), max(ind));
-    data.v = data.v / sqrt(data.F * data.innVariance);
+    data.v = data.v / sqrt(data.F);
   }
   // Disturbances
   if (smooth == 2){

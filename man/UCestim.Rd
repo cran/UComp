@@ -7,7 +7,7 @@
 UCestim(sys)
 }
 \arguments{
-\item{sys}{an object of type \code{UComp} created with \code{UCmodel}}
+\item{sys}{an object of type \code{UComp} created with \code{UC}}
 }
 \value{
 The same input object with the appropriate fields 

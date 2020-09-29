@@ -13,7 +13,7 @@ UC(
   tTest = FALSE,
   criterion = "aic",
   periods = NA,
-  verbose = TRUE,
+  verbose = FALSE,
   stepwise = FALSE,
   p0 = NA,
   cLlik = TRUE,
@@ -73,7 +73,7 @@ to search for is reduced, depending on the result of this test.}
 \item{arma}{check for arma models for irregular components (TRUE / FALSE).}
 }
 \value{
-  An object of class \code{UComp}. See \code{UCmodel}.
+An object of class \code{UComp}. See \code{UC}.
 }
 \description{
 Runs all relevant functions for UC modelling
@@ -87,7 +87,7 @@ m1 <- UC(y)
 m1 <- UC(y, model = "llt/different/arma(0,0)")
 }
 \seealso{
-\code{\link{UC}}, \code{\link{UCmodel}}, \code{\link{UCvalidate}}, \code{\link{UCfilter}}, \code{\link{UCsmooth}}, 
+\code{\link{UC}}, \code{\link{UCvalidate}}, \code{\link{UCfilter}}, \code{\link{UCsmooth}}, 
          \code{\link{UCdisturb}}, \code{\link{UCcomponents}}
 }
 \author{

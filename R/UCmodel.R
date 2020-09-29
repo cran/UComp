@@ -1,5 +1,5 @@
 #' @title noModel
-#' @description Auxiliar function of \code{UComp} library.
+#' @description Auxiliar function of \dQuote{UComp} library.
 #'
 #' @param model reserved input
 #' @param periods reserved input
@@ -25,7 +25,7 @@ noModel = function(model, periods){
 #' @title UCsetup
 #' @description Sets up UC general univariate models
 #'
-#' @details See help of \code{UCmodel}.
+#' @details See help of \code{UC}.
 #'
 #' @param y a time series to forecast (it may be either a numerical vector or
 #' a time series object). This is the only input required. If a vector, the additional
@@ -110,8 +110,8 @@ UCsetup = function(y, u = NULL, model = "?/none/?/?", h = NA, outlier = NA, tTes
         minInd = min(ind)
         maxInd = max(ind)
         if (is.ts(y)){
-            starty = start(y)
             freq = frequency(y)
+            starty = start(y, frequency = freq)
             if (minInd > 1){
                 aux = ts(matrix(NA, minInd, 1), starty, frequency = freq)
                 ini = end(aux)
@@ -171,15 +171,15 @@ UCsetup = function(y, u = NULL, model = "?/none/?/?", h = NA, outlier = NA, tTes
     # Checking horizon
     if (is.na(h)){
         if (is.ts(y)){
-            if (frequency(y) == 1){
-                h = 10
-            } else {
-                h = 2 * frequency(y)
-            }
-        } else if (!is.ts(y)){
-            h = 18
+            per = frequency(y)
+        } else {
+            per = max(periods)
         }
-    }
+        if (per == 1){
+            per = 5
+        }
+        h = 2 * per
+    }    
     # Set rhos
     if (is.na(rhos)){
         rhos = matrix(1, length(periods))
@@ -193,54 +193,55 @@ UCsetup = function(y, u = NULL, model = "?/none/?/?", h = NA, outlier = NA, tTes
         mC = paste0("+", mC0)
     }
     model = sub(paste0("/", mC0, "/"), paste0("/", mC, "/"), model, fixed = TRUE)
-    return (list(y = y,
-                 u = u,
-                 model = model,
-                 h = h,
-                 # Outputs
-                 comp = NA,
-                 compV = NA,
-                 p = p,
-                 v= NA,
-                 yFit = NA,
-                 yFor = NA,
-                 yFitV = NA,
-                 yForV = NA,
-                 a = NA,
-                 P = NA,
-                 # aFor = NA,
-                 # PFor = NA,
-                 eta = NA,
-                 eps = NA,
-                 table = NA,
-                 # Other less important
-                 arma =  arma,
-                 outlier = -outlier,
-                 tTest = tTest,
-                 criterion = criterion,
-                 periods = periods,
-                 rhos = rhos,
-                 verbose = verbose,
-                 stepwise = stepwise,
-                 p0 = p0,
-                 cLlik = cLlik,
-                 criteria = NA,
-                 # Other variables
-                 hidden = list(grad = NA,
-                     d_t = 0,
-                     estimOk = "Not estimated",
-                     objFunValue = 0,
-                     innVariance = 1,
-                     nonStationaryTerms = NA,
-                     ns = NA,
-                     nPar = NA,
-                     harmonics = 0,
-                     constPar = NA,
-                     typePar = NA,
-                     cycleLimits = NA,
-                     typeOutliers = matrix(-1, 1, 2),
-                     beta = NA,
-                     betaV = NA)))
+    out = list(y = y,
+               u = u,
+               model = model,
+               h = h,
+               # Outputs
+               comp = NA,
+               compV = NA,
+               p = p,
+               v= NA,
+               yFit = NA,
+               yFor = NA,
+               yFitV = NA,
+               yForV = NA,
+               a = NA,
+               P = NA,
+               # aFor = NA,
+               # PFor = NA,
+               eta = NA,
+               eps = NA,
+               table = NA,
+               # Other less important
+               arma =  arma,
+               outlier = -outlier,
+               tTest = tTest,
+               criterion = criterion,
+               periods = periods,
+               rhos = rhos,
+               verbose = verbose,
+               stepwise = stepwise,
+               p0 = p0,
+               cLlik = cLlik,
+               criteria = NA,
+               # Other variables
+               hidden = list(grad = NA,
+                             d_t = 0,
+                             estimOk = "Not estimated",
+                             objFunValue = 0,
+                             innVariance = 1,
+                             nonStationaryTerms = NA,
+                             ns = NA,
+                             nPar = NA,
+                             harmonics = 0,
+                             constPar = NA,
+                             typePar = NA,
+                             cycleLimits = NA,
+                             typeOutliers = matrix(-1, 1, 2),
+                             beta = NA,
+                             betaV = NA))
+    return(structure(out, class = "UComp"))
 }
 
 #' @title UCmodel
@@ -287,13 +288,13 @@ UCsetup = function(y, u = NULL, model = "?/none/?/?", h = NA, outlier = NA, tTes
 #' 
 #' @author Diego J. Pedregal
 #' 
-#' @seealso \code{\link{UCvalidate}}, \code{\link{UCfilter}}, \code{\link{UCsmooth}}, 
+#' @seealso \code{\link{UC}}, \code{\link{UCvalidate}}, \code{\link{UCfilter}}, \code{\link{UCsmooth}}, 
 #'          \code{\link{UCdisturb}}, \code{\link{UCcomponents}}
 #'          
 #' @examples
 #' y <- log(AirPassengers)
 #' m1 <- UCmodel(y)
-#' m1 <- UCmodel(y, model = "llt/equql/arma(0,0)")
+#' m1 <- UCmodel(y, model = "llt/equal/arma(0,0)")
 #' @rdname UCmodel
 #' @export
 UCmodel = function(y, u = NULL, model = "?/none/?/?", h = NA, outlier = NA, tTest = FALSE, criterion = "aic",
@@ -312,9 +313,9 @@ UCmodel = function(y, u = NULL, model = "?/none/?/?", h = NA, outlier = NA, tTes
 #' 
 #' @author Diego J. Pedregal
 #' 
-#' @return An object of class \code{UComp}. See \code{UCmodel}.
+#' @return An object of class \code{UComp}. See \code{UC}.
 #' 
-#' @seealso \code{\link{UC}}, \code{\link{UCmodel}}, \code{\link{UCvalidate}}, \code{\link{UCfilter}}, \code{\link{UCsmooth}}, 
+#' @seealso \code{\link{UC}}, \code{\link{UCvalidate}}, \code{\link{UCfilter}}, \code{\link{UCsmooth}}, 
 #'          \code{\link{UCdisturb}}, \code{\link{UCcomponents}}
 #'          
 #' @examples
@@ -324,11 +325,11 @@ UCmodel = function(y, u = NULL, model = "?/none/?/?", h = NA, outlier = NA, tTes
 #' @rdname UC
 #' @export
 UC = function(y, u = NULL, model = "?/none/?/?", h = NA, outlier = NA, tTest = FALSE, criterion = "aic",
-              periods = NA, verbose = TRUE, stepwise = FALSE, p0 = NA, cLlik = TRUE, arma = TRUE){
+                   periods = NA, verbose = FALSE, stepwise = FALSE, p0 = NA, cLlik = TRUE, arma = TRUE){
     m1 = UCsetup(y, u, model, h, outlier, tTest, criterion, 
                  periods, verbose, stepwise, p0, cLlik, arma)
     m1 = UCestim(m1)
-    m1 = UCvalidate(m1)
+    m1 = UCvalidate(m1, verbose)
     m1 = UCdisturb(m1)
     m1 = UCsmooth(m1)
     m1 = UCcomponents(m1)

@@ -7,7 +7,7 @@
 UCfilter(sys)
 }
 \arguments{
-\item{sys}{an object of type \code{UComp} created with \code{UCmodel}}
+\item{sys}{an object of type \code{UComp} created with \code{UC}}
 }
 \value{
 The same input object with the appropriate fields 
@@ -21,7 +21,7 @@ filled in, in particular:
 Runs the Kalman Filter for UC models
 }
 \examples{
-m1 <- UCmodel(log(AirPassengers))
+m1 <- UC(log(AirPassengers))
 m1 <- UCfilter(m1)
 }
 \seealso{

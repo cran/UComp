@@ -1,7 +1,8 @@
 #' @title UCvalidate
 #' @description Shows a table of estimation and diagnostics results for UC models
 #'
-#' @param sys an object of type \code{UComp} created with \code{UCmodel}
+#' @param sys an object of type \code{UComp} created with \code{UC}
+#' @param printScreen print to screen or just return output table
 #' 
 #' @return The same input object with the appropriate fields 
 #' filled in, in particular:
@@ -13,11 +14,11 @@
 #'          \code{\link{UCsmooth}}, \code{\link{UCdisturb}}, \code{\link{UCcomponents}}
 #'          
 #' @examples
-#' m1 <- UCmodel(log(AirPassengers))
+#' m1 <- UC(log(AirPassengers))
 #' m1 <- UCvalidate(m1)
 #' @rdname UCvalidate
 #' @export
-UCvalidate = function(sys){
+UCvalidate = function(sys, printScreen = TRUE){
     if (is.ts(sys$y)){
         y = as.numeric(sys$y)
     } else {
@@ -40,12 +41,15 @@ UCvalidate = function(sys){
                     cbind(sys$hidden$beta, sys$hidden$betaV), sys$hidden$typeOutliers)
     sys$table = output$table
     if (is.ts(sys$y)){
-        sY = start(sys$y)
         fY = frequency(sys$y)
+        sY = start(sys$y, frequency = fY)
         aux = ts(matrix(NA, length(sys$y) - length(output$v) + 1, 1), sY, frequency = fY)
         sys$v = ts(output$v, end(aux), frequency = fY)
     } else {
         sys$v = output$v
+    }
+    if (printScreen){
+        cat(output$table)
     }
     return(sys)
 }

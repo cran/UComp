@@ -4,10 +4,12 @@
 \alias{UCvalidate}
 \title{UCvalidate}
 \usage{
-UCvalidate(sys)
+UCvalidate(sys, printScreen = TRUE)
 }
 \arguments{
-\item{sys}{an object of type \code{UComp} created with \code{UCmodel}}
+\item{sys}{an object of type \code{UComp} created with \code{UC}}
+
+\item{printScreen}{print to screen or just return output table}
 }
 \value{
 The same input object with the appropriate fields 
@@ -18,7 +20,7 @@ filled in, in particular:
 Shows a table of estimation and diagnostics results for UC models
 }
 \examples{
-m1 <- UCmodel(log(AirPassengers))
+m1 <- UC(log(AirPassengers))
 m1 <- UCvalidate(m1)
 }
 \seealso{

@@ -73,13 +73,13 @@ to search for is reduced, depending on the result of this test.}
 \item{arma}{check for arma models for irregular components (TRUE / FALSE).}
 }
 \value{
-  An object of class \code{UComp}. See \code{UCmodel}.
+An object of class \code{UComp}. See \code{UCmodel}.
 }
 \description{
 Sets up UC general univariate models
 }
 \details{
-See help of \code{UCmodel}.
+See help of \code{UC}.
 }
 \examples{
 y <- log(AirPassengers)

@@ -23,7 +23,9 @@ Estimates and forecasts UC models
 }
 \details{
 \code{UCestim} estimates and forecasts a time series using an
-UC model
+UC model.
+Standard methods applicable to UComp objects are print, summary, plot,
+fitted, residuals, logLik, AIC, BIC, coef, predict, tsdiag.
 }
 \examples{
 m1 <- UCsetup(log(AirPassengers))
@@ -31,7 +33,8 @@ m1 <- UCestim(m1)
 }
 \seealso{
 \code{\link{UC}}, \code{\link{UCmodel}}, \code{\link{UCvalidate}}, \code{\link{UCfilter}}, 
-         \code{\link{UCsmooth}}, \code{\link{UCdisturb}}, \code{\link{UCcomponents}}
+         \code{\link{UCsmooth}}, \code{\link{UCdisturb}}, \code{\link{UCcomponents}},
+         \code{\link{UChp}}
 }
 \author{
 Diego J. Pedregal

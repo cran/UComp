@@ -21,6 +21,8 @@ filled in, in particular:
 }
 \description{
 Runs the Disturbance Smoother for UC models
+Standard methods applicable to UComp objects are print, summary, plot,
+fitted, residuals, logLik, AIC, BIC, coef, predict, tsdiag.
 }
 \examples{
 m1 <- UC(log(AirPassengers))
@@ -28,7 +30,8 @@ m1 <- UCdisturb(m1)
 }
 \seealso{
 \code{\link{UC}}, \code{\link{UCmodel}}, \code{\link{UCvalidate}}, \code{\link{UCfilter}}, 
-         \code{\link{UCsmooth}}, \code{\link{UCcomponents}}
+         \code{\link{UCsmooth}}, \code{\link{UCcomponents}},
+         \code{\link{UChp}}
 }
 \author{
 Diego J. Pedregal

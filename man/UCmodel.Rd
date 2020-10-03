@@ -113,6 +113,8 @@ time series according to Unobserved Components models (UC).
 It sets up the model with a number of control variables that
 govern the way the rest of functions in the package will work. It also estimates 
 the model parameters by Maximum Likelihood and forecasts the data.
+Standard methods applicable to UComp objects are print, summary, plot,
+fitted, residuals, logLik, AIC, BIC, coef, predict, tsdiag.
 }
 \examples{
 y <- log(AirPassengers)
@@ -121,7 +123,8 @@ m1 <- UCmodel(y, model = "llt/equal/arma(0,0)")
 }
 \seealso{
 \code{\link{UC}}, \code{\link{UCvalidate}}, \code{\link{UCfilter}}, \code{\link{UCsmooth}}, 
-         \code{\link{UCdisturb}}, \code{\link{UCcomponents}}
+         \code{\link{UCdisturb}}, \code{\link{UCcomponents}},
+         \code{\link{UChp}}
 }
 \author{
 Diego J. Pedregal

@@ -69,9 +69,12 @@ noModel = function(model, periods){
 #' @author Diego J. Pedregal
 #' 
 #' @return An object of class \code{UComp}. See \code{UCmodel}.
+#' Standard methods applicable to UComp objects are print, summary, plot,
+#' fitted, residuals, logLik, AIC, BIC, coef, predict, tsdiag.
 #' 
 #' @seealso \code{\link{UC}}, \code{\link{UCmodel}}, \code{\link{UCvalidate}}, \code{\link{UCfilter}}, \code{\link{UCsmooth}}, 
-#'          \code{\link{UCdisturb}}, \code{\link{UCcomponents}}
+#'          \code{\link{UCdisturb}}, \code{\link{UCcomponents}},
+#'          \code{\link{UChp}}
 #'          
 #' @examples
 #' y <- log(AirPassengers)
@@ -168,6 +171,17 @@ UCsetup = function(y, u = NULL, model = "?/none/?/?", h = NA, outlier = NA, tTes
         model = paste(model, "(0,0)", sep = "")
     if (grepl("arma", model) && !grepl(')', substr(model, nchar(model) - 1, nchar(model)), fixed = TRUE))
         model = paste(model, ")", sep = "")
+    if (nComp < 2 || nComp > 3)
+        stop("Incorrect number of components!!!")
+    comps = strsplit(model, "/")
+    if (regexpr(substr(comps[[1]][1], 1, 1), "?nirld")[1] < 0)
+        stop("Trend model not correct!!!")
+    if (regexpr(substr(comps[[1]][2], 1, 1), "?n+-0123456789")[1] < 0)
+        stop("Cycle model not correct!!!")
+    if (regexpr(substr(comps[[1]][3], 1, 1), "?ned")[1] < 0)
+        stop("Seasonal model not correct!!!")
+    if (regexpr(substr(comps[[1]][4], 1, 1), "?na")[1] < 0)
+        stop("Irregular model not correct!!!")
     # Checking horizon
     if (is.na(h)){
         if (is.ts(y)){
@@ -208,8 +222,6 @@ UCsetup = function(y, u = NULL, model = "?/none/?/?", h = NA, outlier = NA, tTes
                yForV = NA,
                a = NA,
                P = NA,
-               # aFor = NA,
-               # PFor = NA,
                eta = NA,
                eps = NA,
                table = NA,
@@ -252,6 +264,8 @@ UCsetup = function(y, u = NULL, model = "?/none/?/?", h = NA, outlier = NA, tTes
 #' It sets up the model with a number of control variables that
 #' govern the way the rest of functions in the package will work. It also estimates 
 #' the model parameters by Maximum Likelihood and forecasts the data.
+#' Standard methods applicable to UComp objects are print, summary, plot,
+#' fitted, residuals, logLik, AIC, BIC, coef, predict, tsdiag.
 #'
 #' @inheritParams UCsetup
 #' 
@@ -289,7 +303,8 @@ UCsetup = function(y, u = NULL, model = "?/none/?/?", h = NA, outlier = NA, tTes
 #' @author Diego J. Pedregal
 #' 
 #' @seealso \code{\link{UC}}, \code{\link{UCvalidate}}, \code{\link{UCfilter}}, \code{\link{UCsmooth}}, 
-#'          \code{\link{UCdisturb}}, \code{\link{UCcomponents}}
+#'          \code{\link{UCdisturb}}, \code{\link{UCcomponents}},
+#'          \code{\link{UChp}}
 #'          
 #' @examples
 #' y <- log(AirPassengers)
@@ -314,9 +329,12 @@ UCmodel = function(y, u = NULL, model = "?/none/?/?", h = NA, outlier = NA, tTes
 #' @author Diego J. Pedregal
 #' 
 #' @return An object of class \code{UComp}. See \code{UC}.
+#' Standard methods applicable to UComp objects are print, summary, plot,
+#' fitted, residuals, logLik, AIC, BIC, coef, predict, tsdiag.
 #' 
 #' @seealso \code{\link{UC}}, \code{\link{UCvalidate}}, \code{\link{UCfilter}}, \code{\link{UCsmooth}}, 
-#'          \code{\link{UCdisturb}}, \code{\link{UCcomponents}}
+#'          \code{\link{UCdisturb}}, \code{\link{UCcomponents}},
+#'          \code{\link{UChp}}
 #'          
 #' @examples
 #' y <- log(AirPassengers)

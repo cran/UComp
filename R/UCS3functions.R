@@ -15,8 +15,8 @@
 #' y <- log(AirPassengers)
 #' m1 <- UCmodel(y, model = "llt/equal/arma(0,0)")
 #' print(m1)
-#' @rdname print.UComp
-#' @export
+#' @noRd
+#' @export 
 print.UComp = function(x, ...){
     x = UCvalidate(x, TRUE)
 }
@@ -37,8 +37,8 @@ print.UComp = function(x, ...){
 #' y <- log(AirPassengers)
 #' m1 <- UCmodel(y, model = "llt/equal/arma(0,0)")
 #' summary(m1)
-#' @rdname summary.UComp
-#' @export
+#' @noRd
+#' @export 
 summary.UComp = function(object, ...){
     print(object)
 }
@@ -59,8 +59,8 @@ summary.UComp = function(object, ...){
 #' y <- log(AirPassengers)
 #' m1 <- UCmodel(y, model = "llt/equal/arma(0,0)")
 #' plot(m1)
-#' @rdname plot.UComp
-#' @export
+#' @noRd
+#' @export 
 plot.UComp = function(x, ...){
     if (length(x$comp) < 2){
         x = UCcomponents(x)
@@ -72,34 +72,6 @@ plot.UComp = function(x, ...){
              main = "Time Series Decomposition")
     }
 }
-#' #' @title autoplot.UComp
-#' #' @description Plot components of UComp object
-#' #'
-#' #' @details See help of \code{UC}.
-#' #'
-#' #' @author Diego J. Pedregal
-#' #' 
-#' #' @seealso \code{\link{UC}}, \code{\link{UCmodel}}, \code{\link{UCvalidate}}, \code{\link{UCfilter}}, \code{\link{UCsmooth}}, 
-#' #'          \code{\link{UCdisturb}}, \code{\link{UCcomponents}}
-#' #'          
-#' #' @examples
-#' #' y <- log(AirPassengers)
-#' #' m1 <- UCmodel(y)
-#' #' autoplot(m1)
-#' #' @rdname autoplot.UComp
-#' #' @export
-#' autoplot.UComp = function(comp){
-#'     # Smoothing if necessary
-#'     if (any(class(comp) == "UComp")){
-#'         if (length(comp$comp) < 2){
-#'             comp = UCcomponents(comp)
-#'         }
-#'         comp = comp$comp
-#'     }
-#'     autoplot(comp[, colnames(comp)], facets = TRUE) +
-#'         xlab("") + ylab("") +
-#'         ggtitle("Time Series Components")
-#' }
 #' @title fitted.UComp
 #' @description Fitted output values of UComp object
 #'
@@ -117,8 +89,8 @@ plot.UComp = function(x, ...){
 #' y <- log(AirPassengers)
 #' m1 <- UCmodel(y, model = "llt/equal/arma(0,0)")
 #' fitted(m1)
-#' @rdname fitted.UComp
-#' @export
+#' @noRd
+#' @export 
 fitted.UComp = function(object, ...){
     if (length(object$yFit) < 2){
         object = UCsmooth(object)
@@ -142,8 +114,8 @@ fitted.UComp = function(object, ...){
 #' y <- log(AirPassengers)
 #' m1 <- UCmodel(y, model = "llt/equal/arma(0,0)")
 #' residuals(m1)
-#' @rdname residuals.UComp
-#' @export
+#' @noRd
+#' @export 
 residuals.UComp = function(object, ...){
     if (length(object$yFit) < 2){
         object = UCfilter(object)
@@ -167,13 +139,57 @@ residuals.UComp = function(object, ...){
 #' y <- log(AirPassengers)
 #' m1 <- UCmodel(y, model = "llt/equal/arma(0,0)")
 #' logLik(m1)
-#' @rdname logLik.UComp
-#' @export
+#' @noRd
+#' @export 
 logLik.UComp = function(object, ...){
     out = object$criteria[1]
     class(out) = "logLik"
     attr(out, "df") = length(object$p) - 1
     return(out)
+}
+#' @title AIC.UComp
+#' @description Extract AIC value of UComp object
+#'
+#' @details See help of \code{UC}.
+#'
+#' @param object Object of class \dQuote{UComp}.
+#' @param ... Additional inputs to function.
+#' 
+#' @author Diego J. Pedregal
+#' 
+#' @seealso \code{\link{UC}}, \code{\link{UCmodel}}, \code{\link{UCvalidate}}, \code{\link{UCfilter}}, \code{\link{UCsmooth}}, 
+#'          \code{\link{UCdisturb}}, \code{\link{UCcomponents}}
+#'          
+#' @examples
+#' y <- log(AirPassengers)
+#' m1 <- UCmodel(y, model = "llt/equal/arma(0,0)")
+#' logLik(m1)
+#' @noRd
+#' @export 
+AIC.UComp = function(object, ..., k = 2){
+    return(object$criteria[2])
+}
+#' @title BIC.UComp
+#' @description Extract BIC (or SBC) value of UComp object
+#'
+#' @details See help of \code{UC}.
+#'
+#' @param object Object of class \dQuote{UComp}.
+#' @param ... Additional inputs to function.
+#' 
+#' @author Diego J. Pedregal
+#' 
+#' @seealso \code{\link{UC}}, \code{\link{UCmodel}}, \code{\link{UCvalidate}}, \code{\link{UCfilter}}, \code{\link{UCsmooth}}, 
+#'          \code{\link{UCdisturb}}, \code{\link{UCcomponents}}
+#'          
+#' @examples
+#' y <- log(AirPassengers)
+#' m1 <- UCmodel(y, model = "llt/equal/arma(0,0)")
+#' logLik(m1)
+#' @noRd
+#' @export 
+BIC.UComp = function(object, ...){
+    return(object$criteria[3])
 }
 #' @title coef.UComp
 #' @description Extract model coefficients of UComp object
@@ -192,8 +208,8 @@ logLik.UComp = function(object, ...){
 #' y <- log(AirPassengers)
 #' m1 <- UCmodel(y, model = "llt/equal/arma(0,0)")
 #' coef(m1)
-#' @rdname coef.UComp
-#' @export
+#' @noRd
+#' @export 
 coef.UComp = function(object, ...){
     if (length(object$table) < 2){
         object = UCvalidate(object, FALSE)
@@ -237,104 +253,6 @@ coef.UComp = function(object, ...){
     rownames(parameters) = parametersNames
     return(parameters)
 }
-#' @title Forecast
-#' @description Forecasting using structural Unobseved Components models
-#'
-#' @details See help of \code{UC}.
-#'
-#' @param UCompObject UComp object
-#' @param level Confidence level for prediction intervals
-#' @param fan Set level to seq(51, 99, 3) when fan = TRUE
-#' 
-#' @author Diego J. Pedregal
-#' 
-#' @return An object of class \code{forecast}.
-#' 
-#' Function \code{summary} produces a summary of results, while the function \code{plot} produces a
-#' plot of the forecast intervals.
-#' 
-#' @seealso \code{\link{UC}}, \code{\link{UCmodel}}, \code{\link{UCvalidate}}, \code{\link{UCfilter}}, \code{\link{UCsmooth}}, 
-#'          \code{\link{UCdisturb}}, \code{\link{UCcomponents}}
-#'          
-#' @examples
-#' \dontrun{
-#' y <- log(AirPassengers)
-#' m1 <- UCmodel(y, model = "llt/eq/arma(0,0)")
-#' f1 <- Forecast(m1)
-#' plot(f1)
-#' }
-#' @rdname Forecast
-#' @export
-Forecast = function(UCompObject,
-                    level = c(80, 95),
-                    fan = FALSE){
-    # Creates forecast object from UComp object
-    if (fan){
-        level = seq(51, 99, by=3)
-    }
-    if (length(UCompObject$table) < 2){
-        UCompObject = UCvalidate(UCompObject, FALSE)
-    }
-    if (length(UCompObject$yFit) < 2){
-        UCompObject = UCsmooth(UCompObject)
-    }
-    # Number of u's
-    nu = dim(UCompObject$u)[1]
-    if (dim(UCompObject$u)[2] == 2){
-        nu = 0
-    }
-    # Number of parameters
-    nPar = length(UCompObject$p) - 1 + nu
-    h = length(UCompObject$yFor)
-    # 2 sided confidence levels
-    if (is.null(level)){
-        upper = matrix(NA, h, 1)
-        lower = upper
-    } else {
-        level = matrix(level, length(level), 1)
-        level2 = level / 100 + (1 - level / 100) / 2
-        coefs = qt(level2, df = length(UCompObject$y) - nPar)
-        nCoefs = length(coefs)
-        upper = matrix(UCompObject$yFor, h, nCoefs) + t(matrix(coefs, nCoefs, h)) * 
-                matrix(sqrt(UCompObject$yForV), h, nCoefs)
-        lower = matrix(UCompObject$yFor, h, nCoefs) - t(matrix(coefs, nCoefs, h)) * 
-                matrix(sqrt(UCompObject$yForV), h, nCoefs)
-        colnames(lower) = level
-        colnames(upper) = level
-    }
-    if (is.ts(UCompObject$yFor)){
-        freq = frequency(UCompObject$yFor)
-        upper = ts(upper, start(UCompObject$yFor, frequency = freq), frequency = freq)
-        lower = ts(lower, start(UCompObject$yFor, frequency = freq), frequency = freq)
-    } else {
-        nn = length(UCompObject$y) + 1
-        upper = ts(upper, nn, frequency = 1)
-        lower = ts(lower, nn, frequency = 1)
-        UCompObject$yFor = ts(UCompObject$yFor, nn, frequency = 1)
-        UCompObject$y = ts(UCompObject$y, 1, nn - 1)
-    }
-    # Finding model
-    i = 2
-    nPos = list(-1)
-    while (nPos[[1]] == -1){
-        lineI = UCompObject$table[i]
-        nPos = gregexpr(pattern ='Model: ', lineI)
-        i = i + 1
-    }
-    method = substr(lineI, nPos[[1]] + 7, nchar(lineI) -1)
-    # Creating object
-    fObject = list(model = method,
-                   mean = UCompObject$yFor,
-                   level = level,
-                   x = UCompObject$y,
-                   upper = upper,
-                   lower = lower,
-                   fitted = UCompObject$yFit,
-                   method = method,
-                   series = "Time Series",
-                   residuals = UCompObject$v)
-    return(structure(fObject, class = "forecast"))
-}
 #' @title predict.UComp
 #' @description Forecasting using structural Unobseved Components models
 #'
@@ -355,8 +273,8 @@ Forecast = function(UCompObject,
 #' y <- log(AirPassengers)
 #' m1 <- UCmodel(y, model = "llt/eq/arma(0,0)")
 #' f1 <- predict(m1)
-#' @rdname predict.UComp
-#' @export
+#' @noRd
+#' @export 
 predict.UComp = function(object, ...){
     out = list(pred = object$yFor,
                se = sqrt(object$yForV))
@@ -380,8 +298,8 @@ predict.UComp = function(object, ...){
 #' y <- log(AirPassengers)
 #' m1 <- UCmodel(y, model = "llt/eq/arma(0,0)")
 #' tsdiag(m1)
-#' @rdname tsdiag.UComp
-#' @export
+#' @noRd
+#' @export 
 tsdiag.UComp = function(object, gof.lag = NULL, ...){
     if (length(object$v) < 2){
         object = UCfilter(object)

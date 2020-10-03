@@ -11,7 +11,7 @@ Time series objects.
 }
 }
 \source{
-\href{http://serviciosede.mineco.gob.es/indeco}{OECDgdp}
+\href{http://serviciosede.mineco.gob.es/indeco/}{OECDgdp}
 }
 \usage{
 OECDgdp

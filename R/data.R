@@ -60,7 +60,7 @@
 #'   Quarterly data from 1962 to 2019
 #' }
 #'
-#' @source \href{http://serviciosede.mineco.gob.es/indeco}{OECDgdp}
+#' @source \href{http://serviciosede.mineco.gob.es/indeco/}{OECDgdp}
 #'         
 #' @examples
 #' \dontrun{

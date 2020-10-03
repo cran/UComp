@@ -17,6 +17,8 @@ filled in, in particular:
 }
 \description{
 Estimates components of UC models
+Standard methods applicable to UComp objects are print, summary, plot,
+fitted, residuals, logLik, AIC, BIC, coef, predict, tsdiag.
 }
 \examples{
 m1 <- UC(log(AirPassengers))
@@ -24,7 +26,8 @@ m1 <- UCcomponents(m1)
 }
 \seealso{
 \code{\link{UC}}, \code{\link{UCmodel}}, \code{\link{UCvalidate}}, \code{\link{UCfilter}}, 
-         \code{\link{UCsmooth}}, \code{\link{UCdisturb}}
+         \code{\link{UCsmooth}}, \code{\link{UCdisturb}},
+         \code{\link{UChp}}
 }
 \author{
 Diego J. Pedregal

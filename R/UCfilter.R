@@ -83,6 +83,8 @@ filter_ = function(sys, command){
 
 #' @title UCfilter
 #' @description Runs the Kalman Filter for UC models
+#' Standard methods applicable to UComp objects are print, summary, plot,
+#' fitted, residuals, logLik, AIC, BIC, coef, predict, tsdiag.
 #'
 #' @param sys an object of type \code{UComp} created with \code{UC}
 #' 
@@ -96,7 +98,8 @@ filter_ = function(sys, command){
 #' @author Diego J. Pedregal
 #' 
 #' @seealso \code{\link{UC}}, \code{\link{UCmodel}}, \code{\link{UCvalidate}}, 
-#'          \code{\link{UCsmooth}}, \code{\link{UCdisturb}}, \code{\link{UCcomponents}}
+#'          \code{\link{UCsmooth}}, \code{\link{UCdisturb}}, \code{\link{UCcomponents}},
+#'          \code{\link{UChp}}
 #'          
 #' @examples
 #' m1 <- UC(log(AirPassengers))
@@ -109,6 +112,8 @@ UCfilter = function(sys){
 
 #' @title UCsmooth
 #' @description Runs the Fixed Interval Smoother for UC models
+#' Standard methods applicable to UComp objects are print, summary, plot,
+#' fitted, residuals, logLik, AIC, BIC, coef, predict, tsdiag.
 #'
 #' @param sys an object of type \code{UComp} created with \code{UC}
 #' 
@@ -122,7 +127,8 @@ UCfilter = function(sys){
 #' @author Diego J. Pedregal
 #' 
 #' @seealso \code{\link{UC}}, \code{\link{UCmodel}}, \code{\link{UCvalidate}}, \code{\link{UCfilter}}, 
-#'          \code{\link{UCdisturb}}, \code{\link{UCcomponents}}
+#'          \code{\link{UCdisturb}}, \code{\link{UCcomponents}},
+#'          \code{\link{UChp}}
 #'          
 #' @examples
 #' m1 <- UC(log(AirPassengers))
@@ -135,6 +141,8 @@ UCsmooth = function(sys){
 
 #' @title UCdisturb
 #' @description Runs the Disturbance Smoother for UC models
+#' Standard methods applicable to UComp objects are print, summary, plot,
+#' fitted, residuals, logLik, AIC, BIC, coef, predict, tsdiag.
 #'
 #' @param sys an object of type \code{UComp} created with \code{UC}
 #' 
@@ -150,7 +158,8 @@ UCsmooth = function(sys){
 #' @author Diego J. Pedregal
 #' 
 #' @seealso \code{\link{UC}}, \code{\link{UCmodel}}, \code{\link{UCvalidate}}, \code{\link{UCfilter}}, 
-#'          \code{\link{UCsmooth}}, \code{\link{UCcomponents}}
+#'          \code{\link{UCsmooth}}, \code{\link{UCcomponents}},
+#'          \code{\link{UChp}}
 #'          
 #' @examples
 #' m1 <- UC(log(AirPassengers))
@@ -159,4 +168,30 @@ UCsmooth = function(sys){
 #' @export
 UCdisturb = function(sys){
     return(filter_(sys, "disturb"))
+}
+
+#' @title UChp
+#' @description Hodrick-Prescott filter estimation
+#'
+#' @param y A time series object
+#' 
+#' @param lambda Smoothing constant (default: 1600)
+#' 
+#' @return The cycle estimation
+#' 
+#' @author Diego J. Pedregal
+#' 
+#' @seealso \code{\link{UC}}, \code{\link{UCmodel}}, \code{\link{UCvalidate}}, \code{\link{UCfilter}}, 
+#'          \code{\link{UCsmooth}}, \code{\link{UCcomponents}}, \code{\link{UCdisturb}}
+#'          
+#' @examples
+#' cycle <- UChp(USgdp)
+#' plot(cycle)
+#' @rdname UChp
+#' @export
+UChp = function(y, lambda = 1600){
+    m = UCsetup(y, model = "irw/none/arma(0,0)")
+    m$p = c(log(1 / lambda) / 2, 0)
+    m = UCcomponents(m)
+    return(y - m$comp[, 1])
 }

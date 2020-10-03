@@ -74,6 +74,8 @@ to search for is reduced, depending on the result of this test.}
 }
 \value{
 An object of class \code{UComp}. See \code{UCmodel}.
+Standard methods applicable to UComp objects are print, summary, plot,
+fitted, residuals, logLik, AIC, BIC, coef, predict, tsdiag.
 }
 \description{
 Sets up UC general univariate models
@@ -89,7 +91,8 @@ m1 <- UCsetup(y,  outlier = 4)
 }
 \seealso{
 \code{\link{UC}}, \code{\link{UCmodel}}, \code{\link{UCvalidate}}, \code{\link{UCfilter}}, \code{\link{UCsmooth}}, 
-         \code{\link{UCdisturb}}, \code{\link{UCcomponents}}
+         \code{\link{UCdisturb}}, \code{\link{UCcomponents}},
+         \code{\link{UChp}}
 }
 \author{
 Diego J. Pedregal

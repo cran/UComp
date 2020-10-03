@@ -17,7 +17,8 @@ filled in, in particular:
 \item{table}{Estimation and validation table}
 }
 \description{
-Shows a table of estimation and diagnostics results for UC models
+Shows a table of estimation and diagnostics results for UC models.
+Equivalent to print or summary.
 }
 \examples{
 m1 <- UC(log(AirPassengers))
@@ -25,7 +26,8 @@ m1 <- UCvalidate(m1)
 }
 \seealso{
 \code{\link{UC}}, \code{\link{UCmodel}}, \code{\link{UCfilter}}, 
-         \code{\link{UCsmooth}}, \code{\link{UCdisturb}}, \code{\link{UCcomponents}}
+         \code{\link{UCsmooth}}, \code{\link{UCdisturb}}, \code{\link{UCcomponents}},
+         \code{\link{UChp}}
 }
 \author{
 Diego J. Pedregal

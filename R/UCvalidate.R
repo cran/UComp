@@ -1,5 +1,6 @@
 #' @title UCvalidate
-#' @description Shows a table of estimation and diagnostics results for UC models
+#' @description Shows a table of estimation and diagnostics results for UC models.
+#' Equivalent to print or summary.
 #'
 #' @param sys an object of type \code{UComp} created with \code{UC}
 #' @param printScreen print to screen or just return output table
@@ -11,7 +12,8 @@
 #' @author Diego J. Pedregal
 #' 
 #' @seealso \code{\link{UC}}, \code{\link{UCmodel}}, \code{\link{UCfilter}}, 
-#'          \code{\link{UCsmooth}}, \code{\link{UCdisturb}}, \code{\link{UCcomponents}}
+#'          \code{\link{UCsmooth}}, \code{\link{UCdisturb}}, \code{\link{UCcomponents}},
+#'          \code{\link{UChp}}
 #'          
 #' @examples
 #' m1 <- UC(log(AirPassengers))
@@ -28,6 +30,12 @@ UCvalidate = function(sys, printScreen = TRUE){
         u = as.numeric(sys$u)
     } else {
         u = sys$u
+    }
+    if (any(is.na(sys$p))){
+        if (printScreen){
+            print(sys$table)
+        }
+        return(sys)
     }
     # Converte to R list
     rubbish = c(sys$hidden$d_t, sys$hidden$innVariance, sys$hidden$objFunValue, sys$cLlik, sys$outlier, sys$arma)

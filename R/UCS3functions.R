@@ -145,15 +145,24 @@ logLik.UComp = function(object, ...){
     out = object$criteria[1]
     class(out) = "logLik"
     attr(out, "df") = length(object$p) - 1
+    attr(out, "nobs") = length(object$y)
     return(out)
 }
 #' @title AIC.UComp
 #' @description Extract AIC value of UComp object
 #'
-#' @details See help of \code{UC}.
+#' @details Selection criteria for models with different number of 
+#' parameters, the smaller AIC the better. The formula used here is
+#' \eqn{AIC=-2 (ln(L) - k) / n}, where \eqn{ln(L)} is the log-likelihood
+#' at the optimum, \eqn{k} is the number of parameters plus
+#' non-stationary states and \eqn{n} is the number of observations.
+#' Mind that this formulation differs from the usual definition that
+#' does not divide by \eqn{n}. This makes that AIC(m) and AIC(logLik(m))
+#' give different results, being m an UComp object.
 #'
 #' @param object Object of class \dQuote{UComp}.
 #' @param ... Additional inputs to function.
+#' @param k The penalty per parameter to be used.
 #' 
 #' @author Diego J. Pedregal
 #' 
@@ -163,8 +172,7 @@ logLik.UComp = function(object, ...){
 #' @examples
 #' y <- log(AirPassengers)
 #' m1 <- UCmodel(y, model = "llt/equal/arma(0,0)")
-#' logLik(m1)
-#' @noRd
+#' AIC(m1)
 #' @export 
 AIC.UComp = function(object, ..., k = 2){
     return(object$criteria[2])
@@ -172,7 +180,14 @@ AIC.UComp = function(object, ..., k = 2){
 #' @title BIC.UComp
 #' @description Extract BIC (or SBC) value of UComp object
 #'
-#' @details See help of \code{UC}.
+#' @details Selection criteria for models with different number of 
+#' parameters, the smaller BIC the better. The formula used here is
+#' \eqn{BIC=(-2 ln(L) + k ln(n)) / n}, where \eqn{ln(L)} is the log-likelihood
+#' at the optimum, \eqn{k} is the number of parameters plus
+#' non-stationary states and \eqn{n} is the number of observations.
+#' Mind that this formulation differs from the usual definition that
+#' does not divide by \eqn{n}. This makes that BIC(m) and BIC(logLik(m))
+#' give different results, being m an UComp object.
 #'
 #' @param object Object of class \dQuote{UComp}.
 #' @param ... Additional inputs to function.
@@ -185,8 +200,7 @@ AIC.UComp = function(object, ..., k = 2){
 #' @examples
 #' y <- log(AirPassengers)
 #' m1 <- UCmodel(y, model = "llt/equal/arma(0,0)")
-#' logLik(m1)
-#' @noRd
+#' BIC(m1)
 #' @export 
 BIC.UComp = function(object, ...){
     return(object$criteria[3])

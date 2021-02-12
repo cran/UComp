@@ -1,0 +1,83 @@
+---
+title: "Spanish Industrial Production Index with UComp"
+author: "Diego J. Pedregal"
+date: "2021-02-15"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Spanish Industrial Production Index with UComp}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(UComp)
+```
+
+Here there are some examples run with package UComp, for the automatic modelling of Unobserved Components models a la Harvey (1989). The absolute novelty of this package is that it provides an automatic identification of UC models, though particular models may be estimated, if desired. The package also perform outlier detection, may identify cycles of period longer than one year and allows for models with exogenous inputs.
+
+The library is composed of just a few functions to perform a comprehensive analysis of time series:
+
+* UC: runs everything
+* UCsetup: creates UComp objects
+* UCmodel: runs UCsetup, estimates/identifies model and produce forecasts
+* UCvalidate: runs diagnositics checks and show estimation table
+* UCfilter: filters the data and computes states and their covariance matrices
+* UCsmooth: as UCfilter, but smoothing the data
+* UCdisturb: runs the disturbance smoother
+* UCcomponents: estimate components (trend, seasonal, irregular, etc.)
+* UChp: estimate Hodrick-Prescott filter
+
+The inputs to UC, UCsetup and UCmodel are the same and control how the rest of functions work (check the manual and examples below).
+
+Now, the examples. First, just load the library and some data (monthly Spanish industrial production index) from January 2000 to December 2019. the last year of data is reserved to check forecasting performance.
+
+```{r load data}
+load(url("https://github.com/djpedregal/djpedregal.github.io/blob/master/ipi.Rdata?raw=true"))
+ipi = ts(y[1 : 208], start = 2000, frequency = 12)
+plot(ipi)
+```
+
+The call could be as simple as the next to estimate the optimal model and plot the components. The output shows the estimated models with their information criteria values and the table with the estimates and some diagnostics tests.
+
+```{r run model}
+m = UC(log(ipi))
+```
+
+```{r plot components}
+plot(m)
+```
+
+A different call, more complex, would be as follows (just one model is estimated, the forecasting horizon is fixed at 24 months, verbose output is avoided, see the full set of options in the documentation). As can be easily seen, the diagnostics tests indicate that this model is completely inappropriate:
+
+```{r run model 2}
+m = UC(log(ipi), model = "rw/equal/arma(0,0)", h = 24, verbose = FALSE)
+```
+
+Something that is very interesting in this case is the estimation with Easter and calendar effects (already loaded in matrix u) and with outlier detection. Check out the diagnostics and now to see that this model is much more adequate:
+
+```{r outliers}
+m = UC(log(ipi), u = u, outlier = 4)
+```
+
+```{r plot outliers}
+plot(m)
+```
+
+Beta(1) and Beta(2) are the parameter estimates for Easter and the calendar effects and there is one oulier detected in observations 108 as a level shift.
+
+Finally, forecasts and their variances are stored in fields yFor and yForV, respectively. The following plot shows forecasts and their 95% confidence bands.
+
+```{r forecasts}
+plot(m$yFor, ylim = c(4.3, 4.85))
+lines(m$yFor + 2 * sqrt(m$yForV), col = "red")
+lines(m$yFor - 2 * sqrt(m$yForV), col = "red")
+```
+
+

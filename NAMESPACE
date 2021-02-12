@@ -25,3 +25,5 @@ useDynLib(UComp, .registration=TRUE)
 importFrom(Rcpp, evalCpp)
 import(stats)
 import(utils)
+
+

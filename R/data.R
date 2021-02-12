@@ -1,38 +1,19 @@
-#' Methane concentration at Cape Grim in Australia (ch4).
+#' Sales index for large retailers in Spain
+#'
+#' Sales index for food of large retailers in Spain
 #'
 #' @format Time series objects.
 #' \describe{
-#'   Monthly data from January 1992 to December 2019
+#'   Monthly data from January 1995 to December 2019
 #' }
 #'
-#' @source \href{https://www.csiro.au/en/Research/OandA/Areas/Assessing-our-climate/Latest-greenhouse-gas-data}{CH4 data}
+#' @source \href{http://serviciosede.mineco.gob.es/indeco/}{sales}
 #'         
 #' @examples
 #' \dontrun{
-#'  ch4
+#'  sales
 #' }
-"ch4"
-
-#' Airpassengers in Spain
-#' 
-#' Foreign arrivals by air in Spain in thousands of passengers (y).
-#' Easter and Business day dummy variables for airpas data (u).
-#'
-#'
-#' @format Time series objects.
-#' \describe{
-#'   Monthly data from January 1992 to December 2019
-#'  \item{airpas}{air passengers data}
-#'   \item{u}{Easter and Busindess day dummy variables}
-#' }
-#'
-#' @source \href{https://www.ine.es}{airpas}
-#' 
-#' @examples
-#' \dontrun{
-#'  airpas
-#' }
-"airpas"
+"sales"
 
 #' US GDP
 #'
@@ -68,4 +49,35 @@
 #' }
 "OECDgdp"
 
+#' Methane concentration at Cape Grim in Australia (ch4).
+#'
+#' @format Time series objects.
+#' \describe{
+#'   Monthly data from January 1992 to December 2019
+#' }
+#'
+#' @source \href{https://www.csiro.au/en/Research/OandA/Areas/Assessing-our-climate/Latest-greenhouse-gas-data}{CH4 data}
+#'         
+#' @examples
+#' \dontrun{
+#'  ch4
+#' }
+"ch4"
 
+#' Airpassengers in Spain
+#' 
+#' Foreign arrivals by air in Spain in thousands of passengers (airpas).
+#'
+#'
+#' @format Time series objects.
+#' \describe{
+#'   Monthly data from January 1992 to December 2019
+#' }
+#'
+#' @source \href{https://www.ine.es}{airpas}
+#' 
+#' @examples
+#' \dontrun{
+#'  airpas
+#' }
+"airpas"

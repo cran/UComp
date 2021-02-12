@@ -8,8 +8,6 @@
 Time series objects.
 \describe{
   Monthly data from January 1992 to December 2019
- \item{airpas}{air passengers data}
-  \item{u}{Easter and Busindess day dummy variables}
 }
 }
 \source{
@@ -19,8 +17,7 @@ Time series objects.
 airpas
 }
 \description{
-Foreign arrivals by air in Spain in thousands of passengers (y).
-Easter and Business day dummy variables for airpas data (u).
+Foreign arrivals by air in Spain in thousands of passengers (airpas).
 }
 \examples{
 \dontrun{

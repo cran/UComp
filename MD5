@@ -1,6 +1,6 @@
-b574617c537de85d2e366c479692cfc1 *DESCRIPTION
-8217d4e956644a1b1512df3c95c0b0ec *NAMESPACE
-fa59e5346be172f781efc1cde20f1a45 *R/RcppExports.R
+1e0eec492fbec9b5909b37c254343e1f *DESCRIPTION
+380558b7ef93d33ec57044e23004f7a1 *NAMESPACE
+95d34db860f4cfccd9f829e0525e9e72 *R/RcppExports.R
 b72ba75b39a2b73bcc3c64ab48fdce0f *R/UCS3functions.R
 169417ab4c2e29a4b541479e5c3adc6d *R/UCcomponents.R
 f18286d8fcd1bf64cb8034ee85c84b0e *R/UCestim.R
@@ -8,12 +8,17 @@ f18286d8fcd1bf64cb8034ee85c84b0e *R/UCestim.R
 f4e0e9beb95389fa62822e191364d2ed *R/UCmodel.R
 e1dd7208599caf457687a4f71eae491a *R/UComp-package.R
 de66c1a323632880989a5c9af8334f71 *R/UCvalidate.R
-61ace1d2f5ce0a352e46d0f9e63342d6 *R/data.R
+5443e7307426f65a6d5c271233f7fb33 *R/data.R
 a38631b1fd1c1d97434b6a18cfa7d5bd *R/onAttach.R
+87a594b831bd4eef1e86b6cc700b3219 *build/vignette.rds
 e8f43622922e80497871813fe4e65483 *data/OECDgdp.rda
 1b3124eeaef25f868c942258640ad9cc *data/USgdp.rda
-c707218ae59fcb9fa8bd0b79bb72940b *data/airpas.rda
+7186eece495084d6523740a15ca78615 *data/airpas.rda
 1a66a0ed1724ecdd52f10c4b72ba29de *data/ch4.rda
+9ac0d7ca00d230912741a2834ffcac94 *data/sales.rda
+b51f7c50b1fefa155ca2c4e5e9bb3052 *inst/doc/SpanishIpi.R
+b4553a8afe33be18280ec724b113f328 *inst/doc/SpanishIpi.Rmd
+63b83358c26719d5138d1d89371ef793 *inst/doc/SpanishIpi.html
 99cbfde39cfa72c9c6eec7332a9a392a *man/AIC.UComp.Rd
 78233bb399bef4208f6fa8bbb084e7b7 *man/BIC.UComp.Rd
 dfb86686af41f65312549576ea145d39 *man/OECDgdp.Rd
@@ -29,8 +34,9 @@ e84601abdf0f9e6e3d6bb0d7e85a5033 *man/UCmodel.Rd
 f9718b904a81cc1c1757ccdee1343249 *man/UCsmooth.Rd
 ab0c799bb8e86c25d85b45f1418e8192 *man/UCvalidate.Rd
 eb5ddeb1bce3a9c858aed291b5420439 *man/USgdp.Rd
-16db03ef1765cc53ba00e6fbf774af2c *man/airpas.Rd
+b9686cc1bfb5e7e49c69b6a56f0ca5f6 *man/airpas.Rd
 6a88e0d555cdfc21a550c551e1052789 *man/ch4.Rd
+40b18c06e22c0d8c4f6f148ac1aa53e8 *man/sales.Rd
 819a49402b12f627392982c97b4d5798 *src/ARMAmodel.h
 70b29bdb702a4af1cc671ef2dfe89c99 *src/BSMmodel.h
 2b6c7c21a64bcc2a2b46e915f7febb12 *src/DJPTtools.h
@@ -41,3 +47,4 @@ dd447a9d3a3fa704461b8d435684ad2c *src/RcppExports.cpp
 9a6ac5d09b03e0603a880e29a5fbf4ba *src/UCompC.cpp
 941f99160e5cf966f794dad7b782f10e *src/optim.h
 a09470a8496be376297b60688b5a007c *src/stats.h
+b4553a8afe33be18280ec724b113f328 *vignettes/SpanishIpi.Rmd

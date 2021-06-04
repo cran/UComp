@@ -30,8 +30,9 @@ noModel = function(model, periods){
 #' @param y a time series to forecast (it may be either a numerical vector or
 #' a time series object). This is the only input required. If a vector, the additional
 #' input \code{periods} should be supplied compulsorily (see below).
-#' @param u a matrix of input time series. If 
-#' the output wanted to be forecast, matrix \code{u} should contain future values for inputs.
+#' @param u a matrix of external regressors included only in the observation equation. 
+#' (it may be either a numerical vector or a time series object). If the output wanted 
+#' to be forecast, matrix \code{u} should contain future values for inputs.
 #' @param model the model to estimate. It is a single string indicating the type of 
 #' model for each component. It allows two formats "trend/seasonal/irregular" or 
 #' "trend/cycle/seasonal/irregular". The possibilities available for each component are:
@@ -42,33 +43,73 @@ noModel = function(model, periods){
 #' 
 #' \item Irregular: ? / none / arma(0, 0) / arma(p, q) - with p and q integer positive orders;
 #'     
-#' \item Cycles: ? / none / combination of positive or negative numbers. 
-#' 
-#' Positive numbers fix
+#' \item Cycles: ? / none / combination of positive or negative numbers. Positive numbers fix
 #' the period of the cycle while negative values estimate the period taking as initial
-#' condition the absolute value of the period supplied.
-#' Several cycles with positive or negative values are possible
+#' condition the absolute value of the period supplied. Several cycles with positive or negative values are possible
 #' and if a question mark is included, the model test for the existence of the cycles
-#' specified (check the examples below).
+#' specified. The following are valid examples with different meanings: 48, 48?, -48, -48?,
+#' 48+60, -48+60, -48-60, 48-60, 48+60?, -48+60?, -48-60?, 48-60?.
 #' }
 #' @param outlier critical level of outlier tests. If NA it does not carry out any 
-#' outlier detection (default). A negative value indicates critical minimum t test for one run of
-#' outlier detection after identification. A positive value indicates the critical minium
-#' t test for outlier detection in any model during identification.
+#' outlier detection (default). A positive value indicates the critical minimum
+#' t test for outlier detection in any model during identification. Three types of outliers are
+#' identified, namely Additive Outliers (AO), Level Shifts (LS) and Slope Change (SC).
 #' @param stepwise stepwise identification procedure (TRUE / FALSE).
-#' @param tTest augmented Dickey Fuller test for unit roots (TRUE / FALSE). The number of models
-#' to search for is reduced, depending on the result of this test.
-#' @param p0 initial condition for parameter estimates.
+#' @param tTest augmented Dickey Fuller test for unit roots used in stepwise algorithm (TRUE / FALSE). 
+#' The number of models to search for is reduced, depending on the result of this test.
+#' @param p0 initial parameter vector for optimisation search.
 #' @param h forecast horizon. If the model includes inputs h is not used, the lenght of u is used instead.
 #' @param criterion information criterion for identification ("aic", "bic" or "aicc").
-#' @param periods vector of fundamental period and harmonics.
+#' @param periods vector of fundamental period and harmonics required.
 #' @param verbose intermediate results shown about progress of estimation (TRUE / FALSE).
 #' @param arma check for arma models for irregular components (TRUE / FALSE).
-#' @param cLlik reserved input
 #' 
 #' @author Diego J. Pedregal
 #' 
-#' @return An object of class \code{UComp}. See \code{UCmodel}.
+#' @return An object of class \code{UComp}. It is a list with fields including all the inputs and
+#'         the fields listed below as outputs. All the functions in this package fill in
+#'         part of the fields of any \code{UComp} object as specified in what follows (function 
+#'         \code{UC} fills in all of them at once):
+#' 
+#' After running \code{UCmodel} or \code{UCestim}:
+#' \itemize{
+#' \item{p}{Estimated parameters}
+#' \item{v}{Estimated innovations (white noise in correctly specified models)}
+#' \item{yFor}{Forecasted values of output}
+#' \item{yForV}{Variance of forecasted values of output}
+#' \item{criteria}{Value of criteria for estimated model}
+#' \item{iter}{Number of iterations in estimation}
+#' \item{grad}{Gradient at estimated parameters}
+#' \item{covp}{Covariance matrix of parameters}
+#' }
+#' 
+#' After running \code{UCvalidate}:
+#' \itemize{
+#' \item{table}{Estimation and validation table}
+#' }
+#' 
+#' After running \code{UCcomponents}:
+#' \itemize{
+#' \item{comp}{Estimated components in matrix form}
+#' \item{compV}{Estimated components variance in matrix form}
+#' }
+#' 
+#' After running \code{UCfilter}, \code{UCsmooth} or  \code{UCdisturb}:
+#' \itemize{
+#' \item{yFit}{Fitted values of output}
+#' \item{yFitV}{Variance of fitted values of output}
+#' \item{a}{State estimates}
+#' \item{P}{Variance of state estimates}
+#' \item{aFor}{Forecasts of states}
+#' \item{PFor}{Forecasts of states variances}
+#' }
+#' 
+#' After running \code{UCdisturb}:
+#' \itemize{
+#' \item{eta}{State perturbations estimates}
+#' \item{eps}{Observed perturbations estimates}
+#' }
+#' 
 #' Standard methods applicable to UComp objects are print, summary, plot,
 #' fitted, residuals, logLik, AIC, BIC, coef, predict, tsdiag.
 #' 
@@ -77,22 +118,31 @@ noModel = function(model, periods){
 #'          \code{\link{UChp}}
 #'          
 #' @examples
-#' y <- log(AirPassengers)
+#' y <- log(sales)
 #' m1 <- UCsetup(y)
-#' m1 <- UCsetup(y,  model = "llt/equal/arma(0,0)")
-#' m1 <- UCsetup(y,  outlier = 4)
+#' m1 <- UCsetup(y, outlier = 4)
+#' m1 <- UCsetup(y, model = "llt/equal/arma(0,0)")
+#' m1 <- UCsetup(y, model = "?/?/?/?")
+#' m1 <- UCsetup(y, model = "llt/?/equal/?", outlier = 4)
 #' @rdname UCsetup
 #' @export
 UCsetup = function(y, u = NULL, model = "?/none/?/?", h = NA, outlier = NA, tTest = FALSE, criterion = "aic",
-                   periods = NA, verbose = FALSE, stepwise = FALSE, p0 = NA, cLlik = TRUE, arma = TRUE){
+                   periods = NA, verbose = FALSE, stepwise = FALSE, p0 = -9999.9, arma = TRUE){
     rhos = NA
     p = NA
     # Converting y vector to matrix
     # if (is.vector(y)){
     #     y = matrix(y, length(y), 1)
     # }
+    # Auxiliar function size
+    size = function(z){
+        out = dim(z)
+        if (is.null(out))
+            out = length(z)
+        return(out)
+    }
     # Converting u vector to matrix
-    if (is.vector(u)){
+    if (length(size(u)) == 1 && size(u) > 0){
         u = matrix(u, 1, length(u))
     }
     n = length(y)
@@ -103,7 +153,7 @@ UCsetup = function(y, u = NULL, model = "?/none/?/?", h = NA, outlier = NA, tTes
             u = t(u)
         }
         if (length(y) > dim(u)[2]){
-            stop("Length of output data never could be greater than length of inputs!!!")
+            stop("UComp ERROR: Length of output data never could be greater than length of inputs!!!")
         }
         h = dim(u)[2] - n
     }
@@ -161,8 +211,9 @@ UCsetup = function(y, u = NULL, model = "?/none/?/?", h = NA, outlier = NA, tTes
     model = tolower(model)
     if (noModel(model, periods))
         stop("No model specified!!!")
-    if (any(utf8ToInt(model) == utf8ToInt("?")) && !is.na(p0)){
-        p0 = NA;
+    if (any(utf8ToInt(model) == utf8ToInt("?")) && p0 != -9999.9){
+        p0 = -9999.9;
+        warning("UComp WARNING: p0 input not used in identification process!!!")
     }
     if (any(utf8ToInt(model) == utf8ToInt("?")) && !is.na(p)){
         p = NA;
@@ -202,11 +253,20 @@ UCsetup = function(y, u = NULL, model = "?/none/?/?", h = NA, outlier = NA, tTes
     mC0 = strsplit(tolower(model), "/")[[1]][2]
     mC = mC0
     if (mC0 == "?"){
-        mC = paste0(toString(-4 * frequency(y)), "?")
+        initPer = -4 * frequency(y)
+        if (frequency(y) == 1){
+            initPer = -8
+        }
+        mC = paste0(toString(initPer), "?")
     } else if (substr(mC0, 1, 1) != "+" && substr(mC0, 1, 1) != "-" && substr(mC0, 1, 1) != "n"){
         mC = paste0("+", mC0)
     }
     model = sub(paste0("/", mC0, "/"), paste0("/", mC, "/"), model, fixed = TRUE)
+    # Checking criterion
+    criterion = tolower(criterion)
+    if (criterion != "aic" && criterion != "bic" && criterion != "aicc"){
+        criterion = "aic"
+    }
     out = list(y = y,
                u = u,
                model = model,
@@ -215,6 +275,8 @@ UCsetup = function(y, u = NULL, model = "?/none/?/?", h = NA, outlier = NA, tTes
                comp = NA,
                compV = NA,
                p = p,
+               covp = NA,
+               grad = NA,
                v= NA,
                yFit = NA,
                yFor = NA,
@@ -225,9 +287,10 @@ UCsetup = function(y, u = NULL, model = "?/none/?/?", h = NA, outlier = NA, tTes
                eta = NA,
                eps = NA,
                table = NA,
+               iter = NA,
                # Other less important
                arma =  arma,
-               outlier = -outlier,
+               outlier = -abs(outlier),
                tTest = tTest,
                criterion = criterion,
                periods = periods,
@@ -235,11 +298,9 @@ UCsetup = function(y, u = NULL, model = "?/none/?/?", h = NA, outlier = NA, tTes
                verbose = verbose,
                stepwise = stepwise,
                p0 = p0,
-               cLlik = cLlik,
                criteria = NA,
                # Other variables
-               hidden = list(grad = NA,
-                             d_t = 0,
+               hidden = list(d_t = 0,
                              estimOk = "Not estimated",
                              objFunValue = 0,
                              innVariance = 1,
@@ -251,6 +312,7 @@ UCsetup = function(y, u = NULL, model = "?/none/?/?", h = NA, outlier = NA, tTes
                              typePar = NA,
                              cycleLimits = NA,
                              typeOutliers = matrix(-1, 1, 2),
+                             truePar = p,
                              beta = NA,
                              betaV = NA))
     return(structure(out, class = "UComp"))
@@ -262,7 +324,7 @@ UCsetup = function(y, u = NULL, model = "?/none/?/?", h = NA, outlier = NA, tTes
 #' @details \code{UCmodel} is a function for modelling and forecasting univariate
 #' time series according to Unobserved Components models (UC). 
 #' It sets up the model with a number of control variables that
-#' govern the way the rest of functions in the package will work. It also estimates 
+#' govern the way the rest of functions in the package work. It also estimates 
 #' the model parameters by Maximum Likelihood and forecasts the data.
 #' Standard methods applicable to UComp objects are print, summary, plot,
 #' fitted, residuals, logLik, AIC, BIC, coef, predict, tsdiag.
@@ -275,30 +337,43 @@ UCsetup = function(y, u = NULL, model = "?/none/?/?", h = NA, outlier = NA, tTes
 #'         \code{UC} fills in all of them at once):
 #' 
 #' After running \code{UCmodel} or \code{UCestim}:
+#' \itemize{
 #' \item{p}{Estimated parameters}
 #' \item{v}{Estimated innovations (white noise in correctly specified models)}
 #' \item{yFor}{Forecasted values of output}
 #' \item{yForV}{Variance of forecasted values of output}
 #' \item{criteria}{Value of criteria for estimated model}
+#' \item{iter}{Number of iterations in estimation}
+#' \item{grad}{Gradient at estimated parameters}
+#' \item{covp}{Covariance matrix of parameters}
+#' }
 #' 
 #' After running \code{UCvalidate}:
+#' \itemize{
 #' \item{table}{Estimation and validation table}
+#' }
 #' 
 #' After running \code{UCcomponents}:
+#' \itemize{
 #' \item{comp}{Estimated components in matrix form}
 #' \item{compV}{Estimated components variance in matrix form}
+#' }
 #' 
 #' After running \code{UCfilter}, \code{UCsmooth} or  \code{UCdisturb}:
+#' \itemize{
 #' \item{yFit}{Fitted values of output}
 #' \item{yFitV}{Variance of fitted values of output}
 #' \item{a}{State estimates}
 #' \item{P}{Variance of state estimates}
 #' \item{aFor}{Forecasts of states}
 #' \item{PFor}{Forecasts of states variances}
+#' }
 #' 
 #' After running \code{UCdisturb}:
+#' \itemize{
 #' \item{eta}{State perturbations estimates}
 #' \item{eps}{Observed perturbations estimates}
+#' }
 #' 
 #' @author Diego J. Pedregal
 #' 
@@ -313,24 +388,71 @@ UCsetup = function(y, u = NULL, model = "?/none/?/?", h = NA, outlier = NA, tTes
 #' @rdname UCmodel
 #' @export
 UCmodel = function(y, u = NULL, model = "?/none/?/?", h = NA, outlier = NA, tTest = FALSE, criterion = "aic",
-                   periods = NA, verbose = FALSE, stepwise = FALSE, p0 = NA, cLlik = TRUE, arma = TRUE){
+                   periods = NA, verbose = FALSE, stepwise = FALSE, p0 = -9999.9, arma = TRUE){
     m1 = UCsetup(y, u, model, h, outlier, tTest, criterion, 
-                 periods, verbose, stepwise, p0, cLlik, arma)
+                 periods, verbose, stepwise, p0, arma)
     m1 = UCestim(m1)
     return(m1)
 }
 #' @title UC
 #' @description Runs all relevant functions for UC modelling
 #'
-#' @details See help of \code{UCmodel}.
+#' @details \code{UC} is a function for modelling and forecasting univariate
+#' time series according to Unobserved Components models (UC). 
+#' It sets up the model with a number of control variables that
+#' govern the way the rest of functions in the package work. It also estimates 
+#' the model parameters by Maximum Likelihood, forecasts the data, performs smoothing,
+#' estimates model disturbances, estimates components and shows statistical diagnostics.
+#' Standard methods applicable to UComp objects are print, summary, plot,
+#' fitted, residuals, logLik, AIC, BIC, coef, predict, tsdiag.
 #'
 #' @inheritParams UCsetup
 #' 
 #' @author Diego J. Pedregal
 #' 
-#' @return An object of class \code{UComp}. See \code{UC}.
-#' Standard methods applicable to UComp objects are print, summary, plot,
-#' fitted, residuals, logLik, AIC, BIC, coef, predict, tsdiag.
+#' @return An object of class \code{UComp}. It is a list with fields including all the inputs and
+#'         the fields listed below as outputs. All the functions in this package fill in
+#'         part of the fields of any \code{UComp} object as specified in what follows (function 
+#'         \code{UC} fills in all of them at once):
+#' 
+#' After running \code{UCmodel} or \code{UCestim}:
+#' \itemize{
+#' \item{p}{Estimated parameters}
+#' \item{v}{Estimated innovations (white noise in correctly specified models)}
+#' \item{yFor}{Forecasted values of output}
+#' \item{yForV}{Variance of forecasted values of output}
+#' \item{criteria}{Value of criteria for estimated model}
+#' \item{iter}{Number of iterations in estimation}
+#' \item{grad}{Gradient at estimated parameters}
+#' \item{covp}{Covariance matrix of parameters}
+#' }
+#' 
+#' After running \code{UCvalidate}:
+#' \itemize{
+#' \item{table}{Estimation and validation table}
+#' }
+#' 
+#' After running \code{UCcomponents}:
+#' \itemize{
+#' \item{comp}{Estimated components in matrix form}
+#' \item{compV}{Estimated components variance in matrix form}
+#' }
+#' 
+#' After running \code{UCfilter}, \code{UCsmooth} or  \code{UCdisturb}:
+#' \itemize{
+#' \item{yFit}{Fitted values of output}
+#' \item{yFitV}{Variance of fitted values of output}
+#' \item{a}{State estimates}
+#' \item{P}{Variance of state estimates}
+#' \item{aFor}{Forecasts of states}
+#' \item{PFor}{Forecasts of states variances}
+#' }
+#' 
+#' After running \code{UCdisturb}:
+#' \itemize{
+#' \item{eta}{State perturbations estimates}
+#' \item{eps}{Observed perturbations estimates}
+#' }
 #' 
 #' @seealso \code{\link{UC}}, \code{\link{UCvalidate}}, \code{\link{UCfilter}}, \code{\link{UCsmooth}}, 
 #'          \code{\link{UCdisturb}}, \code{\link{UCcomponents}},
@@ -343,9 +465,9 @@ UCmodel = function(y, u = NULL, model = "?/none/?/?", h = NA, outlier = NA, tTes
 #' @rdname UC
 #' @export
 UC = function(y, u = NULL, model = "?/none/?/?", h = NA, outlier = NA, tTest = FALSE, criterion = "aic",
-                   periods = NA, verbose = FALSE, stepwise = FALSE, p0 = NA, cLlik = TRUE, arma = TRUE){
+              periods = NA, verbose = FALSE, stepwise = FALSE, p0 = -9999.9, arma = TRUE){
     m1 = UCsetup(y, u, model, h, outlier, tTest, criterion, 
-                 periods, verbose, stepwise, p0, cLlik, arma)
+                 periods, verbose, stepwise, p0, arma)
     m1 = UCestim(m1)
     m1 = UCvalidate(m1, verbose)
     m1 = UCdisturb(m1)

@@ -7,7 +7,7 @@
 UCcomponents(sys)
 }
 \arguments{
-\item{sys}{an object of type \code{UComp} created with \code{UC}}
+\item{sys}{an object of type \code{UComp} created with \code{UC} or \code{UCmodel}}
 }
 \value{
 The same input object with the appropriate fields 
@@ -16,12 +16,12 @@ filled in, in particular:
 \item{compV}{Estimated components variance in matrix form}
 }
 \description{
-Estimates components of UC models
+Estimates unobserved components of UC models
 Standard methods applicable to UComp objects are print, summary, plot,
 fitted, residuals, logLik, AIC, BIC, coef, predict, tsdiag.
 }
 \examples{
-m1 <- UC(log(AirPassengers))
+m1 <- UC(log(sales))
 m1 <- UCcomponents(m1)
 }
 \seealso{

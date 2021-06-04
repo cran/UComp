@@ -18,11 +18,11 @@ filter_ = function(sys, command){
     } else {
         u = sys$u
     }
-    rubbish = c(sys$hidden$d_t, sys$hidden$innVariance, sys$hidden$objFunValue, sys$cLlik, sys$outlier, sys$arma)
-    rubbish2 = cbind(sys$hidden$grad, sys$hidden$constPar, sys$hidden$typePar)
+    rubbish = c(sys$hidden$d_t, sys$hidden$innVariance, sys$hidden$objFunValue, TRUE, sys$outlier, sys$arma, sys$iter)
+    rubbish2 = cbind(sys$grad, sys$hidden$constPar, sys$hidden$typePar)
     rubbish3 = cbind(sys$hidden$ns, sys$hidden$nPar)
     output = UCompC(command, y, u, sys$model, sys$periods, sys$rhos,
-                    sys$h, sys$tTest, sys$criterion, sys$p, rubbish2, rubbish, sys$verbose, 
+                    sys$h, sys$tTest, sys$criterion, sys$hidden$truePar, rubbish2, rubbish, sys$verbose, 
                     sys$stepwise, sys$hidden$estimOk, sys$p0, sys$v, sys$yFitV,
                     sys$hidden$nonStationaryTerms, rubbish3, sys$hidden$harmonics,
                     as.vector(sys$criteria), sys$hidden$cycleLimits, 
@@ -78,12 +78,50 @@ filter_ = function(sys, command){
             sys$v = output$v
         }
     }
+    # States names
+    if (command != "disturb"){
+        namesStates = c("Level")
+        if (sys$hidden$ns[1] > 1){
+            namesStates = c(namesStates, "Slope")
+        }
+        if (sys$hidden$ns[2] > 0){
+            j = 1
+            for (i in seq(1, sys$hidden$ns[2], 2)){
+                namesStates = c(namesStates, paste0("Cycle", j))
+                namesStates = c(namesStates, paste0("Cycle", j, "*"))
+                j = j + 1
+            }
+        }
+        if (sys$hidden$ns[3] > 0){
+            nharm = ceiling(sys$hidden$ns[3] / 2)
+            periods = tail(sys$periods, nharm)
+            j = 1
+            for (i in seq(1, sys$hidden$ns[3], 2)){
+                namesStates = c(namesStates, paste0("Seasonal", j))
+                if (periods[j] != 2){
+                    namesStates = c(namesStates, paste0("Seasonal", j, "*"))
+                }
+                j = j + 1
+            }
+        }
+        if (sys$hidden$ns[4] > 0){
+            for (i in 1 : sys$hidden$ns[4]){
+                if (i == 1){
+                    namesStates = c(namesStates, paste0("Irregular", i))
+                } else {
+                    namesStates = c(namesStates, paste0("Irr*"))
+                }
+            }
+        }
+        colnames(sys$a) = namesStates
+        colnames(sys$P) = namesStates
+    }
     return(sys)
 }
 
 #' @title UCfilter
 #' @description Runs the Kalman Filter for UC models
-#' Standard methods applicable to UComp objects are print, summary, plot,
+#' Standard methods applicable to \code{UComp} objects are print, summary, plot,
 #' fitted, residuals, logLik, AIC, BIC, coef, predict, tsdiag.
 #'
 #' @param sys an object of type \code{UComp} created with \code{UC}
@@ -93,7 +131,7 @@ filter_ = function(sys, command){
 #' \item{yFit}{Fitted values of output}
 #' \item{yFitV}{Variance of fitted values of output}
 #' \item{a}{State estimates}
-#' \item{P}{Variance of state estimates}
+#' \item{P}{Variance of state estimates (diagonal of covariance matrices)}
 #' 
 #' @author Diego J. Pedregal
 #' 
@@ -112,7 +150,7 @@ UCfilter = function(sys){
 
 #' @title UCsmooth
 #' @description Runs the Fixed Interval Smoother for UC models
-#' Standard methods applicable to UComp objects are print, summary, plot,
+#' Standard methods applicable to \code{UComp} objects are print, summary, plot,
 #' fitted, residuals, logLik, AIC, BIC, coef, predict, tsdiag.
 #'
 #' @param sys an object of type \code{UComp} created with \code{UC}
@@ -122,7 +160,7 @@ UCfilter = function(sys){
 #' \item{yFit}{Fitted values of output}
 #' \item{yFitV}{Variance of fitted values of output}
 #' \item{a}{State estimates}
-#' \item{P}{Variance of state estimates}
+#' \item{P}{Variance of state estimates (diagonal of covariance matrices)}
 #' 
 #' @author Diego J. Pedregal
 #' 
@@ -141,7 +179,7 @@ UCsmooth = function(sys){
 
 #' @title UCdisturb
 #' @description Runs the Disturbance Smoother for UC models
-#' Standard methods applicable to UComp objects are print, summary, plot,
+#' Standard methods applicable to \code{UComp} objects are print, summary, plot,
 #' fitted, residuals, logLik, AIC, BIC, coef, predict, tsdiag.
 #'
 #' @param sys an object of type \code{UComp} created with \code{UC}
@@ -151,7 +189,7 @@ UCsmooth = function(sys){
 #' \item{yFit}{Fitted values of output}
 #' \item{yFitV}{Variance of fitted values of output}
 #' \item{a}{State estimates}
-#' \item{P}{Variance of state estimates}
+#' \item{P}{Variance of state estimates (diagonal of covariance matrices)}
 #' \item{eta}{State perturbations estimates}
 #' \item{eps}{Observed perturbations estimates}
 #' 
@@ -191,7 +229,7 @@ UCdisturb = function(sys){
 #' @export
 UChp = function(y, lambda = 1600){
     m = UCsetup(y, model = "irw/none/arma(0,0)")
-    m$p = c(log(1 / lambda) / 2, 0)
+    m$hidden$truePar = c(log(1 / lambda) / 2, 0)
     m = UCcomponents(m)
     return(y - m$comp[, 1])
 }

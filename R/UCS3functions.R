@@ -206,12 +206,12 @@ BIC.UComp = function(object, ...){
     return(object$criteria[3])
 }
 #' @title coef.UComp
-#' @description Extract model coefficients of UComp object
+#' @description Extracts model coefficients of UComp object
 #'
 #' @details See help of \code{UC}.
 #'
 #' @param object Object of class \dQuote{UComp}.
-#' @param ... Additional inputs to function.
+#' @param ... Ignored.
 #' 
 #' @author Diego J. Pedregal
 #' 
@@ -228,57 +228,23 @@ coef.UComp = function(object, ...){
     if (length(object$table) < 2){
         object = UCvalidate(object, FALSE)
     }
-    # Number of u's
-    nu = dim(object$u)[1]
-    if (dim(object$u)[2] == 2){
-        nu = 0
-    }
-    parameters = matrix(NA, length(object$p) + nu, 1)
-    parametersNames = matrix("", length(parameters))
-    # Looking for parameters in output table
-    hyphen = 1
-    rowM = 1
-    i = 1
-    while (hyphen < 4){
-        rowM = rowM + 1
-        if (hyphen > 2){
-            lineI = object$table[rowM]
-            if (substr(object$table[rowM], 1, 1) != "-"){
-                # Parameter name
-                namePar = substr(lineI, 1, gregexpr(pattern =':', lineI))
-                colonN = nchar(namePar) + 1
-                namePar = gsub(" ", "", substr(namePar, 1, colonN - 2), fixed = TRUE)
-                # Parameter value
-                blanks = gregexpr(pattern =' ', substr(lineI, colonN, nchar(lineI)))
-                aux = which(diff(blanks[[1]]) > 1)[1] + 1
-                aux2 = gsub("*", "", substr(lineI, colonN, colonN + blanks[[1]][aux]), fixed = TRUE)
-                parameters[i, 1] = as.numeric(gsub(" ", "", aux2))
-                parametersNames[i] = namePar
-                i = i + 1
-            } 
-            # else {
-            #     hyphen = hyphen + 1
-            # }
-        }
-        if (substr(object$table[rowM], 1, 1) == "-"){
-            hyphen = hyphen + 1
-        }
-    }
-    rownames(parameters) = parametersNames
-    return(parameters)
+    return(object$p)
 }
 #' @title predict.UComp
-#' @description Forecasting using structural Unobseved Components models
+#' @description Forecasting using structural Unobseved Components models with prediction intervals
 #'
 #' @details See help of \code{UC}.
 #'
 #' @param object Object of class \dQuote{UComp}.
-#' @param ... Additional inputs to function.
+#' @param newdata New output data to apply \dQuote{UComp} object to.
+#' @param n.ahead Number of steps ahead to forecast or new inputs variables 
+#' including their predictions.
+#' @param level Confidence level for prediction intervals.
+#' @param ... Ignored.
 #' 
 #' @author Diego J. Pedregal
 #' 
-#' @return A list with components \code{pred} for the predictions and 
-#'         \code{se} for standard errors (if \code{se.fit = TRUE})
+#' @return A matrix with the mean forecasts and lower and upper prediction intervals
 #' 
 #' @seealso \code{\link{UC}}, \code{\link{UCmodel}}, \code{\link{UCvalidate}}, \code{\link{UCfilter}}, \code{\link{UCsmooth}}, 
 #'          \code{\link{UCdisturb}}, \code{\link{UCcomponents}}
@@ -289,9 +255,29 @@ coef.UComp = function(object, ...){
 #' f1 <- predict(m1)
 #' @noRd
 #' @export 
-predict.UComp = function(object, ...){
-    out = list(pred = object$yFor,
-               se = sqrt(object$yForV))
+predict.UComp = function(object, newdata = NULL, n.ahead = NULL, level = 0.95, ...){
+    cnst = qt(level + (1 - level) / 2, length(object$y) - length(object$p))
+    if (!is.null(newdata)){
+        object$y = newdata
+    }
+   if (!is.null(n.ahead) && length(size(n.ahead)) == 1){
+        object$h = n.ahead
+    }
+    if (!is.null(n.ahead) && length(size(n.ahead)) > 1){
+        object$u = n.ahead
+    }
+    m = UCfilter(object)
+    pred = as.numeric(tail(m$yFit, m$h))
+    predS = as.numeric(sqrt(tail(m$yFitV, m$h)))
+    out = cbind(pred, pred - cnst * predS, pred + cnst * predS)
+    if (is.ts(object$y)){
+        aux = ts(matrix(0, length(object$y) + 1), start = start(object$y),
+                 frequency = frequency(object$y))
+        stDate = end(aux)
+        freq = frequency(object$y)
+        out = ts(out, start = stDate, frequency = freq)
+    }
+    colnames(out) = c("frcst", "lower", "upper")
     return(out)
 }
 #' @title tsdiag.UComp
@@ -336,5 +322,59 @@ tsdiag.UComp = function(object, gof.lag = NULL, ...){
     } else {
         tsdiag(structure(aux, class = "Arima"), gof.lag)
     }
+}
+#' @title getp0
+#' @description Get initial conditions for parameters of \code{UComp} object
+#'
+#' @details Provides initial parameters of a given model for the time series.
+#' They may be changed arbitrarily by the user to include as an input \code{p0} to
+#' \code{UC} or \code{UCmodel} functions (see example below).
+#' There is no guarantee that the model will converge and selecting initial conditions
+#' should be used with care.
+#'
+#' @param y a time series to forecast.
+#' @param model any valid \code{UComp} model without any ?.
+#' @param periods vector of fundamental period and harmonics required.
+#' 
+#' @author Diego J. Pedregal
+#' 
+#' @return A set of parameters p0 of an object of class \code{UComp}
+#' to use as input to \code{\link{UC}}, \code{\link{UCmodel}} or \code{\link{UCsetup}}.
+#' 
+#' @seealso \code{\link{UC}}, \code{\link{UCvalidate}}, \code{\link{UCfilter}}, \code{\link{UCsmooth}}, 
+#'          \code{\link{UCdisturb}}, \code{\link{UCcomponents}},
+#'          \code{\link{UChp}}
+#'          
+#' @examples
+#' p0 <- getp0(log(AirPassengers), model = "llt/equal/arma(0,0)")
+#' p0[1] <- 0  # p0[1] <- NA
+#' m <- UCmodel(log(AirPassengers), model = "llt/equal/arma(0,0)", p0 = p0)
+#' @rdname getp0
+#' @export
+getp0 = function(y, model = "llt/equal/arma(0,0)", periods = NA){
+    if (any(utf8ToInt(model) == utf8ToInt("?"))){
+        stop("UComp ERROR: Model should not contain any \'?\'!!!")
+    }
+    sys = UCsetup(y, model = model, periods = periods, verbose = FALSE)
+    sys = UCestim(sys)
+    p0 = as.vector(sys$p0)
+    p1 = coef(sys)
+    names(p0) = names(p1)
+    
+    return(p0)
+}
+#' @title size
+#' @description size of vectors or matrices
+#'
+#' @param y matrix, array or vector
+#' 
+#' @author Diego J. Pedregal
+#' 
+#' @noRd
+size = function(y){
+    out = dim(y)
+    if (is.null(out))
+        out = length(y)
+    return(out)
 }
 

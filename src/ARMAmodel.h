@@ -32,7 +32,9 @@ void InvPolyStationary(vec&);
 // Initialising matrices
 void initMatricesArma(int, int, int&, SSmatrix&);
 // Filling changing matrices
-void armaMatrices(vec p, SSmatrix* model, void* userInputs);
+void armaMatrices(vec, SSmatrix*, void*);
+// Filling changing matrices with true parameters
+void armaMatricesTrue(vec, SSmatrix*, void*);
 //#include ARMAmodel.cpp
 /****************************************************
  // ARMA implementations for stationary ARMA models
@@ -156,6 +158,27 @@ void armaMatrices(vec p, SSmatrix* model, void* userInputs){
   }
   // SS matrices
   model->Q(0, 0) = exp(2 * p(0));
+  if (inp->ma > 0){
+    model->R(span(1, inp->ma), 0) = MApoly;
+  }
+  if (inp->ar > 0)
+    model->T(span(0, inp->ar - 1), 0) = -ARpoly;
+}
+// Filling changing matrices with true parameters
+void armaMatricesTrue(vec p, SSmatrix* model, void* userInputs){
+  ARMAinputs* inp = (ARMAinputs*)userInputs;
+  vec ARpoly, MApoly; //, aux, uno(1);
+  // AR and MA stationary polys
+  if (inp->ar > 0){
+    ARpoly = p(span(1, inp->ar));
+    //polyStationary(ARpoly);
+  }
+  if (inp->ma > 0){
+    MApoly = p(span(inp->ar + 1, inp->ar + inp->ma));
+    //polyStationary(MApoly);
+  }
+  // SS matrices
+  model->Q(0, 0) = p(0);
   if (inp->ma > 0){
     model->R(span(1, inp->ma), 0) = MApoly;
   }

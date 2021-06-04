@@ -18,11 +18,12 @@ struct SSinputs{
    // Inputs
    vec y,                 // output data
        p,                 // vector of parameter values
+       pTransform,        // un-concentrated transformed parameters
        p0,                // vector of initial values for parameters
        stdP;              // standard errors of parameters
    mat u;                 // input data
    int h = 24;            // forecast horizon
-   bool cLlik = false;    // concentrated log-likelihood on / off
+   bool cLlik = true;    // concentrated log-likelihood on / off
    // user function implementing the model
    std::function <void (vec, SSmatrix*, void*)> userModel;
    void* userInputs;      // inputs needed by the user model
@@ -34,10 +35,12 @@ struct SSinputs{
        FFor,              // variance of output forecasts
        betaAug,           // betas of augmented KF (including initial states)
        betaAugVar,        // variances of betaAug (idag(iSn))
-       criteria;          // identification criterion
-    mat a,                // estimated states
-        P,                // variances of states
-        eta;              // estimates of transition perturbations
+       criteria,          // identification criterion
+       coef;             // Coefs for coef function
+   mat a,                // estimated states
+       P,                // variances of states
+       eta,              // estimates of transition perturbations
+       covp;             // Covariance of parameters
    SSmatrix system;       // system matrices
    double objFunValue,    // value of objective function at optimum
           outlier;        // critical value for outlier detection
@@ -56,7 +59,8 @@ struct SSinputs{
    cube NOut;             // Needed for outlier detection  
    int d_t = 0,           // colapsing observation
        nonStationaryTerms, // number of non stationary terms in state vector
-       flag;              // output of optimization algorithm
+       flag,              // output of optimization algorithm
+       Iter;              // Number of iterations in estimation
    double innVariance;    // innovations variance
    bool exact = true,     // exact or numerical gradient
         verbose,          // intermediate output verbose on / off
@@ -90,7 +94,7 @@ class SSmodel{
     // Disturbance pass
     void disturb();
     // Validation
-    void validate(bool show);
+    void validate(bool);
     // // Getters and setters
     // Get inputs
     SSinputs getInputs(){
@@ -137,7 +141,7 @@ vec differential(vec p);
 // Analytic and numeric gradient of log-likelihood
 vec gradLlik(vec&, void*, double, int&);
 // Llik hessian (for parameter covariances)
-mat hessLlik(SSinputs*);
+mat hessLlik(void*);
 // True filter/smooth/disturb function
 void auxFilter(unsigned int, SSinputs&);
 // Estimation table
@@ -269,6 +273,8 @@ void SSmodel::forecast(){
       inputs.yFor(span(i)) = inputs.system.Z * at;
       if (k > 0){
         inputs.yFor(span(i)) += inputs.system.D * SSmodel::inputs.u.col(n + i);
+      } else {
+        inputs.yFor(span(i)) += inputs.system.D;
       }
       inputs.FFor(span(i)) = inputs.system.Z * Pt * inputs.system.Z.t() + CHCt;
       KFprediction(false, true, inputs.system.T, RQRt, at, Pt, P0);
@@ -298,23 +304,22 @@ void SSmodel::disturb(){
   SSmodel::filter(2);
 }
 // Validation
-void SSmodel::validate(bool show){
-  // Calculating non-stationary terms
+void SSmodel::validate(bool estimateHess){
+  // Input is inverse of Hessian. Calculated if empty
   uvec auxx;
-  // Preserving gradient at optimum
-  vec gradOpt = inputs.grad;
-  // Hessian and covariance of parameters
+  // Inverse of hessian and covariance of parameters
   int k = inputs.p.n_elem;
   uvec nn = find_finite(inputs.y);
-  mat hess = hessLlik(&inputs) * 0.5 * nn.n_elem;
-  mat iHess(k, k);
-  iHess.fill(datum::nan);
-  if (hess.is_finite()){
-    iHess = pinv(hess);
-  } else {
-    iHess.fill(datum::nan);
+  mat hess = eye(k, k);
+  mat iHess = hess;
+  if (estimateHess){
+      hess = hessLlik(&inputs) * 0.5 * nn.n_elem;
+      iHess.fill(datum::nan);
+      if (hess.is_finite()){
+          iHess = pinv(hess);
+          iHess.diag() = abs(iHess.diag());
+      }
   }
-  inputs.grad = gradOpt;
   inputs.stdP = sqrt(iHess.diag());
   vec t = abs(inputs.p / inputs.stdP), pValue(k);
   pValue = 2 * (1- tCdf(t, nn.n_elem - k));
@@ -359,6 +364,7 @@ void SSmodel::validate(bool show){
   inputs.table.push_back(str);
   inputs.table.push_back("-------------------------------------------------------------\n");
   // Recovering innovations for tests
+  llik(inputs.p, &inputs);
   filter();
   //Second part of table
   inputs.table.push_back("   Summary statistics:\n");
@@ -371,14 +377,14 @@ void SSmodel::validate(bool show){
   }
   inputs.table.push_back("-------------------------------------------------------------\n");
   // Show Table
-  if (show){
+  // if (show){
       // // for (auto i = inputs.table.begin(); i != inputs.table.end(); i++){
       // //   cout << *i << " ";
       // // }
       // for (unsigned int i = 0; i < inputs.table.size(); i++){
       //   Rprintf("%s ", inputs.table[i].c_str());
       // }
-  }
+  // }
 }
 /*************************************************************
  * Implementation of auxiliar functions
@@ -416,7 +422,7 @@ void isStationary(mat& T, uvec& stat){
   nonstat.elem(find(abs(V) * nons > 0)).ones();
   stat = find(1 - nonstat);
 }
-// Update of Mt, Ft abd Kt
+// Update of Mt, Ft and Kt
 void MFK(mat& Pt, mat& Z, mat CHCt, vec& Mt, mat& Ft, vec& Kt){
   Mt = Pt * Z.t();
   Ft = Z * Mt + CHCt;
@@ -453,7 +459,7 @@ void KFcorrection(bool miss, bool colapsed, bool steadyState, bool smooth,
         Finft = Z * Minft;
         if (data->exact || smooth) auxFinf.row(t) = Finft;
         if (Finft(0, 0) > 1e-8){
-           Mt = Pt * Z.t();
+          Mt = Pt * Z.t();
           Ft = Z * Mt + CHCt;
           iFinft = 1 / Finft(0, 0);
           iFt = iFinft;
@@ -551,7 +557,7 @@ double llik(vec& p, void* opt_data){
     }
     // Correction
     KFcorrection(miss, colapsed, steadyState, data->exact, data, CHCt,
-                 Finft, vt, 0, Ft, iFt, at, Pt, Pinft, Kt, t, auxFinf, auxKinf);
+                 Finft, vt, data->system.D(0, 0), Ft, iFt, at, Pt, Pinft, Kt, t, auxFinf, auxKinf);
     // llik calculation
     if (!miss && t < n)
       llikCompute(colapsed, Finft, vt, Ft, iFt, v2F, logF, llikValue);
@@ -868,13 +874,19 @@ vec gradLlik(vec& p, void* opt_data, double llikValue, int& nFuns){
   return grad;
 }
 // Llik hessian (for parameter covariances)
-mat hessLlik(SSinputs* inputs){
+mat hessLlik(void* optData){
+  SSinputs* inputs = (SSinputs*)optData;
   uword nPar = inputs->p.n_elem;
   vec grad(nPar), p0 = inputs->p, inc(nPar);
   mat Hess(nPar, nPar);
   vec grad0 = inputs->grad;
   inc.fill(1e-5);
-  double llikValue2 = 0, llikValue0 = inputs->objFunValue;
+  double llikValue2 = 0, llikValue0;  // = inputs->objFunValue;
+  if (inputs->augmented){
+    llikValue0 = llikAug(p0, inputs);
+  } else {
+    llikValue0 = llik(p0, inputs);
+  }
   Hess.fill(0);
   for (uword i = 0; i < nPar; i++){
     p0 = inputs->p;
@@ -940,13 +952,13 @@ void auxFilter(unsigned int smooth, SSinputs& data){
   RQRt = data.system.R * data.system.Q * data.system.R.t();
   CHCt = data.system.C * data.system.H * data.system.C.t();
   // Inputs part
-  rowvec Dt;
+  rowvec Dt(n);
   if (k > 0){
     int nn = data.betaAug.n_rows;
     data.system.D = data.betaAug.rows(nn - k, nn - 1).t();
     Dt = data.system.D * data.u;
   } else {
-    Dt.zeros(n);
+    Dt.fill(data.system.D(0));
   }
   KFinit(data.system.T, RQRt, ns, at, Pt, Pinft);
   data.v = zeros(n);
@@ -1020,7 +1032,6 @@ void auxFilter(unsigned int smooth, SSinputs& data){
       data.PEnd = Pt;
       data.aEnd = at;
     }
-    
   }
   // Smoothing loop
   data.F = data_F;   // For final normalization of innovations
@@ -1149,13 +1160,14 @@ void auxFilter(unsigned int smooth, SSinputs& data){
     // KF did not colapse
     nTrue = n - nMiss - 1 - data.system.T.n_rows;
   }
+  double innVar = data.innVariance;
   if (data.cLlik){         // Concentrated Likelihood
-    data.innVariance = v2F(0, 0) / nTrue;
+    innVar = v2F(0, 0) / nTrue;
   }
   data.y = data.y.rows(0, ny - 1);
-  data_F *= data.innVariance;
-  data.P *= data.innVariance;
-  data.FFor *= data.innVariance; // * scale;
+  data_F *= innVar;
+  data.P *= innVar;
+  data.FFor *= innVar; // * scale;
   // Cleaning innovations
   if ((uword)data.d_t < n - 10){
     data.v(span(0, data.d_t)).fill(datum::nan);

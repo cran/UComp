@@ -12,11 +12,16 @@ UCestim(sys)
 \value{
 The same input object with the appropriate fields 
 filled in, in particular:
-\item{p}{Estimated parameters}
+\itemize{
+\item{p}{Estimated transformed parameters}
 \item{v}{Estimated innovations (white noise in correctly specified models)}
-\item{yFor}{Forecasted values of output}
-\item{yForV}{Variance of forecasted values of output}
+\item{yFor}{Forecast values of output}
+\item{yForV}{Variance of forecast values of output}
 \item{criteria}{Value of criteria for estimated model}
+\item{covp}{Covariance matrix of estimated transformed parameters}
+\item{grad}{Gradient of log-likelihood at the optimum}
+\item{iter}{Estimation iterations}
+}
 }
 \description{
 Estimates and forecasts UC models
@@ -24,6 +29,26 @@ Estimates and forecasts UC models
 \details{
 \code{UCestim} estimates and forecasts a time series using an
 UC model.
+The optimization method is a BFGS quasi-Newton algorithm with a 
+backtracking line search using Armijo conditions.
+Parameter names in output table are the following:
+\itemize{
+\item{Damping:}{Damping factor for DT trend.}
+\item{Level:}{Variance of level disturbance.}
+\item{Slope:}{Variance of slope disturbance.}
+\item{Rho(#):}{Damping factor of cycle #.}
+\item{Period(#):}{Estimated period of cycle #.}
+\item{Var(#):}{Variance of cycle #.}
+\item{Seas(#)}{Seasonal harmonic with period #.}
+\item{Irregular:}{Variance of irregular component.}
+\item{AR(#):}{AR parameter of lag #.}
+\item{MA(#):}{MA parameter of lag #.}
+\item{AO#:}{Additive outlier in observation #.}
+\item{LS#:}{Level shift outlier in observation #.}
+\item{SC#:}{Slope change outlier in observation #.}
+\item{Beta(#):}{Beta parameter of input #.}
+}
+
 Standard methods applicable to UComp objects are print, summary, plot,
 fitted, residuals, logLik, AIC, BIC, coef, predict, tsdiag.
 }

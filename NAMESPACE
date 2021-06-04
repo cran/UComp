@@ -21,9 +21,8 @@ export(UCmodel)
 export(UCsetup)
 export(UCsmooth)
 export(UCvalidate)
+export(getp0)
 useDynLib(UComp, .registration=TRUE)
 importFrom(Rcpp, evalCpp)
 import(stats)
 import(utils)
-
-

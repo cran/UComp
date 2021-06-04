@@ -19,7 +19,7 @@ SEXP UCompC(SEXP commands, SEXP ys, SEXP us, SEXP models, SEXP periodss, SEXP rh
             SEXP p0s, SEXP vs, SEXP yFitVs, SEXP nonStationaryTermss,
             SEXP rubbish3s, SEXP harmonicss, SEXP criterias, SEXP cycleLimitss, 
             SEXP betass, SEXP typeOutlierss){
-    
+
     // setbuf(stdout, NULL);
     // Converting R inputs to C++
     string command = CHAR(STRING_ELT(commands, 0));
@@ -99,6 +99,7 @@ SEXP UCompC(SEXP commands, SEXP ys, SEXP us, SEXP models, SEXP periodss, SEXP rh
     if (aux.has_nan()){
         inputsSS.outlier = 0;
     }
+    inputsSS.Iter = rubbish(6);
     inputsSS.verbose = verbose;
     inputsSS.estimOk = estimOk;
     inputsSS.nonStationaryTerms = nonStationaryTerms;
@@ -132,13 +133,14 @@ SEXP UCompC(SEXP commands, SEXP ys, SEXP us, SEXP models, SEXP periodss, SEXP rh
         inputs = sysBSM.SSmodel::getInputs();
         inputs2 = sysBSM.getInputs();
         vec harmonicsVec = conv_to<vec>::from(inputs2.harmonics);
-        vec rubbish(4);
+        vec rubbish(6);
         mat rubbish2(inputs.p.n_elem, 3),
-            rubbish3(5, 2),
+            rubbish3(6, 2),
             betas(inputs.betaAug.n_rows, 2);
         rubbish(0) = inputs.d_t;
         rubbish(1) = inputs.innVariance;
         rubbish(2) = inputs.objFunValue;
+        rubbish(5) = inputs.Iter;
         rubbish2.col(0) = inputs.grad;
         rubbish2.col(1) = inputs2.constPar;
         rubbish2.col(2) = inputs2.typePar;
@@ -149,11 +151,11 @@ SEXP UCompC(SEXP commands, SEXP ys, SEXP us, SEXP models, SEXP periodss, SEXP rh
         inputsBSM.harmonics = conv_to<uvec>::from(harmonics);
         betas.col(0) = inputs.betaAug;
         betas.col(1) = inputs.betaAugVar;
-        
+        mat pars = join_horiz(inputs.p, inputs.pTransform);
         // inputs.yFor.print("yFor");
         // Converting back to R
-        return List::create(Named("p") = inputs.p,
-                            Named("p0") = inputs.p0,
+        return List::create(Named("p") = pars,
+                            Named("p0") = inputs2.p0Return,
                             Named("model") = inputs2.model,
                             Named("yFor") = inputs.yFor,
                             Named("periods") = inputs2.periods,
@@ -176,7 +178,9 @@ SEXP UCompC(SEXP commands, SEXP ys, SEXP us, SEXP models, SEXP periodss, SEXP rh
         inputs = sysBSM.SSmodel::getInputs();
         // Converting back to R
         return List::create(Named("table") = inputs.table,
-                            Named("v") = inputs.v);
+                            Named("v") = inputs.v,
+                            Named("covp") = inputs.covp,
+                            Named("coef") = inputs.coef);
     } else if (command == "filter" || command == "smooth" || command == "disturb"){
         sysBSM.setSystemMatrices();
         if (command == "filter"){
@@ -205,6 +209,12 @@ SEXP UCompC(SEXP commands, SEXP ys, SEXP us, SEXP models, SEXP periodss, SEXP rh
         return List::create(Named("comp") = inputs2.comp,
                             Named("compV") = inputs2.compV,
                             Named("m") = inputs2.comp.n_rows);
+    } else if (command == "createSystem"){
+        // Values to return
+        inputs2 = sysBSM.getInputs();
+        // Converting back to R
+        return List::create(Named("p0Return") = inputs2.p0Return,
+                            Named("parNames") = inputs2.parNames);
     }
     return List::create(Named("void") = datum::nan);
 }

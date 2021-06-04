@@ -26,7 +26,9 @@ T removeNans(T, int&);
 mat lag(vec, vec);
 // Chop a string according to substring
 void chopString(string, string, vector<string>&);
-  
+// Issuing errors
+void myError(const char*, bool);
+
 /**********************
  Function implementations
  **********************/
@@ -105,6 +107,17 @@ void chopString(string str, string sub, vector<string>& out) {
     pos = str.find(sub, pos + 1);
     out.push_back(str.substr(pos0 + 1, pos - pos0 - 1));
   } while(pos != string::npos);
+}
+// Issuing errors
+void myError(const char* msg, bool R){
+    vec p(3);
+    //if (R){
+      //Rf_error(msg);
+      //Rcerr << msg << endl;
+    //} else {
+        Rprintf("%s", msg);
+        p = p(4) * 2;
+    //}
 }
 
 

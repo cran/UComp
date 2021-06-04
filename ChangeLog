@@ -1,0 +1,15 @@
+Changes from version 2.1.2 to 2.2
+ * New function getp0 to get initial conditions of parameters
+ * Output table of UCvalidate changed to show parameters and their asymptotic s.e. in the original parameter space
+ * Many bugs fixed. Among them the most important are NaNs in covariance of parameters
+ * New fields added to UComp objects: covariance matrix of estimates (covp); number of iterations in estimation (iter)
+ * Zero components not return to make plot(model) prittier.
+ * Labels added to estimated states.
+ * Documentation improved.
+ * Sales time series removed.
+ * Predict function extended to prediction intervals
+
+
+
+
+

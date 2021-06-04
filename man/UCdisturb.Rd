@@ -15,13 +15,13 @@ filled in, in particular:
 \item{yFit}{Fitted values of output}
 \item{yFitV}{Variance of fitted values of output}
 \item{a}{State estimates}
-\item{P}{Variance of state estimates}
+\item{P}{Variance of state estimates (diagonal of covariance matrices)}
 \item{eta}{State perturbations estimates}
 \item{eps}{Observed perturbations estimates}
 }
 \description{
 Runs the Disturbance Smoother for UC models
-Standard methods applicable to UComp objects are print, summary, plot,
+Standard methods applicable to \code{UComp} objects are print, summary, plot,
 fitted, residuals, logLik, AIC, BIC, coef, predict, tsdiag.
 }
 \examples{

@@ -3,6 +3,26 @@
 #'
 #' @details \code{UCestim} estimates and forecasts a time series using an
 #' UC model.
+#' The optimization method is a BFGS quasi-Newton algorithm with a 
+#' backtracking line search using Armijo conditions.
+#' Parameter names in output table are the following:
+#' \itemize{
+#' \item{Damping:}{Damping factor for DT trend.}
+#' \item{Level:}{Variance of level disturbance.}
+#' \item{Slope:}{Variance of slope disturbance.}
+#' \item{Rho(#):}{Damping factor of cycle #.}
+#' \item{Period(#):}{Estimated period of cycle #.}
+#' \item{Var(#):}{Variance of cycle #.}
+#' \item{Seas(#)}{Seasonal harmonic with period #.}
+#' \item{Irregular:}{Variance of irregular component.}
+#' \item{AR(#):}{AR parameter of lag #.}
+#' \item{MA(#):}{MA parameter of lag #.}
+#' \item{AO#:}{Additive outlier in observation #.}
+#' \item{LS#:}{Level shift outlier in observation #.}
+#' \item{SC#:}{Slope change outlier in observation #.}
+#' \item{Beta(#):}{Beta parameter of input #.}
+#' }
+#' 
 #' Standard methods applicable to UComp objects are print, summary, plot,
 #' fitted, residuals, logLik, AIC, BIC, coef, predict, tsdiag.
 #'
@@ -10,11 +30,16 @@
 #' 
 #' @return The same input object with the appropriate fields 
 #' filled in, in particular:
-#' \item{p}{Estimated parameters}
+#' \itemize{
+#' \item{p}{Estimated transformed parameters}
 #' \item{v}{Estimated innovations (white noise in correctly specified models)}
-#' \item{yFor}{Forecasted values of output}
-#' \item{yForV}{Variance of forecasted values of output}
+#' \item{yFor}{Forecast values of output}
+#' \item{yForV}{Variance of forecast values of output}
 #' \item{criteria}{Value of criteria for estimated model}
+#' \item{covp}{Covariance matrix of estimated transformed parameters}
+#' \item{grad}{Gradient of log-likelihood at the optimum}
+#' \item{iter}{Estimation iterations}
+#' }
 #' 
 #' @author Diego J. Pedregal
 #' 
@@ -28,12 +53,11 @@
 #' @rdname UCestim
 #' @export
 UCestim = function(sys){
-    # Clear variables to make new estimation
     sys$table = NA
     sys$hidden$constPar = NA
     # Estimation
-    rubbish = c(sys$hidden$d_t, sys$hidden$innVariance, sys$hidden$objFunValue, sys$cLlik, sys$outlier, sys$arma)
-    rubbish2 = cbind(sys$hidden$grad, sys$hidden$constPar, sys$hidden$typePar)
+    rubbish = c(sys$hidden$d_t, sys$hidden$innVariance, sys$hidden$objFunValue, TRUE, sys$outlier, sys$arma, sys$iter)
+    rubbish2 = cbind(sys$grad, sys$hidden$constPar, sys$hidden$typePar)
     rubbish3 = cbind(sys$hidden$ns, sys$hidden$nPar)
     if (is.ts(sys$u)){
         u = as.numeric(sys$u)
@@ -48,7 +72,7 @@ UCestim = function(sys){
     }
     if (is.ts(sys$y)){
         output = UCompC("estimate", as.numeric(sys$y), u, sys$model, sys$periods, sys$rhos,
-                    sys$h, sys$tTest, sys$criterion, sys$p, rubbish2, rubbish, sys$verbose, 
+                    sys$h, sys$tTest, sys$criterion, sys$hidden$truePar, rubbish2, rubbish, sys$verbose, 
                     sys$stepwise, sys$hidden$estimOk, sys$p0, sys$v, sys$yFitV,
                     sys$hidden$nonStationaryTerms, rubbish3, sys$hidden$harmonics,
                     as.vector(sys$criteria), sys$hidden$cycleLimits, 
@@ -64,7 +88,7 @@ UCestim = function(sys){
         }
     } else {
         output = UCompC("estimate", sys$y, u, sys$model, sys$periods, sys$rhos,
-                        sys$h, sys$tTest, sys$criterion, sys$p, rubbish2, rubbish, sys$verbose, 
+                        sys$h, sys$tTest, sys$criterion, sys$hidden$truePar, rubbish2, rubbish, sys$verbose, 
                         sys$stepwise, sys$hidden$estimOk, sys$p0, sys$v, sys$yFitV,
                         sys$hidden$nonStationaryTerms, rubbish3, sys$hidden$harmonics,
                         as.vector(sys$criteria), sys$hidden$cycleLimits,
@@ -76,18 +100,19 @@ UCestim = function(sys){
             sys$yForV = output$yForV
         }
     }
-    # Converte to R list
-    sys$p = output$p
+    # Convert to R list
+    #sys$p = output$p[, 2]
+    sys$hidden$truePar = output$p[, 1]
     sys$p0 = output$p0
     # sys$stdP = output$stdP
     if (grepl("?", sys$model, fixed = TRUE)){
         sys$model = output$model
     }
-    # sys$hidden$grad = output$grad
+    # sys$grad = output$grad
     # sys$hidden$constPar = output$constPar
-    n = length(sys$p)
+    n = length(sys$hidden$truePar)
     rubbish2 = matrix(output$rubbish2, n, 3)
-    sys$hidden$grad = rubbish2[, 1]
+    sys$grad = rubbish2[, 1]
     sys$hidden$constPar = rubbish2[, 2]
     sys$hidden$typePar = rubbish2[, 3]
     sys$hidden$cycleLimits = matrix(output$cycleLimits, 
@@ -95,6 +120,7 @@ UCestim = function(sys){
     sys$hidden$d_t = output$rubbish[1]
     sys$hidden$innVariance = output$rubbish[2]
     sys$hidden$objFunValue = output$rubbish[3]
+    sys$iter = output$rubbish[6]
     betas = matrix(output$betas, length(output$betas) / 2, 2)
     sys$hidden$beta = betas[, 1]
     sys$hidden$betaV = betas[, 2]
@@ -104,23 +130,25 @@ UCestim = function(sys){
     sys$hidden$nonStationaryTerms = output$nonStationaryTerms
     # sys$hidden$ns = output$ns
     # sys$hidden$nPar = output$nPar
-    rubbish3 = matrix(output$rubbish3, 5, 2)
+    rubbish3 = matrix(output$rubbish3, 6, 2)
     sys$hidden$ns = rubbish3[, 1]
     sys$hidden$nPar = rubbish3[, 2]
     sys$hidden$harmonics = output$harmonics
     criteria = output$criteria;
     sys$criteria = matrix(criteria, 1, 4)
     colnames(sys$criteria) = c("LLIK", "AIC", "BIC", "AICc")
+    sys$u = output$u
     if (!is.na(sys$outlier)){
         k = length(output$u) / nu
         nOut = k - kInitial
         if (nOut > 0){
             sys$u = matrix(output$u, k, nu)
-            sys$hidden$typeOutliers = matrix(NA, nOut, 2)
-            sys$hidden$typeOutliers[, 1] = c(output$typeOutliers);
-            for (i in 1 : nOut){
-                sys$hidden$typeOutliers[i, 2] = min(which(sys$u[kInitial + i, ] == 1))
-            }
+            sys$hidden$typeOutliers = output$typeOutliers
+            # sys$hidden$typeOutliers = matrix(NA, nOut, 2)
+            # sys$hidden$typeOutliers[, 1] = c(output$typeOutliers);
+            # for (i in 1 : nOut){
+            #     sys$hidden$typeOutliers[i, 2] = min(which(sys$u[kInitial + i, ] == 1))
+            # }
         }
     }
     return(sys)

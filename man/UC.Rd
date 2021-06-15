@@ -76,41 +76,41 @@ An object of class \code{UComp}. It is a list with fields including all the inpu
 
 After running \code{UCmodel} or \code{UCestim}:
 \itemize{
-\item{p}{Estimated parameters}
-\item{v}{Estimated innovations (white noise in correctly specified models)}
-\item{yFor}{Forecasted values of output}
-\item{yForV}{Variance of forecasted values of output}
-\item{criteria}{Value of criteria for estimated model}
-\item{iter}{Number of iterations in estimation}
-\item{grad}{Gradient at estimated parameters}
-\item{covp}{Covariance matrix of parameters}
+\item p:        Estimated parameters
+\item v:        Estimated innovations (white noise in correctly specified models)
+\item yFor:     Forecasted values of output
+\item yForV:    Variance of forecasted values of output
+\item criteria: Value of criteria for estimated model
+\item iter:     Number of iterations in estimation
+\item grad:     Gradient at estimated parameters
+\item covp:     Covariance matrix of parameters
 }
 
 After running \code{UCvalidate}:
 \itemize{
-\item{table}{Estimation and validation table}
+\item table: Estimation and validation table
 }
 
 After running \code{UCcomponents}:
 \itemize{
-\item{comp}{Estimated components in matrix form}
-\item{compV}{Estimated components variance in matrix form}
+\item comp:  Estimated components in matrix form
+\item compV: Estimated components variance in matrix form
 }
 
 After running \code{UCfilter}, \code{UCsmooth} or  \code{UCdisturb}:
 \itemize{
-\item{yFit}{Fitted values of output}
-\item{yFitV}{Variance of fitted values of output}
-\item{a}{State estimates}
-\item{P}{Variance of state estimates}
-\item{aFor}{Forecasts of states}
-\item{PFor}{Forecasts of states variances}
+\item yFit:  Fitted values of output
+\item yFitV: Variance of fitted values of output
+\item a:     State estimates
+\item P:     Variance of state estimates
+\item aFor:  Forecasts of states
+\item PFor:  Forecasts of states variances
 }
 
 After running \code{UCdisturb}:
 \itemize{
-\item{eta}{State perturbations estimates}
-\item{eps}{Observed perturbations estimates}
+\item eta: State perturbations estimates
+\item eps: Observed perturbations estimates
 }
 }
 \description{

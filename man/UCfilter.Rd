@@ -12,10 +12,12 @@ UCfilter(sys)
 \value{
 The same input object with the appropriate fields 
 filled in, in particular:
-\item{yFit}{Fitted values of output}
-\item{yFitV}{Variance of fitted values of output}
-\item{a}{State estimates}
-\item{P}{Variance of state estimates (diagonal of covariance matrices)}
+\itemize{
+\item yFit:  Fitted values of output
+\item yFitV: Variance of fitted values of output
+\item a:     State estimates
+\item P:     Variance of state estimates (diagonal of covariance matrices)
+}
 }
 \description{
 Runs the Kalman Filter for UC models
@@ -23,7 +25,7 @@ Standard methods applicable to \code{UComp} objects are print, summary, plot,
 fitted, residuals, logLik, AIC, BIC, coef, predict, tsdiag.
 }
 \examples{
-m1 <- UC(log(AirPassengers))
+m1 <- UC(log(sales))
 m1 <- UCfilter(m1)
 }
 \seealso{

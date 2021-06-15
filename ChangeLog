@@ -1,3 +1,6 @@
+Changes from version 2.2 to 2.2.1
+ * Help documentation improved
+ * Bugs fixed
 Changes from version 2.1.2 to 2.2
  * New function getp0 to get initial conditions of parameters
  * Output table of UCvalidate changed to show parameters and their asymptotic s.e. in the original parameter space

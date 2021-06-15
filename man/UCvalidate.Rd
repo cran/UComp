@@ -14,7 +14,9 @@ UCvalidate(sys, printScreen = TRUE)
 \value{
 The same input object with the appropriate fields 
 filled in, in particular:
-\item{table}{Estimation and validation table}
+\itemize{
+\item table: Estimation and validation table
+}
 }
 \description{
 Shows a table of estimation and diagnostics results for UC models.

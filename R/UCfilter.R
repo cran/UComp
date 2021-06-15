@@ -18,7 +18,8 @@ filter_ = function(sys, command){
     } else {
         u = sys$u
     }
-    rubbish = c(sys$hidden$d_t, sys$hidden$innVariance, sys$hidden$objFunValue, TRUE, sys$outlier, sys$arma, sys$iter)
+    rubbish = c(sys$hidden$d_t, sys$hidden$innVariance, sys$hidden$objFunValue, TRUE, 
+                sys$outlier, sys$arma, sys$iter, sys$hidden$seas)
     rubbish2 = cbind(sys$grad, sys$hidden$constPar, sys$hidden$typePar)
     rubbish3 = cbind(sys$hidden$ns, sys$hidden$nPar)
     output = UCompC(command, y, u, sys$model, sys$periods, sys$rhos,
@@ -128,10 +129,12 @@ filter_ = function(sys, command){
 #' 
 #' @return The same input object with the appropriate fields 
 #' filled in, in particular:
-#' \item{yFit}{Fitted values of output}
-#' \item{yFitV}{Variance of fitted values of output}
-#' \item{a}{State estimates}
-#' \item{P}{Variance of state estimates (diagonal of covariance matrices)}
+#' \itemize{
+#' \item yFit:  Fitted values of output
+#' \item yFitV: Variance of fitted values of output
+#' \item a:     State estimates
+#' \item P:     Variance of state estimates (diagonal of covariance matrices)
+#' }
 #' 
 #' @author Diego J. Pedregal
 #' 
@@ -140,7 +143,7 @@ filter_ = function(sys, command){
 #'          \code{\link{UChp}}
 #'          
 #' @examples
-#' m1 <- UC(log(AirPassengers))
+#' m1 <- UC(log(sales))
 #' m1 <- UCfilter(m1)
 #' @rdname UCfilter
 #' @export
@@ -157,10 +160,12 @@ UCfilter = function(sys){
 #' 
 #' @return The same input object with the appropriate fields 
 #' filled in, in particular:
-#' \item{yFit}{Fitted values of output}
-#' \item{yFitV}{Variance of fitted values of output}
-#' \item{a}{State estimates}
-#' \item{P}{Variance of state estimates (diagonal of covariance matrices)}
+#' \itemize{
+#' \item yFit:  Fitted values of output
+#' \item yFitV: Variance of fitted values of output
+#' \item a:     State estimates
+#' \item P:     Variance of state estimates (diagonal of covariance matrices)
+#' }
 #' 
 #' @author Diego J. Pedregal
 #' 
@@ -186,12 +191,14 @@ UCsmooth = function(sys){
 #' 
 #' @return The same input object with the appropriate fields 
 #' filled in, in particular:
-#' \item{yFit}{Fitted values of output}
-#' \item{yFitV}{Variance of fitted values of output}
-#' \item{a}{State estimates}
-#' \item{P}{Variance of state estimates (diagonal of covariance matrices)}
-#' \item{eta}{State perturbations estimates}
-#' \item{eps}{Observed perturbations estimates}
+#' \itemize{
+#' \item yFit:  Fitted values of output
+#' \item yFitV: Variance of fitted values of output
+#' \item a:     State estimates
+#' \item P:     Variance of state estimates (diagonal of covariance matrices)
+#' \item eta:   State perturbations estimates
+#' \item eps:   Observed perturbations estimates
+#' }
 #' 
 #' @author Diego J. Pedregal
 #' 

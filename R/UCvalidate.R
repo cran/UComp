@@ -18,7 +18,9 @@
 #' 
 #' @return The same input object with the appropriate fields 
 #' filled in, in particular:
-#' \item{table}{Estimation and validation table}
+#' \itemize{
+#' \item table: Estimation and validation table
+#' }
 #' 
 #' @author Diego J. Pedregal
 #' 
@@ -51,7 +53,8 @@ UCvalidate = function(sys, printScreen = TRUE){
     # Convert to R list
     #sys$periods = sys$hidden$periods0
     #sys$rhos = sys$hidden$rhos0
-    rubbish = c(sys$hidden$d_t, sys$hidden$innVariance, sys$hidden$objFunValue, TRUE, sys$outlier, sys$arma, sys$iter)
+    rubbish = c(sys$hidden$d_t, sys$hidden$innVariance, sys$hidden$objFunValue, TRUE, 
+                sys$outlier, sys$arma, sys$iter, sys$hidden$seas)
     rubbish2 = cbind(sys$grad, sys$hidden$constPar, sys$hidden$typePar)
     rubbish3 = cbind(sys$hidden$ns, sys$hidden$nPar)
     output = UCompC("validate", y, u, sys$model, sys$periods, sys$rhos,

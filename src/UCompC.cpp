@@ -107,6 +107,7 @@ SEXP UCompC(SEXP commands, SEXP ys, SEXP us, SEXP models, SEXP periodss, SEXP rh
     inputsSS.betaAug = betas.col(0);
     inputsSS.betaAugVar = betas.col(1);
 
+    inputsBSM.seas = rubbish(7);
     inputsBSM.stepwise = stepwise;
     inputsBSM.ns = rubbish3.col(0);
     inputsBSM.nPar = rubbish3.col(1);

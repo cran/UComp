@@ -50,6 +50,7 @@ noModel = function(model, periods){
 #' specified. The following are valid examples with different meanings: 48, 48?, -48, -48?,
 #' 48+60, -48+60, -48-60, 48-60, 48+60?, -48+60?, -48-60?, 48-60?.
 #' }
+#' 
 #' @param outlier critical level of outlier tests. If NA it does not carry out any 
 #' outlier detection (default). A positive value indicates the critical minimum
 #' t test for outlier detection in any model during identification. Three types of outliers are
@@ -73,41 +74,41 @@ noModel = function(model, periods){
 #' 
 #' After running \code{UCmodel} or \code{UCestim}:
 #' \itemize{
-#' \item{p}{Estimated parameters}
-#' \item{v}{Estimated innovations (white noise in correctly specified models)}
-#' \item{yFor}{Forecasted values of output}
-#' \item{yForV}{Variance of forecasted values of output}
-#' \item{criteria}{Value of criteria for estimated model}
-#' \item{iter}{Number of iterations in estimation}
-#' \item{grad}{Gradient at estimated parameters}
-#' \item{covp}{Covariance matrix of parameters}
+#' \item p:        Estimated parameters
+#' \item v:        Estimated innovations (white noise in correctly specified models)
+#' \item yFor:     Forecasted values of output
+#' \item yForV:    Variance of forecasted values of output
+#' \item criteria: Value of criteria for estimated model
+#' \item iter:     Number of iterations in estimation
+#' \item grad:     Gradient at estimated parameters
+#' \item covp:     Covariance matrix of parameters
 #' }
 #' 
 #' After running \code{UCvalidate}:
 #' \itemize{
-#' \item{table}{Estimation and validation table}
+#' \item table: Estimation and validation table
 #' }
 #' 
 #' After running \code{UCcomponents}:
 #' \itemize{
-#' \item{comp}{Estimated components in matrix form}
-#' \item{compV}{Estimated components variance in matrix form}
+#' \item comp:  Estimated components in matrix form
+#' \item compV: Estimated components variance in matrix form
 #' }
 #' 
 #' After running \code{UCfilter}, \code{UCsmooth} or  \code{UCdisturb}:
 #' \itemize{
-#' \item{yFit}{Fitted values of output}
-#' \item{yFitV}{Variance of fitted values of output}
-#' \item{a}{State estimates}
-#' \item{P}{Variance of state estimates}
-#' \item{aFor}{Forecasts of states}
-#' \item{PFor}{Forecasts of states variances}
+#' \item yFit:  Fitted values of output
+#' \item yFitV: Variance of fitted values of output
+#' \item a:     State estimates
+#' \item P:     Variance of state estimates
+#' \item aFor:  Forecasts of states
+#' \item PFor:  Forecasts of states variances
 #' }
 #' 
 #' After running \code{UCdisturb}:
 #' \itemize{
-#' \item{eta}{State perturbations estimates}
-#' \item{eps}{Observed perturbations estimates}
+#' \item eta: State perturbations estimates
+#' \item eps: Observed perturbations estimates
 #' }
 #' 
 #' Standard methods applicable to UComp objects are print, summary, plot,
@@ -287,7 +288,7 @@ UCsetup = function(y, u = NULL, model = "?/none/?/?", h = NA, outlier = NA, tTes
                eta = NA,
                eps = NA,
                table = NA,
-               iter = NA,
+               iter = 0,
                # Other less important
                arma =  arma,
                outlier = -abs(outlier),
@@ -314,7 +315,8 @@ UCsetup = function(y, u = NULL, model = "?/none/?/?", h = NA, outlier = NA, tTes
                              typeOutliers = matrix(-1, 1, 2),
                              truePar = p,
                              beta = NA,
-                             betaV = NA))
+                             betaV = NA,
+                             seas = frequency(y)))
     return(structure(out, class = "UComp"))
 }
 
@@ -338,41 +340,41 @@ UCsetup = function(y, u = NULL, model = "?/none/?/?", h = NA, outlier = NA, tTes
 #' 
 #' After running \code{UCmodel} or \code{UCestim}:
 #' \itemize{
-#' \item{p}{Estimated parameters}
-#' \item{v}{Estimated innovations (white noise in correctly specified models)}
-#' \item{yFor}{Forecasted values of output}
-#' \item{yForV}{Variance of forecasted values of output}
-#' \item{criteria}{Value of criteria for estimated model}
-#' \item{iter}{Number of iterations in estimation}
-#' \item{grad}{Gradient at estimated parameters}
-#' \item{covp}{Covariance matrix of parameters}
+#' \item p:        Estimated parameters
+#' \item v:        Estimated innovations (white noise in correctly specified models)
+#' \item yFor:     Forecasted values of output
+#' \item yForV:    Variance of forecasted values of output
+#' \item criteria: Value of criteria for estimated model
+#' \item iter:     Number of iterations in estimation
+#' \item grad:     Gradient at estimated parameters
+#' \item covp:     Covariance matrix of parameters
 #' }
 #' 
 #' After running \code{UCvalidate}:
 #' \itemize{
-#' \item{table}{Estimation and validation table}
+#' \item table: Estimation and validation table
 #' }
 #' 
 #' After running \code{UCcomponents}:
 #' \itemize{
-#' \item{comp}{Estimated components in matrix form}
-#' \item{compV}{Estimated components variance in matrix form}
+#' \item comp:  Estimated components in matrix form
+#' \item compV: Estimated components variance in matrix form
 #' }
 #' 
 #' After running \code{UCfilter}, \code{UCsmooth} or  \code{UCdisturb}:
 #' \itemize{
-#' \item{yFit}{Fitted values of output}
-#' \item{yFitV}{Variance of fitted values of output}
-#' \item{a}{State estimates}
-#' \item{P}{Variance of state estimates}
-#' \item{aFor}{Forecasts of states}
-#' \item{PFor}{Forecasts of states variances}
+#' \item yFit:  Fitted values of output
+#' \item yFitV: Variance of fitted values of output
+#' \item a:     State estimates
+#' \item P:     Variance of state estimates
+#' \item aFor:  Forecasts of states
+#' \item PFor:  Forecasts of states variances
 #' }
 #' 
 #' After running \code{UCdisturb}:
 #' \itemize{
-#' \item{eta}{State perturbations estimates}
-#' \item{eps}{Observed perturbations estimates}
+#' \item eta: State perturbations estimates
+#' \item eps: Observed perturbations estimates
 #' }
 #' 
 #' @author Diego J. Pedregal
@@ -417,41 +419,41 @@ UCmodel = function(y, u = NULL, model = "?/none/?/?", h = NA, outlier = NA, tTes
 #' 
 #' After running \code{UCmodel} or \code{UCestim}:
 #' \itemize{
-#' \item{p}{Estimated parameters}
-#' \item{v}{Estimated innovations (white noise in correctly specified models)}
-#' \item{yFor}{Forecasted values of output}
-#' \item{yForV}{Variance of forecasted values of output}
-#' \item{criteria}{Value of criteria for estimated model}
-#' \item{iter}{Number of iterations in estimation}
-#' \item{grad}{Gradient at estimated parameters}
-#' \item{covp}{Covariance matrix of parameters}
+#' \item p:        Estimated parameters
+#' \item v:        Estimated innovations (white noise in correctly specified models)
+#' \item yFor:     Forecasted values of output
+#' \item yForV:    Variance of forecasted values of output
+#' \item criteria: Value of criteria for estimated model
+#' \item iter:     Number of iterations in estimation
+#' \item grad:     Gradient at estimated parameters
+#' \item covp:     Covariance matrix of parameters
 #' }
 #' 
 #' After running \code{UCvalidate}:
 #' \itemize{
-#' \item{table}{Estimation and validation table}
+#' \item table: Estimation and validation table
 #' }
 #' 
 #' After running \code{UCcomponents}:
 #' \itemize{
-#' \item{comp}{Estimated components in matrix form}
-#' \item{compV}{Estimated components variance in matrix form}
+#' \item comp:  Estimated components in matrix form
+#' \item compV: Estimated components variance in matrix form
 #' }
 #' 
 #' After running \code{UCfilter}, \code{UCsmooth} or  \code{UCdisturb}:
 #' \itemize{
-#' \item{yFit}{Fitted values of output}
-#' \item{yFitV}{Variance of fitted values of output}
-#' \item{a}{State estimates}
-#' \item{P}{Variance of state estimates}
-#' \item{aFor}{Forecasts of states}
-#' \item{PFor}{Forecasts of states variances}
+#' \item yFit:  Fitted values of output
+#' \item yFitV: Variance of fitted values of output
+#' \item a:     State estimates
+#' \item P:     Variance of state estimates
+#' \item aFor:  Forecasts of states
+#' \item PFor:  Forecasts of states variances
 #' }
 #' 
 #' After running \code{UCdisturb}:
 #' \itemize{
-#' \item{eta}{State perturbations estimates}
-#' \item{eps}{Observed perturbations estimates}
+#' \item eta: State perturbations estimates
+#' \item eps: Observed perturbations estimates
 #' }
 #' 
 #' @seealso \code{\link{UC}}, \code{\link{UCvalidate}}, \code{\link{UCfilter}}, \code{\link{UCsmooth}}, 

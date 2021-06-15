@@ -253,7 +253,6 @@ coef.UComp = function(object, ...){
 #' y <- log(AirPassengers)
 #' m1 <- UCmodel(y, model = "llt/eq/arma(0,0)")
 #' f1 <- predict(m1)
-#' @noRd
 #' @export 
 predict.UComp = function(object, newdata = NULL, n.ahead = NULL, level = 0.95, ...){
     cnst = qt(level + (1 - level) / 2, length(object$y) - length(object$p))
@@ -370,7 +369,8 @@ getp0 = function(y, model = "llt/equal/arma(0,0)", periods = NA){
 #' 
 #' @author Diego J. Pedregal
 #' 
-#' @noRd
+#' @rdname size
+#' @export
 size = function(y){
     out = dim(y)
     if (is.null(out))

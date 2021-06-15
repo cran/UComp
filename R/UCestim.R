@@ -7,20 +7,21 @@
 #' backtracking line search using Armijo conditions.
 #' Parameter names in output table are the following:
 #' \itemize{
-#' \item{Damping:}{Damping factor for DT trend.}
-#' \item{Level:}{Variance of level disturbance.}
-#' \item{Slope:}{Variance of slope disturbance.}
-#' \item{Rho(#):}{Damping factor of cycle #.}
-#' \item{Period(#):}{Estimated period of cycle #.}
-#' \item{Var(#):}{Variance of cycle #.}
-#' \item{Seas(#)}{Seasonal harmonic with period #.}
-#' \item{Irregular:}{Variance of irregular component.}
-#' \item{AR(#):}{AR parameter of lag #.}
-#' \item{MA(#):}{MA parameter of lag #.}
-#' \item{AO#:}{Additive outlier in observation #.}
-#' \item{LS#:}{Level shift outlier in observation #.}
-#' \item{SC#:}{Slope change outlier in observation #.}
-#' \item{Beta(#):}{Beta parameter of input #.}
+#' \item Damping:   Damping factor for DT trend.
+#' \item Level:     Variance of level disturbance.
+#' \item Slope:     Variance of slope disturbance.
+#' \item Rho(#):    Damping factor of cycle #.
+#' \item Period(#): Estimated period of cycle #.
+#' \item Var(#):    Variance of cycle #.
+#' \item Seas(#):   Seasonal harmonic with period #.
+#' \item Irregular: Variance of irregular component.
+#' \item AR(#):     AR parameter of lag #.
+#' \item MA(#):     MA parameter of lag #.
+#' \item AO#:       Additive outlier in observation #.
+#' \item LS#:       Level shift outlier in observation #.
+#' \item SC#:       Slope change outlier in observation #.
+#' \item Beta(#):   Beta parameter of input #.
+#' \item Cnst:      Constant.
 #' }
 #' 
 #' Standard methods applicable to UComp objects are print, summary, plot,
@@ -31,14 +32,14 @@
 #' @return The same input object with the appropriate fields 
 #' filled in, in particular:
 #' \itemize{
-#' \item{p}{Estimated transformed parameters}
-#' \item{v}{Estimated innovations (white noise in correctly specified models)}
-#' \item{yFor}{Forecast values of output}
-#' \item{yForV}{Variance of forecast values of output}
-#' \item{criteria}{Value of criteria for estimated model}
-#' \item{covp}{Covariance matrix of estimated transformed parameters}
-#' \item{grad}{Gradient of log-likelihood at the optimum}
-#' \item{iter}{Estimation iterations}
+#' \item p:        Estimated transformed parameters
+#' \item v:        Estimated innovations (white noise in correctly specified models)
+#' \item yFor:     Forecast values of output
+#' \item yForV:    Variance of forecast values of output
+#' \item criteria: Value of criteria for estimated model
+#' \item covp:     Covariance matrix of estimated transformed parameters
+#' \item grad:     Gradient of log-likelihood at the optimum
+#' \item iter:     Estimation iterations
 #' }
 #' 
 #' @author Diego J. Pedregal
@@ -56,7 +57,8 @@ UCestim = function(sys){
     sys$table = NA
     sys$hidden$constPar = NA
     # Estimation
-    rubbish = c(sys$hidden$d_t, sys$hidden$innVariance, sys$hidden$objFunValue, TRUE, sys$outlier, sys$arma, sys$iter)
+    rubbish = c(sys$hidden$d_t, sys$hidden$innVariance, sys$hidden$objFunValue, TRUE, 
+                sys$outlier, sys$arma, sys$iter, sys$hidden$seas)
     rubbish2 = cbind(sys$grad, sys$hidden$constPar, sys$hidden$typePar)
     rubbish3 = cbind(sys$hidden$ns, sys$hidden$nPar)
     if (is.ts(sys$u)){

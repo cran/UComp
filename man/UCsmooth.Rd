@@ -12,10 +12,12 @@ UCsmooth(sys)
 \value{
 The same input object with the appropriate fields 
 filled in, in particular:
-\item{yFit}{Fitted values of output}
-\item{yFitV}{Variance of fitted values of output}
-\item{a}{State estimates}
-\item{P}{Variance of state estimates (diagonal of covariance matrices)}
+\itemize{
+\item yFit:  Fitted values of output
+\item yFitV: Variance of fitted values of output
+\item a:     State estimates
+\item P:     Variance of state estimates (diagonal of covariance matrices)
+}
 }
 \description{
 Runs the Fixed Interval Smoother for UC models

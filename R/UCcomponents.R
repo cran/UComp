@@ -7,8 +7,10 @@
 #' 
 #' @return The same input object with the appropriate fields 
 #' filled in, in particular:
-#' \item{comp}{Estimated components in matrix form}
-#' \item{compV}{Estimated components variance in matrix form}
+#' \itemize{
+#' \item comp:  Estimated components in matrix form
+#' \item compV: Estimated components variance in matrix form
+#' }
 #' 
 #' @author Diego J. Pedregal
 #' 
@@ -32,7 +34,8 @@ UCcomponents= function(sys){
     } else {
         u = sys$u
     }
-    rubbish = c(sys$hidden$d_t, sys$hidden$innVariance, sys$hidden$objFunValue, TRUE, sys$outlier, sys$arma, sys$iter)
+    rubbish = c(sys$hidden$d_t, sys$hidden$innVariance, sys$hidden$objFunValue, TRUE, 
+                sys$outlier, sys$arma, sys$iter, sys$hidden$seas)
     rubbish2 = cbind(sys$grad, sys$hidden$constPar, sys$hidden$typePar)
     rubbish3 = cbind(sys$hidden$ns, sys$hidden$nPar)
     output = UCompC("components", y, u, sys$model, sys$periods, sys$rhos,

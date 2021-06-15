@@ -12,8 +12,10 @@ UCcomponents(sys)
 \value{
 The same input object with the appropriate fields 
 filled in, in particular:
-\item{comp}{Estimated components in matrix form}
-\item{compV}{Estimated components variance in matrix form}
+\itemize{
+\item comp:  Estimated components in matrix form
+\item compV: Estimated components variance in matrix form
+}
 }
 \description{
 Estimates unobserved components of UC models

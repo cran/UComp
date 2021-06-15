@@ -35,7 +35,7 @@ int quasiNewton(std::function <double (vec& x, void* inputs)> objFun,
   int nx = xNew.n_elem, flag = 0, nOverallFuns, nFuns = 0, nIter = 0;
   double objOld, alpha_i;
   vec gradOld(nx), xOld = xNew, d(nx); 
-  vec crit(3); crit(0) = 1e-8; crit(1) = 1e-12; crit(2) = 1000;
+  vec crit(3); crit(0) = 1e-8; crit(1) = 1e-12; crit(2) = 1000; crit(3) = 1000; crit(4) = 20000;
   
   iHess.eye(nx, nx);
   objNew = objFun(xNew, inputs);

@@ -1,6 +1,6 @@
-fa314d2e77167aba4e2675e88de67c0c *ChangeLog
-36561d8e8bb90dda39feacb4e9456556 *DESCRIPTION
-83eeed7e37712bd85a25d33475d7efad *NAMESPACE
+20bbafbf32790c3a204fc445be684768 *ChangeLog
+657bcf1d82021471062840234543a09b *DESCRIPTION
+3cfd650debecbf19f21f9f7fb13be85c *NAMESPACE
 fa59e5346be172f781efc1cde20f1a45 *R/RcppExports.R
 1437902e0fcda47cca4253c8a1f22d56 *R/UCS3functions.R
 e8dbd08f355b5e28c272af3b6337ba77 *R/UCcomponents.R
@@ -11,7 +11,7 @@ e1dd7208599caf457687a4f71eae491a *R/UComp-package.R
 1ab20e5b37dfdfea10f6a59c679d2fb6 *R/UCvalidate.R
 5443e7307426f65a6d5c271233f7fb33 *R/data.R
 a38631b1fd1c1d97434b6a18cfa7d5bd *R/onAttach.R
-444e0f5e69f65434750aad900be56d9f *build/vignette.rds
+08b610d72b3c90e5d9d3d47a2b9b11e4 *build/vignette.rds
 e8f43622922e80497871813fe4e65483 *data/OECDgdp.rda
 1b3124eeaef25f868c942258640ad9cc *data/USgdp.rda
 7186eece495084d6523740a15ca78615 *data/airpas.rda
@@ -19,7 +19,7 @@ e8f43622922e80497871813fe4e65483 *data/OECDgdp.rda
 9ac0d7ca00d230912741a2834ffcac94 *data/sales.rda
 e83b1cc2f8ae6f6d238c35332aa667a0 *inst/doc/SpanishIpi.R
 b4553a8afe33be18280ec724b113f328 *inst/doc/SpanishIpi.Rmd
-d3b6d4fe82ea5a54dcdd89fbad02c173 *inst/doc/SpanishIpi.html
+0cac31b22d4afbe50f8aa0109c852fa7 *inst/doc/SpanishIpi.html
 99cbfde39cfa72c9c6eec7332a9a392a *man/AIC.UComp.Rd
 78233bb399bef4208f6fa8bbb084e7b7 *man/BIC.UComp.Rd
 dfb86686af41f65312549576ea145d39 *man/OECDgdp.Rd
@@ -42,13 +42,13 @@ b9686cc1bfb5e7e49c69b6a56f0ca5f6 *man/airpas.Rd
 40b18c06e22c0d8c4f6f148ac1aa53e8 *man/sales.Rd
 ca2f5be99f9e62923a6dfecc89a83f28 *man/size.Rd
 46f869693e8929f89823873343069b34 *src/ARMAmodel.h
-75bd4fdfc474e931f38faa5e67c5fe2e *src/BSMmodel.h
+5ace4b229035ff0d458508c38063bebd *src/BSMmodel.h
 4845a55f332cc53181b7f6da4ec6544e *src/DJPTtools.h
 61059660eb073d93e00e8ee054237071 *src/Makevars
 61059660eb073d93e00e8ee054237071 *src/Makevars.win
 dd447a9d3a3fa704461b8d435684ad2c *src/RcppExports.cpp
-6bb1a622ac065be13dee713f9a570db4 *src/SSpace.h
+82922400cafe77244b6b232e22337d87 *src/SSpace.h
 fdeae5d796faeb3f4780a4ec9a0bb00b *src/UCompC.cpp
-5862ab0a56a49e2b4fb05ecbebe8484b *src/optim.h
+c3a22b3249e9c857980d2934a3ff2a7d *src/optim.h
 632e78509066b5e749af923ad7cdf1f0 *src/stats.h
 b4553a8afe33be18280ec724b113f328 *vignettes/SpanishIpi.Rmd

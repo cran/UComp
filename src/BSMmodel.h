@@ -141,6 +141,7 @@ BSMmodel::BSMmodel(SSinputs data, BSMinputs inputs) : SSmodel(data){
     setModel(inputs.model, inputs.periods, inputs.rhos, true);
     if (!reserve.has_nan())
         this->inputs.constPar = reserve;
+    inputs.harmonics = regspace<uvec>(0, inputs.periods.n_elem - 1);
 }
 // Set model (part of constructor)
 void BSMmodel::setModel(string model, vec periods, vec rhos, bool runFromConstructor){
@@ -291,7 +292,7 @@ void BSMmodel::checkModel(){
             printed = true;
         }
         SSinputs old = SSmodel::inputs;
-        setModel(inputs.model, inputs.periods, inputs.rhos, false);
+        setModel(inputs.model, inputs.periods(inputs.harmonics), inputs.rhos(inputs.harmonics), false);
         bool VERBOSE = old.verbose;
         SSmodel::inputs.verbose = false;
         SSmodel::inputs.p0(1 + add) = -6.2325;
@@ -323,7 +324,7 @@ void BSMmodel::checkModel(){
             printed = true;
         }
         SSinputs old = SSmodel::inputs;
-        setModel(inputs.model, inputs.periods, inputs.rhos, false);
+        setModel(inputs.model, inputs.periods(inputs.harmonics), inputs.rhos(inputs.harmonics), false);
         bool VERBOSE = old.verbose;
         SSmodel::inputs.verbose = false;
         SSmodel::inputs.p0(0 + add) = -6.2325;
@@ -423,6 +424,7 @@ void BSMmodel::estim(vec p){
     inputs.rhos = inputs.rhos(aux);
     inputs.periods = inputs.periods(aux);
     SSmodel::inputs.v.reset();
+    inputs.harmonics = regspace<uvec>(0, inputs.periods.n_elem - 1);
 }
 // Estimation of a family of UC models
 void BSMmodel::estimUCs(vector <string> allUCModels, uvec harmonics, 
@@ -442,6 +444,7 @@ void BSMmodel::estimUCs(vector <string> allUCModels, uvec harmonics,
         oldMinCrit = 1e12;
     }
     minCrit = oldMinCrit;
+    bool inputsArma = inputs.arma;
     for (unsigned int i = 0; i < allUCModels.size(); i++){
         SSmodel::inputs.p0 = -9999.9;
         bool arma = inputs.arma;
@@ -482,6 +485,7 @@ void BSMmodel::estimUCs(vector <string> allUCModels, uvec harmonics,
     }
     SSmodel::inputs = bestSS;
     inputs = bestBSM;
+    inputs.arma = inputsArma;
 }
 // Identification
 void BSMmodel::ident(string show){
@@ -1363,6 +1367,9 @@ void BSMmodel::validate(){
     for (int i = 0; i < nu; i++){
         col2.push_back("  ");
     }
+    // for (unsigned i = 0; i < p.n_elem; i++){
+    //     sprintf(str, "%s:  \n", inputs.parNames.at(i).c_str());
+    // }
     for (unsigned i = 0; i < p.n_elem; i++){
         if (abs(col1(i)) > 1e-3 || abs(col1(i)) == 0 || abs(col1(i)) == 1){
             if (isnan(pValue(i))){

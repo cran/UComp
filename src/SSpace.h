@@ -339,7 +339,7 @@ void SSmodel::validate(bool estimateHess){
   inputs.table.push_back("            Param       S.E.        |T|    P-value     |Grad| \n");
   inputs.table.push_back("-------------------------------------------------------------\n");
   for (unsigned int i = 0; i < inputs.p.n_rows; i++){
-    sprintf(str, "%10.4f %10.4f %10.4f %10.4f %10.6f\n", table0(i, 0), table0(i, 1), table0(i, 2), table0(i, 3), abs(inputs.grad(i)));
+    sprintf(str, "       %10.4f %10.4f %10.4f %10.4f %10.6f\n", table0(i, 0), table0(i, 1), table0(i, 2), table0(i, 3), abs(inputs.grad(i)));
     inputs.table.push_back(str);
   }
   // Adding inputs betas
@@ -351,7 +351,7 @@ void SSmodel::validate(bool estimateHess){
     vec tBetas = betas / stdBetas;
     vec pValueBetas = 2 * (1- tCdf(tBetas, nn.n_elem - k));
     for (int i = 0; i < nu; i++){
-      sprintf(str, "%10.4f %10.4f %10.4f %10.4f %10.6f\n", betas(i), 
+      sprintf(str, "       %10.4f %10.4f %10.4f %10.4f %10.6f\n", betas(i), 
               stdBetas(i), tBetas(i), pValueBetas(i), datum::nan);
       inputs.table.push_back(str);
     }

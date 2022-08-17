@@ -1,3 +1,5 @@
+Changes from version 2.2.2 to 2.2.3
+ * Citation to the Journal of Statistical Software paper included
 Changes from version 2.2.1 to 2.2.2
  * Arma identification deactivated in some weird cases
  * minor bugs fixed

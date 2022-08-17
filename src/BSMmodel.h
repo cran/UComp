@@ -139,7 +139,7 @@ BSMmodel::BSMmodel(SSinputs data, BSMinputs inputs) : SSmodel(data){
     this->inputs.cycleLimits(0, 0) = datum::nan;
     vec reserve = inputs.constPar;
     setModel(inputs.model, inputs.periods, inputs.rhos, true);
-    if (!reserve.has_nan())
+    if (!reserve.has_nan() && reserve.n_elem > 0)
         this->inputs.constPar = reserve;
     inputs.harmonics = regspace<uvec>(0, inputs.periods.n_elem - 1);
 }

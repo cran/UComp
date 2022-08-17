@@ -13,6 +13,8 @@
 #' and automatic detection of outliers are also possible.
 #' 
 #' @section References:
+#' Pedregal DJ (2022). Automatic Identification and Forecasting of Structural Unobserved Components Models with UComp. Journal of Statistical Software, 103, 9, 1-33. Doi: 10.18637/jss.v103.i09.
+#' 
 #' Harvey AC (1989). Forecasting, Structural Time Series Models and the Kalman Filter. Cam- bridge University Press.
 #' 
 #' de Jong, P. & Penzer, J. (1998). Diagnosing Shocks in Time Series, Journal of the American Statistical Association, 93, 442, 796-806.

@@ -6,6 +6,11 @@
 
 using namespace Rcpp;
 
+#ifdef RCPP_USE_GLOBAL_ROSTREAM
+Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
+Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
+#endif
+
 // UCompC
 SEXP UCompC(SEXP commands, SEXP ys, SEXP us, SEXP models, SEXP periodss, SEXP rhoss, SEXP hs, SEXP tTests, SEXP criterions, SEXP ps, SEXP rubbish2s, SEXP rubbishs, SEXP verboses, SEXP stepwises, SEXP estimOks, SEXP p0s, SEXP vs, SEXP yFitVs, SEXP nonStationaryTermss, SEXP rubbish3s, SEXP harmonicss, SEXP criterias, SEXP cycleLimitss, SEXP betass, SEXP typeOutlierss);
 RcppExport SEXP _UComp_UCompC(SEXP commandsSEXP, SEXP ysSEXP, SEXP usSEXP, SEXP modelsSEXP, SEXP periodssSEXP, SEXP rhossSEXP, SEXP hsSEXP, SEXP tTestsSEXP, SEXP criterionsSEXP, SEXP psSEXP, SEXP rubbish2sSEXP, SEXP rubbishsSEXP, SEXP verbosesSEXP, SEXP stepwisesSEXP, SEXP estimOksSEXP, SEXP p0sSEXP, SEXP vsSEXP, SEXP yFitVsSEXP, SEXP nonStationaryTermssSEXP, SEXP rubbish3sSEXP, SEXP harmonicssSEXP, SEXP criteriasSEXP, SEXP cycleLimitssSEXP, SEXP betassSEXP, SEXP typeOutlierssSEXP) {

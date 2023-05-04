@@ -8,15 +8,20 @@ UCsetup(
   y,
   u = NULL,
   model = "?/none/?/?",
-  h = NA,
-  outlier = NA,
+  h = 9999,
+  lambda = 1,
+  outlier = 9999,
   tTest = FALSE,
   criterion = "aic",
   periods = NA,
   verbose = FALSE,
   stepwise = FALSE,
   p0 = -9999.9,
-  arma = TRUE
+  arma = FALSE,
+  TVP = NULL,
+  trendOptions = "none/rw/llt/dt",
+  seasonalOptions = "none/equal/different",
+  irregularOptions = "none/arma(0,0)"
 )
 }
 \arguments{
@@ -32,7 +37,7 @@ to be forecast, matrix \code{u} should contain future values for inputs.}
 model for each component. It allows two formats "trend/seasonal/irregular" or 
 "trend/cycle/seasonal/irregular". The possibilities available for each component are:
 \itemize{
-\item Trend: ? / none / rw / irw / llt / dt; 
+\item Trend: ? / none / rw / irw / llt / dt / td; 
 
 \item Seasonal: ? / none / equal / different;
 
@@ -47,6 +52,8 @@ specified. The following are valid examples with different meanings: 48, 48?, -4
 }}
 
 \item{h}{forecast horizon. If the model includes inputs h is not used, the lenght of u is used instead.}
+
+\item{lambda}{Box-Cox transformation lambda, NULL for automatic estimation}
 
 \item{outlier}{critical level of outlier tests. If NA it does not carry out any 
 outlier detection (default). A positive value indicates the critical minimum
@@ -67,6 +74,14 @@ The number of models to search for is reduced, depending on the result of this t
 \item{p0}{initial parameter vector for optimisation search.}
 
 \item{arma}{check for arma models for irregular components (TRUE / FALSE).}
+
+\item{TVP}{vector of zeros and ones to indicate TVP parameters.}
+
+\item{trendOptions}{trend models to select amongst (e.g., "rw/llt").}
+
+\item{seasonalOptions}{seasonal models to select amongst (e.g., "none/differentt").}
+
+\item{irregularOptions}{irregular models to select amongst (e.g., "none/arma(0,1)").}
 }
 \value{
 An object of class \code{UComp}. It is a list with fields including all the inputs and
@@ -79,7 +94,7 @@ After running \code{UCmodel} or \code{UCestim}:
 \item p:        Estimated parameters
 \item v:        Estimated innovations (white noise in correctly specified models)
 \item yFor:     Forecasted values of output
-\item yForV:    Variance of forecasted values of output
+\item yForV:    Variance of forecasts
 \item criteria: Value of criteria for estimated model
 \item iter:     Number of iterations in estimation
 \item grad:     Gradient at estimated parameters
@@ -93,14 +108,14 @@ After running \code{UCvalidate}:
 
 After running \code{UCcomponents}:
 \itemize{
-\item comp:  Estimated components in matrix form
-\item compV: Estimated components variance in matrix form
+\item comp:      Estimated components in matrix form
+\item compV:     Estimated components variance in matrix form
 }
 
 After running \code{UCfilter}, \code{UCsmooth} or  \code{UCdisturb}:
 \itemize{
 \item yFit:  Fitted values of output
-\item yFitV: Variance of fitted values of output
+\item yFitV: Estimated fitted values variance
 \item a:     State estimates
 \item P:     Variance of state estimates
 \item aFor:  Forecasts of states
@@ -123,12 +138,14 @@ Sets up UC general univariate models
 See help of \code{UC}.
 }
 \examples{
-y <- log(sales)
+\dontrun{
+y <- log(AirPassengers)
 m1 <- UCsetup(y)
 m1 <- UCsetup(y, outlier = 4)
 m1 <- UCsetup(y, model = "llt/equal/arma(0,0)")
 m1 <- UCsetup(y, model = "?/?/?/?")
 m1 <- UCsetup(y, model = "llt/?/equal/?", outlier = 4)
+}
 }
 \seealso{
 \code{\link{UC}}, \code{\link{UCmodel}}, \code{\link{UCvalidate}}, \code{\link{UCfilter}}, \code{\link{UCsmooth}}, 

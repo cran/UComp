@@ -23,8 +23,10 @@ Standard methods applicable to UComp objects are print, summary, plot,
 fitted, residuals, logLik, AIC, BIC, coef, predict, tsdiag.
 }
 \examples{
-m1 <- UC(log(sales))
+\dontrun{
+m1 <- UC(log(AirPassengers))
 m1 <- UCcomponents(m1)
+}
 }
 \seealso{
 \code{\link{UC}}, \code{\link{UCmodel}}, \code{\link{UCvalidate}}, \code{\link{UCfilter}}, 

@@ -12,8 +12,8 @@ Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
 // UCompC
-SEXP UCompC(SEXP commands, SEXP ys, SEXP us, SEXP models, SEXP periodss, SEXP rhoss, SEXP hs, SEXP tTests, SEXP criterions, SEXP ps, SEXP rubbish2s, SEXP rubbishs, SEXP verboses, SEXP stepwises, SEXP estimOks, SEXP p0s, SEXP vs, SEXP yFitVs, SEXP nonStationaryTermss, SEXP rubbish3s, SEXP harmonicss, SEXP criterias, SEXP cycleLimitss, SEXP betass, SEXP typeOutlierss);
-RcppExport SEXP _UComp_UCompC(SEXP commandsSEXP, SEXP ysSEXP, SEXP usSEXP, SEXP modelsSEXP, SEXP periodssSEXP, SEXP rhossSEXP, SEXP hsSEXP, SEXP tTestsSEXP, SEXP criterionsSEXP, SEXP psSEXP, SEXP rubbish2sSEXP, SEXP rubbishsSEXP, SEXP verbosesSEXP, SEXP stepwisesSEXP, SEXP estimOksSEXP, SEXP p0sSEXP, SEXP vsSEXP, SEXP yFitVsSEXP, SEXP nonStationaryTermssSEXP, SEXP rubbish3sSEXP, SEXP harmonicssSEXP, SEXP criteriasSEXP, SEXP cycleLimitssSEXP, SEXP betassSEXP, SEXP typeOutlierssSEXP) {
+SEXP UCompC(SEXP commands, SEXP ys, SEXP us, SEXP models, SEXP periodss, SEXP rhoss, SEXP hs, SEXP tTests, SEXP criterions, SEXP ps, SEXP rubbish2s, SEXP rubbishs, SEXP verboses, SEXP stepwises, SEXP estimOks, SEXP p0s, SEXP vs, SEXP yFitVs, SEXP nonStationaryTermss, SEXP rubbish3s, SEXP harmonicss, SEXP criterias, SEXP cycleLimitss, SEXP betass, SEXP typeOutlierss, SEXP TVPs, SEXP trendOptionss, SEXP seasonalOptionss, SEXP irregularOptionss);
+RcppExport SEXP _UComp_UCompC(SEXP commandsSEXP, SEXP ysSEXP, SEXP usSEXP, SEXP modelsSEXP, SEXP periodssSEXP, SEXP rhossSEXP, SEXP hsSEXP, SEXP tTestsSEXP, SEXP criterionsSEXP, SEXP psSEXP, SEXP rubbish2sSEXP, SEXP rubbishsSEXP, SEXP verbosesSEXP, SEXP stepwisesSEXP, SEXP estimOksSEXP, SEXP p0sSEXP, SEXP vsSEXP, SEXP yFitVsSEXP, SEXP nonStationaryTermssSEXP, SEXP rubbish3sSEXP, SEXP harmonicssSEXP, SEXP criteriasSEXP, SEXP cycleLimitssSEXP, SEXP betassSEXP, SEXP typeOutlierssSEXP, SEXP TVPsSEXP, SEXP trendOptionssSEXP, SEXP seasonalOptionssSEXP, SEXP irregularOptionssSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -42,13 +42,47 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< SEXP >::type cycleLimitss(cycleLimitssSEXP);
     Rcpp::traits::input_parameter< SEXP >::type betass(betassSEXP);
     Rcpp::traits::input_parameter< SEXP >::type typeOutlierss(typeOutlierssSEXP);
-    rcpp_result_gen = Rcpp::wrap(UCompC(commands, ys, us, models, periodss, rhoss, hs, tTests, criterions, ps, rubbish2s, rubbishs, verboses, stepwises, estimOks, p0s, vs, yFitVs, nonStationaryTermss, rubbish3s, harmonicss, criterias, cycleLimitss, betass, typeOutlierss));
+    Rcpp::traits::input_parameter< SEXP >::type TVPs(TVPsSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type trendOptionss(trendOptionssSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type seasonalOptionss(seasonalOptionssSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type irregularOptionss(irregularOptionssSEXP);
+    rcpp_result_gen = Rcpp::wrap(UCompC(commands, ys, us, models, periodss, rhoss, hs, tTests, criterions, ps, rubbish2s, rubbishs, verboses, stepwises, estimOks, p0s, vs, yFitVs, nonStationaryTermss, rubbish3s, harmonicss, criterias, cycleLimitss, betass, typeOutlierss, TVPs, trendOptionss, seasonalOptionss, irregularOptionss));
+    return rcpp_result_gen;
+END_RCPP
+}
+// ETSc
+SEXP ETSc(SEXP commands, SEXP ys, SEXP us, SEXP models, SEXP ss, SEXP hs, SEXP criterions, SEXP armaIdents, SEXP identAlls, SEXP forIntervalss, SEXP bootstraps, SEXP nSimuls, SEXP verboses, SEXP lambdas, SEXP alphaLs, SEXP betaLs, SEXP gammaLs, SEXP phiLs, SEXP p0s);
+RcppExport SEXP _UComp_ETSc(SEXP commandsSEXP, SEXP ysSEXP, SEXP usSEXP, SEXP modelsSEXP, SEXP ssSEXP, SEXP hsSEXP, SEXP criterionsSEXP, SEXP armaIdentsSEXP, SEXP identAllsSEXP, SEXP forIntervalssSEXP, SEXP bootstrapsSEXP, SEXP nSimulsSEXP, SEXP verbosesSEXP, SEXP lambdasSEXP, SEXP alphaLsSEXP, SEXP betaLsSEXP, SEXP gammaLsSEXP, SEXP phiLsSEXP, SEXP p0sSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type commands(commandsSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type ys(ysSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type us(usSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type models(modelsSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type ss(ssSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type hs(hsSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type criterions(criterionsSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type armaIdents(armaIdentsSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type identAlls(identAllsSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type forIntervalss(forIntervalssSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type bootstraps(bootstrapsSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type nSimuls(nSimulsSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type verboses(verbosesSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type lambdas(lambdasSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type alphaLs(alphaLsSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type betaLs(betaLsSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type gammaLs(gammaLsSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type phiLs(phiLsSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type p0s(p0sSEXP);
+    rcpp_result_gen = Rcpp::wrap(ETSc(commands, ys, us, models, ss, hs, criterions, armaIdents, identAlls, forIntervalss, bootstraps, nSimuls, verboses, lambdas, alphaLs, betaLs, gammaLs, phiLs, p0s));
     return rcpp_result_gen;
 END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_UComp_UCompC", (DL_FUNC) &_UComp_UCompC, 25},
+    {"_UComp_UCompC", (DL_FUNC) &_UComp_UCompC, 29},
+    {"_UComp_ETSc", (DL_FUNC) &_UComp_ETSc, 19},
     {NULL, NULL, 0}
 };
 

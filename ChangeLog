@@ -1,5 +1,15 @@
+Changes from version 3.0.0 to 4.0.0
+ * ETS models a la Hyndman added with same syntax than UC
+ * Multiple diagnostic statistics and other useful tools (tests, zplane, etc.)
+ * Some tools added to perform slide forecasting (slide and plotSlide)
+Changes from version 2.2.3 to 3.0.0
+ * Added models: td (trend with fixed slope), linear (seasonal model as in standard BSM)
+ * Time-Varying regression terms for input variables
+ * Box-Cox lambda automatic identification
+ * New inputs trendOptions, seasonalOptions and irregularOptions introduced
+ * Some bugs fixed
 Changes from version 2.2.2 to 2.2.3
- * Citation to the Journal of Statistical Software paper included
+ * minor bugs fixed
 Changes from version 2.2.1 to 2.2.2
  * Arma identification deactivated in some weird cases
  * minor bugs fixed
@@ -16,7 +26,12 @@ Changes from version 2.1.2 to 2.2
  * Documentation improved.
  * Sales time series removed.
  * Predict function extended to prediction intervals
-
+Changes from version 2.2 to 3.0
+ * Random Walk with drift model added
+ * Inputs trendOptions, seasonalOptions, irregularOptions added
+ * Regression with inputs with time varying parameters
+ * Some bugs fixed
+ * Wrapper functions simplified
 
 
 

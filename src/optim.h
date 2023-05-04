@@ -72,6 +72,11 @@ int quasiNewton(std::function <double (vec& x, void* inputs)> objFun,
     // flag = stopCriteria(crit, gradNew, objOld - objNew, nIter, nOverallFuns);
     flag = stopCriteria(crit, mean(abs(gradNew)), abs(objOld - objNew) / abs(objOld), 
                         mean(abs(xOld - xNew) / abs(xOld)), nIter, nOverallFuns);
+    if (flag > 5){
+        objNew = objOld;
+        gradNew = gradOld;
+        xNew = xOld;
+    }
     // Inverse Hessian BFGS update
     if (!flag){
       bfgs(iHess, gradNew - gradOld, xNew - xOld, nx, nIter);
@@ -159,5 +164,3 @@ void lineSearch(std::function <double (vec& x, void* inputs)> objFun,
   //     nFuns -= 1;
   // }
 }
-
-

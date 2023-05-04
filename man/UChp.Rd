@@ -18,8 +18,10 @@ The cycle estimation
 Hodrick-Prescott filter estimation
 }
 \examples{
+\dontrun{
 cycle <- UChp(USgdp)
 plot(cycle)
+}
 }
 \seealso{
 \code{\link{UC}}, \code{\link{UCmodel}}, \code{\link{UCvalidate}}, \code{\link{UCfilter}}, 

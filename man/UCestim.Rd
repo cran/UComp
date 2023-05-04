@@ -16,7 +16,7 @@ filled in, in particular:
 \item p:        Estimated transformed parameters
 \item v:        Estimated innovations (white noise in correctly specified models)
 \item yFor:     Forecast values of output
-\item yForV:    Variance of forecast values of output
+\item yForV:    Forecasted values variance
 \item criteria: Value of criteria for estimated model
 \item covp:     Covariance matrix of estimated transformed parameters
 \item grad:     Gradient of log-likelihood at the optimum
@@ -54,8 +54,10 @@ Standard methods applicable to UComp objects are print, summary, plot,
 fitted, residuals, logLik, AIC, BIC, coef, predict, tsdiag.
 }
 \examples{
+\dontrun{
 m1 <- UCsetup(log(AirPassengers))
 m1 <- UCestim(m1)
+}
 }
 \seealso{
 \code{\link{UC}}, \code{\link{UCmodel}}, \code{\link{UCvalidate}}, \code{\link{UCfilter}}, 

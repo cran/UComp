@@ -34,8 +34,10 @@ of autocorrelation statistic for several lags, the Jarque-Bera gaussianity test,
 standard ratio of variances test.
 }
 \examples{
-m1 <- UC(log(AirPassengers))
+\dontrun{
+m1 <- UC(log(gdp))
 m1 <- UCvalidate(m1)
+}
 }
 \seealso{
 \code{\link{UC}}, \code{\link{UCmodel}}, \code{\link{UCfilter}}, 

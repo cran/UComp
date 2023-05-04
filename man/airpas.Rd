@@ -7,11 +7,11 @@
 \format{
 Time series objects.
 \describe{
-  Monthly data from January 1992 to December 2019
+  Monthly data from 1969
 }
 }
 \source{
-\href{https://www.ine.es}{airpas}
+\href{http://serviciosede.mineco.gob.es/indeco/}{airpas}
 }
 \usage{
 airpas

@@ -8,15 +8,20 @@ UC(
   y,
   u = NULL,
   model = "?/none/?/?",
-  h = NA,
-  outlier = NA,
+  h = 9999,
+  lambda = 1,
+  outlier = 9999,
   tTest = FALSE,
   criterion = "aic",
   periods = NA,
   verbose = FALSE,
   stepwise = FALSE,
   p0 = -9999.9,
-  arma = TRUE
+  arma = TRUE,
+  TVP = NULL,
+  trendOptions = "none/rw/llt/dt",
+  seasonalOptions = "none/equal/different",
+  irregularOptions = "none/arma(0,0)"
 )
 }
 \arguments{
@@ -32,7 +37,7 @@ to be forecast, matrix \code{u} should contain future values for inputs.}
 model for each component. It allows two formats "trend/seasonal/irregular" or 
 "trend/cycle/seasonal/irregular". The possibilities available for each component are:
 \itemize{
-\item Trend: ? / none / rw / irw / llt / dt; 
+\item Trend: ? / none / rw / irw / llt / dt / td; 
 
 \item Seasonal: ? / none / equal / different;
 
@@ -47,6 +52,8 @@ specified. The following are valid examples with different meanings: 48, 48?, -4
 }}
 
 \item{h}{forecast horizon. If the model includes inputs h is not used, the lenght of u is used instead.}
+
+\item{lambda}{Box-Cox transformation lambda, NULL for automatic estimation}
 
 \item{outlier}{critical level of outlier tests. If NA it does not carry out any 
 outlier detection (default). A positive value indicates the critical minimum
@@ -67,6 +74,14 @@ The number of models to search for is reduced, depending on the result of this t
 \item{p0}{initial parameter vector for optimisation search.}
 
 \item{arma}{check for arma models for irregular components (TRUE / FALSE).}
+
+\item{TVP}{vector of zeros and ones to indicate TVP parameters.}
+
+\item{trendOptions}{trend models to select amongst (e.g., "rw/llt").}
+
+\item{seasonalOptions}{seasonal models to select amongst (e.g., "none/differentt").}
+
+\item{irregularOptions}{irregular models to select amongst (e.g., "none/arma(0,1)").}
 }
 \value{
 An object of class \code{UComp}. It is a list with fields including all the inputs and
@@ -79,7 +94,7 @@ After running \code{UCmodel} or \code{UCestim}:
 \item p:        Estimated parameters
 \item v:        Estimated innovations (white noise in correctly specified models)
 \item yFor:     Forecasted values of output
-\item yForV:    Variance of forecasted values of output
+\item yForV:    Forecasted values +- one standard error
 \item criteria: Value of criteria for estimated model
 \item iter:     Number of iterations in estimation
 \item grad:     Gradient at estimated parameters
@@ -127,9 +142,11 @@ Standard methods applicable to UComp objects are print, summary, plot,
 fitted, residuals, logLik, AIC, BIC, coef, predict, tsdiag.
 }
 \examples{
+\dontrun{
 y <- log(AirPassengers)
 m1 <- UC(y)
 m1 <- UC(y, model = "llt/different/arma(0,0)")
+}
 }
 \seealso{
 \code{\link{UC}}, \code{\link{UCvalidate}}, \code{\link{UCfilter}}, \code{\link{UCsmooth}}, 

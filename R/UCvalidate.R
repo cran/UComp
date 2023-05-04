@@ -29,8 +29,10 @@
 #'          \code{\link{UChp}}
 #'          
 #' @examples
-#' m1 <- UC(log(AirPassengers))
+#' \dontrun{
+#' m1 <- UC(log(gdp))
 #' m1 <- UCvalidate(m1)
+#' }
 #' @rdname UCvalidate
 #' @export
 UCvalidate = function(sys, printScreen = TRUE){
@@ -54,7 +56,8 @@ UCvalidate = function(sys, printScreen = TRUE){
     #sys$periods = sys$hidden$periods0
     #sys$rhos = sys$hidden$rhos0
     rubbish = c(sys$hidden$d_t, sys$hidden$innVariance, sys$hidden$objFunValue, TRUE, 
-                sys$outlier, sys$arma, sys$iter, sys$hidden$seas)
+                sys$outlier, sys$arma, sys$iter, sys$hidden$seas, sys$lambda,
+                sys$hidden$MSOE, sys$hidden$PTSnames)
     rubbish2 = cbind(sys$grad, sys$hidden$constPar, sys$hidden$typePar)
     rubbish3 = cbind(sys$hidden$ns, sys$hidden$nPar)
     output = UCompC("validate", y, u, sys$model, sys$periods, sys$rhos,
@@ -62,7 +65,8 @@ UCvalidate = function(sys, printScreen = TRUE){
                     sys$stepwise, sys$hidden$estimOk, sys$p0, sys$v, sys$yFitV,
                     sys$hidden$nonStationaryTerms, rubbish3, sys$hidden$harmonics,
                     as.vector(sys$criteria), sys$hidden$cycleLimits, 
-                    cbind(sys$hidden$beta, sys$hidden$betaV), sys$hidden$typeOutliers)
+                    cbind(sys$hidden$beta, sys$hidden$betaV), sys$hidden$typeOutliers,
+                    sys$TVP, sys$trendOptions, sys$seasonalOptions, sys$irregularOptions)
     sys$table = output$table
     if (is.ts(sys$y)){
         fY = frequency(sys$y)
@@ -79,24 +83,28 @@ UCvalidate = function(sys, printScreen = TRUE){
     sys$p = as.vector(output$coef)
     # Parameter names from table
     nPar = length(sys$p)
-    parNames = rep("", nPar)
-    rowM = 2
-    hyphen = 1
-    i = 1
-    while (hyphen < 4){
-        lineI = sys$table[rowM]
-        if (substr(lineI, 1, 1) == "-"){
-            hyphen = hyphen + 1
-        }
-        if (hyphen > 2 && substr(lineI, 1, 1) != "-"){
-            parNames[i] = substr(lineI, 1, gregexpr(pattern =':', lineI))
-            i = i + 1
-        }
-        rowM = rowM + 1
-    }
-    rownames(sys$covp) = parNames[1 : dim(sys$covp)[1]]
-    colnames(sys$covp) = parNames[1 : dim(sys$covp)[1]]
-    names(sys$p) = parNames[1 : nPar]
+    # parNames = rep("", nPar)
+    # rowM = 2
+    # hyphen = 1
+    # i = 1
+    # while (hyphen < 4){
+    #     lineI = sys$table[rowM]
+    #     if (substr(lineI, 1, 1) == "-"){
+    #         hyphen = hyphen + 1
+    #     }
+    #     if (hyphen > 2 && substr(lineI, 1, 1) != "-"){
+    #         parNames[i] = substr(lineI, 1, gregexpr(pattern =':', lineI))
+    #         i = i + 1
+    #     }
+    #     rowM = rowM + 1
+    # }
+    # rownames(sys$covp) = parNames[1 : dim(sys$covp)[1]]
+    # colnames(sys$covp) = parNames[1 : dim(sys$covp)[1]]
+    # names(sys$p) = parNames[1 : nPar]
+    rownames(sys$covp) = output$parNames[1 : dim(sys$covp)[1]]
+    colnames(sys$covp) = output$parNames[1 : dim(sys$covp)[1]]
+    names(sys$p) = output$parNames[1 : nPar]
+    
     return(sys)
 }
     

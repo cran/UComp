@@ -35,7 +35,7 @@
 #' \item p:        Estimated transformed parameters
 #' \item v:        Estimated innovations (white noise in correctly specified models)
 #' \item yFor:     Forecast values of output
-#' \item yForV:    Variance of forecast values of output
+#' \item yForV:    Forecasted values variance
 #' \item criteria: Value of criteria for estimated model
 #' \item covp:     Covariance matrix of estimated transformed parameters
 #' \item grad:     Gradient of log-likelihood at the optimum
@@ -49,8 +49,10 @@
 #'          \code{\link{UChp}}
 #'          
 #' @examples
+#' \dontrun{
 #' m1 <- UCsetup(log(AirPassengers))
 #' m1 <- UCestim(m1)
+#' }
 #' @rdname UCestim
 #' @export
 UCestim = function(sys){
@@ -58,9 +60,15 @@ UCestim = function(sys){
     sys$hidden$constPar = NA
     # Estimation
     rubbish = c(sys$hidden$d_t, sys$hidden$innVariance, sys$hidden$objFunValue, TRUE, 
-                sys$outlier, sys$arma, sys$iter, sys$hidden$seas)
+                sys$outlier, sys$arma, sys$iter, sys$hidden$seas, sys$lambda,
+                sys$hidden$MSOE, sys$hidden$PTSnames)
     rubbish2 = cbind(sys$grad, sys$hidden$constPar, sys$hidden$typePar)
     rubbish3 = cbind(sys$hidden$ns, sys$hidden$nPar)
+    if (is.ts(sys$y)){
+        y = as.numeric(sys$y)
+    } else {
+        y = sys$y
+    }
     if (is.ts(sys$u)){
         u = as.numeric(sys$u)
     } else {
@@ -72,31 +80,26 @@ UCestim = function(sys){
         nu = length(sys$y) + sys$h
         kInitial = 0
     }
-    if (is.ts(sys$y)){
-        output = UCompC("estimate", as.numeric(sys$y), u, sys$model, sys$periods, sys$rhos,
+    output = UCompC("estimate", y, u, sys$model, sys$periods, sys$rhos,
                     sys$h, sys$tTest, sys$criterion, sys$hidden$truePar, rubbish2, rubbish, sys$verbose, 
                     sys$stepwise, sys$hidden$estimOk, sys$p0, sys$v, sys$yFitV,
                     sys$hidden$nonStationaryTerms, rubbish3, sys$hidden$harmonics,
                     as.vector(sys$criteria), sys$hidden$cycleLimits, 
-                    cbind(sys$hidden$beta, sys$hidden$betaV), sys$hidden$typeOutliers)
+                    cbind(sys$hidden$beta, sys$hidden$betaV), sys$hidden$typeOutliers,
+                    sys$TVP, sys$trendOptions, sys$seasonalOptions, sys$irregularOptions)
+    if (output$model == "error"){
+        sys$model = "error"
+        return(sys);
+    }
+    if (is.ts(sys$y)){
         fY = frequency(sys$y)
         sY = start(sys$y, frequency = fY)
-        # sys$v = ts(output$v, sY, frequency = fY)
-        # sys$vV = ts(output$vV, sY, frequency = fY)
         aux = ts(matrix(NA, length(sys$y) + 1, 1), sY, frequency = fY)
         if (length(output$yFor > 0)){
             sys$yFor = ts(output$yFor, end(aux), frequency = fY)
             sys$yForV = ts(output$yForV, end(aux), frequency = fY)
         }
     } else {
-        output = UCompC("estimate", sys$y, u, sys$model, sys$periods, sys$rhos,
-                        sys$h, sys$tTest, sys$criterion, sys$hidden$truePar, rubbish2, rubbish, sys$verbose, 
-                        sys$stepwise, sys$hidden$estimOk, sys$p0, sys$v, sys$yFitV,
-                        sys$hidden$nonStationaryTerms, rubbish3, sys$hidden$harmonics,
-                        as.vector(sys$criteria), sys$hidden$cycleLimits,
-                        cbind(sys$hidden$beta, sys$hidden$betaV), sys$hidden$typeOutliers)
-        # sys$v = output$v
-        # sys$vV = output$vV
         if (length(output$yFor > 0)){
             sys$yFor = output$yFor
             sys$yForV = output$yForV
@@ -106,12 +109,9 @@ UCestim = function(sys){
     #sys$p = output$p[, 2]
     sys$hidden$truePar = output$p[, 1]
     sys$p0 = output$p0
-    # sys$stdP = output$stdP
     if (grepl("?", sys$model, fixed = TRUE)){
         sys$model = output$model
     }
-    # sys$grad = output$grad
-    # sys$hidden$constPar = output$constPar
     n = length(sys$hidden$truePar)
     rubbish2 = matrix(output$rubbish2, n, 3)
     sys$grad = rubbish2[, 1]
@@ -123,6 +123,8 @@ UCestim = function(sys){
     sys$hidden$innVariance = output$rubbish[2]
     sys$hidden$objFunValue = output$rubbish[3]
     sys$iter = output$rubbish[6]
+    sys$h = output$rubbish[7]
+    sys$lambda = output$rubbish[8]
     betas = matrix(output$betas, length(output$betas) / 2, 2)
     sys$hidden$beta = betas[, 1]
     sys$hidden$betaV = betas[, 2]
@@ -130,9 +132,7 @@ UCestim = function(sys){
     sys$rhos = output$rhos
     sys$hidden$estimOk = output$estimOk
     sys$hidden$nonStationaryTerms = output$nonStationaryTerms
-    # sys$hidden$ns = output$ns
-    # sys$hidden$nPar = output$nPar
-    rubbish3 = matrix(output$rubbish3, 6, 2)
+    rubbish3 = matrix(output$rubbish3, 7, 2)
     sys$hidden$ns = rubbish3[, 1]
     sys$hidden$nPar = rubbish3[, 2]
     sys$hidden$harmonics = output$harmonics
@@ -140,17 +140,13 @@ UCestim = function(sys){
     sys$criteria = matrix(criteria, 1, 4)
     colnames(sys$criteria) = c("LLIK", "AIC", "BIC", "AICc")
     sys$u = output$u
-    if (!is.na(sys$outlier)){
+    if (!is.na(sys$outlier) && !is.null(u)){
+        nu = length(sys$y) + sys$h;
         k = length(output$u) / nu
         nOut = k - kInitial
         if (nOut > 0){
             sys$u = matrix(output$u, k, nu)
             sys$hidden$typeOutliers = output$typeOutliers
-            # sys$hidden$typeOutliers = matrix(NA, nOut, 2)
-            # sys$hidden$typeOutliers[, 1] = c(output$typeOutliers);
-            # for (i in 1 : nOut){
-            #     sys$hidden$typeOutliers[i, 2] = min(which(sys$u[kInitial + i, ] == 1))
-            # }
         }
     }
     return(sys)

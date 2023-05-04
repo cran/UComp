@@ -3,7 +3,7 @@
 \docType{data}
 \name{ch4}
 \alias{ch4}
-\title{Methane concentration at Cape Grim in Australia (ch4).}
+\title{Methane concentration at Cape Grim in Australia}
 \format{
 Time series objects.
 \describe{
@@ -11,7 +11,7 @@ Time series objects.
 }
 }
 \source{
-\href{https://www.csiro.au/en/Research/OandA/Areas/Assessing-our-climate/Latest-greenhouse-gas-data}{CH4 data}
+\href{https://www.csiro.au/en/research/natural-environment/atmosphere/Latest-greenhouse-gas-data}{CH4 data}
 }
 \usage{
 ch4

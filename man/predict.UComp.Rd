@@ -28,9 +28,11 @@ Forecasting using structural Unobseved Components models with prediction interva
 See help of \code{UC}.
 }
 \examples{
+\dontrun{
 y <- log(AirPassengers)
 m1 <- UCmodel(y, model = "llt/eq/arma(0,0)")
 f1 <- predict(m1)
+}
 }
 \seealso{
 \code{\link{UC}}, \code{\link{UCmodel}}, \code{\link{UCvalidate}}, \code{\link{UCfilter}}, \code{\link{UCsmooth}}, 

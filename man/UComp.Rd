@@ -5,31 +5,34 @@
 \alias{UComp}
 \title{UComp}
 \description{
-A package for fast automatic identification of Unobserved Components models
+A package for fast automatic identification of Time series models of several kinds
 }
 \details{
 UComp is a package for time series modelling and forecasting of 
-Unobserved Components models inspired on the structural family due to A.C. 
-Harvey (Basic Structural Model: BSM), enhanced with automatic identification 
-tools by Diego J. Pedregal. The package is designed for automatic identification 
+times series models inspired on different sources:
+     1. the structural Unobserved Components models due to A.C. Harvey (Basic Structural Model: BSM), enhanced with automatic identification 
+tools by Diego J. Pedregal. 
+     2. ExponenTial Smoothing by R.J. Hyndman and colaborators.
+The package is designed for automatic identification 
 among a wide range of possible models for trends, cycles, seasonal and irregular 
-components. The model may include exogenous variables. ARMA irregular components 
+components. The models may include exogenous variables. ARMA irregular components 
 and automatic detection of outliers are also possible.
 }
 \section{References}{
 
-Pedregal DJ (2022). Automatic Identification and Forecasting of Structural Unobserved Components Models with UComp. Journal of Statistical Software, 103, 9, 1-33. Doi: 10.18637/jss.v103.i09.
-
 Harvey AC (1989). Forecasting, Structural Time Series Models and the Kalman Filter. Cam- bridge University Press.
 
-de Jong, P. & Penzer, J. (1998). Diagnosing Shocks in Time Series, Journal of the American Statistical Association, 93, 442, 796-806.
+de Jong, P & Penzer, J (1998). Diagnosing Shocks in Time Series, Journal of the American Statistical Association, 93, 442, 796-806.
 
-Pedregal, D. J., & Young, P. C. (2002). Statistical approaches to modelling and forecasting time series. In M. Clements,
+Pedregal, DJ, & Young, PC (2002). Statistical approaches to modelling and forecasting time series. In M. Clements,
 & D. Hendry (Eds.), Companion to economic forecasting (pp. 69–104). Oxford: Blackwell Publishers.
 
 Durbin J, Koopman SJ (2012). Time Series Analysis by State Space Methods. 38. Oxford University Press.
 
-Proietti T. and Luati A. (2013). Maximum likelihood estimation of time series models: the Kalman filter and beyond, in Handbook of research methods and applications in empirical macroeconomics, ed. Nigar Hashimzade and Michael Thornton, E. Elgar, UK.
+Proietti T and Luati A (2013). Maximum likelihood estimation of time series models: the Kalman filter and beyond, in Handbook of research methods and applications in empirical macroeconomics, ed. Nigar Hashimzade and Michael Thornton, E. Elgar, UK.
+
+Hyndman RJ, Koehler AB, Ord JK and Snyder RD (2008), Forecasting with exponential smoothing, The State Sapce approach,
+Berlin, Springer-Verlag.
 }
 
 \section{Maintainer}{

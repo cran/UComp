@@ -28,9 +28,11 @@ There is no guarantee that the model will converge and selecting initial conditi
 should be used with care.
 }
 \examples{
+\dontrun{
 p0 <- getp0(log(AirPassengers), model = "llt/equal/arma(0,0)")
 p0[1] <- 0  # p0[1] <- NA
 m <- UCmodel(log(AirPassengers), model = "llt/equal/arma(0,0)", p0 = p0)
+}
 }
 \seealso{
 \code{\link{UC}}, \code{\link{UCvalidate}}, \code{\link{UCfilter}}, \code{\link{UCsmooth}}, 

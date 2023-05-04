@@ -12,9 +12,11 @@
 #'          \code{\link{UCdisturb}}, \code{\link{UCcomponents}}
 #'          
 #' @examples
+#' \dontrun{
 #' y <- log(AirPassengers)
 #' m1 <- UCmodel(y, model = "llt/equal/arma(0,0)")
 #' print(m1)
+#' }
 #' @noRd
 #' @export 
 print.UComp = function(x, ...){
@@ -34,9 +36,11 @@ print.UComp = function(x, ...){
 #'          \code{\link{UCdisturb}}, \code{\link{UCcomponents}}
 #'          
 #' @examples
+#' \dontrun{
 #' y <- log(AirPassengers)
 #' m1 <- UCmodel(y, model = "llt/equal/arma(0,0)")
 #' summary(m1)
+#' }
 #' @noRd
 #' @export 
 summary.UComp = function(object, ...){
@@ -56,9 +60,11 @@ summary.UComp = function(object, ...){
 #'          \code{\link{UCdisturb}}, \code{\link{UCcomponents}}
 #'          
 #' @examples
+#' \dontrun{
 #' y <- log(AirPassengers)
 #' m1 <- UCmodel(y, model = "llt/equal/arma(0,0)")
 #' plot(m1)
+#' }
 #' @noRd
 #' @export 
 plot.UComp = function(x, ...){
@@ -86,9 +92,11 @@ plot.UComp = function(x, ...){
 #'          \code{\link{UCdisturb}}, \code{\link{UCcomponents}}
 #'          
 #' @examples
+#' \dontrun{
 #' y <- log(AirPassengers)
 #' m1 <- UCmodel(y, model = "llt/equal/arma(0,0)")
 #' fitted(m1)
+#' }
 #' @noRd
 #' @export 
 fitted.UComp = function(object, ...){
@@ -111,9 +119,11 @@ fitted.UComp = function(object, ...){
 #'          \code{\link{UCdisturb}}, \code{\link{UCcomponents}}
 #'          
 #' @examples
+#' \dontrun{
 #' y <- log(AirPassengers)
 #' m1 <- UCmodel(y, model = "llt/equal/arma(0,0)")
 #' residuals(m1)
+#' }
 #' @noRd
 #' @export 
 residuals.UComp = function(object, ...){
@@ -136,9 +146,11 @@ residuals.UComp = function(object, ...){
 #'          \code{\link{UCdisturb}}, \code{\link{UCcomponents}}
 #'          
 #' @examples
+#' \dontrun{
 #' y <- log(AirPassengers)
 #' m1 <- UCmodel(y, model = "llt/equal/arma(0,0)")
 #' logLik(m1)
+#' }
 #' @noRd
 #' @export 
 logLik.UComp = function(object, ...){
@@ -170,9 +182,11 @@ logLik.UComp = function(object, ...){
 #'          \code{\link{UCdisturb}}, \code{\link{UCcomponents}}
 #'          
 #' @examples
+#' \dontrun{
 #' y <- log(AirPassengers)
 #' m1 <- UCmodel(y, model = "llt/equal/arma(0,0)")
 #' AIC(m1)
+#' }
 #' @export 
 AIC.UComp = function(object, ..., k = 2){
     return(object$criteria[2])
@@ -198,9 +212,11 @@ AIC.UComp = function(object, ..., k = 2){
 #'          \code{\link{UCdisturb}}, \code{\link{UCcomponents}}
 #'          
 #' @examples
+#' \dontrun{
 #' y <- log(AirPassengers)
 #' m1 <- UCmodel(y, model = "llt/equal/arma(0,0)")
 #' BIC(m1)
+#' }
 #' @export 
 BIC.UComp = function(object, ...){
     return(object$criteria[3])
@@ -219,9 +235,11 @@ BIC.UComp = function(object, ...){
 #'          \code{\link{UCdisturb}}, \code{\link{UCcomponents}}
 #'          
 #' @examples
+#' \dontrun{
 #' y <- log(AirPassengers)
 #' m1 <- UCmodel(y, model = "llt/equal/arma(0,0)")
 #' coef(m1)
+#' }
 #' @noRd
 #' @export 
 coef.UComp = function(object, ...){
@@ -250,9 +268,11 @@ coef.UComp = function(object, ...){
 #'          \code{\link{UCdisturb}}, \code{\link{UCcomponents}}
 #'          
 #' @examples
+#' \dontrun{
 #' y <- log(AirPassengers)
 #' m1 <- UCmodel(y, model = "llt/eq/arma(0,0)")
 #' f1 <- predict(m1)
+#' }
 #' @export 
 predict.UComp = function(object, newdata = NULL, n.ahead = NULL, level = 0.95, ...){
     cnst = qt(level + (1 - level) / 2, length(object$y) - length(object$p))
@@ -294,9 +314,11 @@ predict.UComp = function(object, newdata = NULL, n.ahead = NULL, level = 0.95, .
 #'          \code{\link{UCdisturb}}, \code{\link{UCcomponents}}
 #'          
 #' @examples
+#' \dontrun{
 #' y <- log(AirPassengers)
 #' m1 <- UCmodel(y, model = "llt/eq/arma(0,0)")
 #' tsdiag(m1)
+#' }
 #' @noRd
 #' @export 
 tsdiag.UComp = function(object, gof.lag = NULL, ...){
@@ -345,9 +367,11 @@ tsdiag.UComp = function(object, gof.lag = NULL, ...){
 #'          \code{\link{UChp}}
 #'          
 #' @examples
+#' \dontrun{
 #' p0 <- getp0(log(AirPassengers), model = "llt/equal/arma(0,0)")
 #' p0[1] <- 0  # p0[1] <- NA
 #' m <- UCmodel(log(AirPassengers), model = "llt/equal/arma(0,0)", p0 = p0)
+#' }
 #' @rdname getp0
 #' @export
 getp0 = function(y, model = "llt/equal/arma(0,0)", periods = NA){

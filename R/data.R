@@ -49,6 +49,8 @@
 #' }
 "OECDgdp"
 
+#' Methane concentration at Cape Grim in Australia
+#'
 #' Methane concentration at Cape Grim in Australia (ch4).
 #'
 #' @format Time series objects.
@@ -56,7 +58,7 @@
 #'   Monthly data from January 1992 to December 2019
 #' }
 #'
-#' @source \href{https://www.csiro.au/en/Research/OandA/Areas/Assessing-our-climate/Latest-greenhouse-gas-data}{CH4 data}
+#' @source \href{https://www.csiro.au/en/research/natural-environment/atmosphere/Latest-greenhouse-gas-data}{CH4 data}
 #'         
 #' @examples
 #' \dontrun{
@@ -68,16 +70,50 @@
 #' 
 #' Foreign arrivals by air in Spain in thousands of passengers (airpas).
 #'
-#'
 #' @format Time series objects.
 #' \describe{
-#'   Monthly data from January 1992 to December 2019
+#'   Monthly data from 1969
 #' }
 #'
-#' @source \href{https://www.ine.es}{airpas}
+#' @source \href{http://serviciosede.mineco.gob.es/indeco/}{airpas}
 #' 
 #' @examples
 #' \dontrun{
 #'  airpas
 #' }
 "airpas"
+
+#' Spanish GDP
+#'
+#' Quarterly real Spanish Gross Domestic Product (gdp)
+#'
+#' @format Time series objects.
+#' \describe{
+#'   Quarterly since 1995
+#' }
+#'
+#' @source \href{http://serviciosede.mineco.gob.es/indeco/}{gdp}
+#'         
+#' @examples
+#' \dontrun{
+#'  gdp
+#' }
+"gdp"
+
+#' Spanish Industrial Production Index
+#' 
+#' Spanish Industrial Production Index (ipi).
+#'
+#'
+#' @format Objeto time series.
+#' \describe{
+#'   Monthly since 1975
+#' }
+#'
+#' @source \href{http://serviciosede.mineco.gob.es/indeco/}{ipi}
+#' 
+#' @examples
+#' \dontrun{
+#'  ipi
+#' }
+"ipi"

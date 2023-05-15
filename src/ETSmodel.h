@@ -962,10 +962,23 @@ void ETSclass::components(){
     if (m->trend != "N")
         m->compNames += "/Slope";
     if (nu){
+            
+            
+            
+            
+            
+        string auxbeta;
         for (int i = 0; i < (int)m->u.n_rows; i++){
-            snprintf(name, 15, "/Beta(%1.0i)", i + 1);
-            m->compNames += name;
+                auxbeta = to_string(i + 1);
+                snprintf(name, 15, "/Beta(%s)", auxbeta.c_str());
+                m->compNames += name;
         }
+            
+            
+        // for (int i = 0; i < (int)m->u.n_rows; i++){
+        //     snprintf(name, 15, "/Beta(%d)", i + 1);
+        //     m->compNames += name;
+        // }
     }
     if (arma){
         string ar = to_string((int)m->arma(0)),
@@ -2129,28 +2142,48 @@ void covPar(void* optData, vector<string>& parNames, mat& tablePar){
     int count;
     vec aux;
     if (m->u.n_rows > 0){
+        string auxbeta;
         pos += m->u.n_rows;
         for (count = 0; count < (int)m->u.n_rows; count++){
-            snprintf(name, 9, "Beta(%1.0i)", count + 1);
-            parNames.push_back(name);
+                auxbeta = to_string(count + 1);
+                snprintf(name, 9, "Beta(%s)", auxbeta.c_str());
+                parNames.push_back(name);
         }
+        // pos += m->u.n_rows;
+        // for (count = 0; count < (int)m->u.n_rows; count++){
+        //     snprintf(name, 9, "Beta(%d)", count + 1);
+        //     parNames.push_back(name);
+        // }
     }
     if (m->ar.n_elem > 0){
         aux = p.rows(pos, pos + m->ar.n_elem - 1);
         polyStationary(aux);
         p.rows(pos, pos + m->ar.n_elem - 1) = aux;
         pos += m->ar.n_elem;
+        string auxar;
         for (count = 0; count < (int)m->ar.n_elem; count++){
-            snprintf(name, 9, "AR(%1.0i)", count + 1);
-            parNames.push_back(name);
+                auxar = to_string(count + 1);
+                snprintf(name, 9, "AR(%s)", auxar.c_str());
+                parNames.push_back(name);
         }
+        // pos += m->ar.n_elem;
+        // for (count = 0; count < (int)m->ar.n_elem; count++){
+        //     snprintf(name, 9, "AR(%d)", count + 1);
+        //     parNames.push_back(name);
+        // }
     }
     if (m->ma.n_elem > 0){
         aux = p.rows(pos, pos + m->ma.n_elem - 1);
         polyStationary(aux);
         p.rows(pos, pos + m->ma.n_elem - 1) = aux;
+        // for (count = 0; count < (int)m->ma.n_elem; count++){
+        //   snprintf(name, 9, "MA(%d)", count + 1);
+        //   parNames.push_back(name);
+        // }
+        string auxma;
         for (count = 0; count < (int)m->ma.n_elem; count++){
-            snprintf(name, 9, "MA(%1.0i)", count + 1);
+            auxma = to_string(count + 1);
+            snprintf(name, 9, "MA(%s)", auxma.c_str());
             parNames.push_back(name);
         }
     }

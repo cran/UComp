@@ -1,5 +1,5 @@
 b3acfee9e06aceee20e544713a2408da *ChangeLog
-0c1ed3875dd3d1a1be5b46918617b20d *DESCRIPTION
+f394649ce4de140d6de98dbe1b4900b8 *DESCRIPTION
 5c0b4af54656579ee153326da030d9de *NAMESPACE
 cdad265a1d196a1815466cce92f1d858 *R/ETSS3functions.R
 f7967983875113897ab3782088fa34b7 *R/ETScomponents.R
@@ -102,9 +102,9 @@ e39407840f032066e188bcc24fcb03c9 *man/summary.ETS.Rd
 d36358a087111c2e03d4fd569d55925b *man/varTest.Rd
 2cb2f85df466e13c9f1998e769262f30 *man/zplane.Rd
 46f869693e8929f89823873343069b34 *src/ARMAmodel.h
-56221d205e7ffe3ed5ac46c1f2c507f4 *src/BSMmodel.h
+968c779da41bebbb421c6921b5f68129 *src/BSMmodel.h
 c388fd174b5fb958d6cff669eb922181 *src/DJPTtools.h
-b94eeaf6cd12f359d922d24351b242ae *src/ETSmodel.h
+d4f5195b7573264cdc7c13789d24d2c4 *src/ETSmodel.h
 1f1c9459bfd04b8aadd22a2be152d203 *src/Makevars
 1f1c9459bfd04b8aadd22a2be152d203 *src/Makevars.win
 5cbb8648b7b0a567279b23be13072318 *src/RcppExports.cpp

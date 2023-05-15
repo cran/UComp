@@ -2080,17 +2080,17 @@ void BSMclass::parLabels(){
         int count;
         char name[20];
         for (count = 0; count < nCycles; count++){
-            snprintf(name, 20, "Rho(%1.0i)", count + 1);
+            snprintf(name, 20, "Rho(%d)", count + 1);
             inputs.parNames.push_back(name);
         }
         for (count = 0; count < nCycles; count++){
             if (inputs.periods(count) < 0){
-                snprintf(name, 20, "Period(%1.0i)", count + 1);
+                snprintf(name, 20, "Period(%d)", count + 1);
                 inputs.parNames.push_back(name);
             }
         }
         for (count = 0; count < nCycles; count++){
-            snprintf(name, 20, "Var(%1.0i)", count + 1);
+            snprintf(name, 20, "Var(%d)", count + 1);
             inputs.parNames.push_back(name);
         }
     }
@@ -2112,11 +2112,11 @@ void BSMclass::parLabels(){
     if (inputs.irregular != "arma(0,0)" && inputs.irregular[0] != 'n'){
         char arNames[20];
         for (int i = 0; i < inputs.ar; i++){
-            snprintf(arNames, 20, "AR(%1.0i)", i + 1);
+            snprintf(arNames, 20, "AR(%d)", i + 1);
             inputs.parNames.push_back(arNames);
         }
         for (int i = 0; i < inputs.ma; i++){
-            snprintf(arNames, 20, "MA(%1.0i)", i + 1);
+            snprintf(arNames, 20, "MA(%d)", i + 1);
             inputs.parNames.push_back(arNames);
         }
     }
@@ -2127,17 +2127,17 @@ void BSMclass::parLabels(){
         char betas[20];
         uvec ind = find(inputs.TVP);
         for (int i = 0; i < sum(inputs.TVP); i++){
-            snprintf(betas, 20, "TVP(%1.0i)", (int)ind(i) + 1);
+            snprintf(betas, 20, "TVP(%d)", (int)ind(i) + 1);
             inputs.parNames.push_back(betas);
         }
         for (int i = 0; i < nu - nOut; i++){
-            snprintf(betas, 20, "State(%1.0i)", i + 1);
+            snprintf(betas, 20, "State(%d)", i + 1);
             inputs.parNames.push_back(betas);
         }
     } else if (nu - nOut > 0){
         char betas[20];
         for (int i = 0; i < nu - nOut; i++){
-            snprintf(betas, 20, "Beta(%1.0i)", i + 1);
+            snprintf(betas, 20, "Beta(%d)", i + 1);
             inputs.parNames.push_back(betas);
         }
     }

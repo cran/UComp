@@ -1,5 +1,5 @@
 b3acfee9e06aceee20e544713a2408da *ChangeLog
-f394649ce4de140d6de98dbe1b4900b8 *DESCRIPTION
+f417988869ee48edbac0cb19414d55d2 *DESCRIPTION
 5c0b4af54656579ee153326da030d9de *NAMESPACE
 cdad265a1d196a1815466cce92f1d858 *R/ETSS3functions.R
 f7967983875113897ab3782088fa34b7 *R/ETScomponents.R
@@ -19,7 +19,6 @@ e79fa77a70367eac1f81f050a84fc34f *R/UCmodel.R
 2015384fa7b92aaa6544032d0310460c *R/data.R
 321e1f455b882848c9c448c5ba53bc04 *R/onAttach.R
 979b4dfec44d4aaa721fed67890d124a *R/tools.R
-a6e753df437096515d8bdcd56543d23c *build/vignette.rds
 e8f43622922e80497871813fe4e65483 *data/OECDgdp.rda
 1b3124eeaef25f868c942258640ad9cc *data/USgdp.rda
 26745a3d7f9d1648d0168efb76090ace *data/airpas.rda
@@ -27,9 +26,6 @@ e8f43622922e80497871813fe4e65483 *data/OECDgdp.rda
 f2da9ebd6b9a9a3c158d3be73029d920 *data/gdp.rda
 8293555c16702578cc27b1d48461df39 *data/ipi.rda
 9ac0d7ca00d230912741a2834ffcac94 *data/sales.rda
-b51f7c50b1fefa155ca2c4e5e9bb3052 *inst/doc/SpanishIpi.R
-b4553a8afe33be18280ec724b113f328 *inst/doc/SpanishIpi.Rmd
-f4a0025a87ac01ba72cb18c5c5681212 *inst/doc/SpanishIpi.html
 9339183d94eaa0acaf06077007bf0bc4 *man/AIC.UComp.Rd
 85f87ed670b15d89bab222ffa9592810 *man/Accuracy.Rd
 a9d2aa88b78387a76b676add8af3d5c6 *man/BIC.UComp.Rd
@@ -113,5 +109,3 @@ bbd4ec9b1afc1507395b393b2d18c066 *src/UCompC.cpp
 f5292d6927945082d635b333f960aed3 *src/boxcox.h
 4febb2d67f192eb94b6fad03dc495627 *src/optim.h
 74bcf48bc6994f72a5b28078cf02b05d *src/stats.h
-b4553a8afe33be18280ec724b113f328 *vignettes/SpanishIpi.Rmd
-035ae2f0aebe57d0eb96aecb231ae0d1 *vignettes/paperJSS.pdf

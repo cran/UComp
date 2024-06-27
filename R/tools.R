@@ -366,7 +366,7 @@ gaussTest = function(y, runFromTests = FALSE){
   df = data.frame(x)
   p1 = ggplot(df, aes(x = x)) +
           geom_histogram(aes(y = after_stat(density)),
-                         bins = sqrt(n), color = "#000000", fill = "#0099F8") +
+                         bins = floor(sqrt(n)), color = "#000000", fill = "#0099F8") +
           geom_density(lwd = 1, color = "#000000", fill = "#F85700", alpha = 0.6) +
           stat_function(fun = dnorm, args = list(mean = mean(df$x), sd = sd(df$x)))
   # QQplot
@@ -415,9 +415,26 @@ ident = function(y,
   }
   nCoef = max(nCoef, frequency(x))
   x = removeNaNs(x)
-  aux = acf(x, nCoef, plot = FALSE)
-  ACF = as.numeric(tail(aux$acf, nCoef))
-  PACF = as.numeric(pacf(x, nCoef, plot = FALSE)$acf)
+  x = x - mean(x, na.rm = TRUE)
+  aux = matrix(0, nCoef + 1, 1)
+  n = length(x)
+  for (i in 0 : nCoef){
+      prod = x[1 : (n - i)] * x[(i + 1) : n]
+      ind = which(!is.na(prod))
+      aux[i + 1, 1] = sum(prod[ind])
+  }
+  aux = aux / aux[1]
+  ACF = as.numeric(tail(aux, nCoef))
+  # PACF from ACF
+  PACF <- ACF
+  fi <- numeric(nCoef)
+  fi[1] <- ACF[1]
+  for (i in 1:(nCoef - 1)) {
+      fi[i + 1] <- (ACF[i + 1] - sum(fi[1:i] * rev(ACF[1:i]))) / (1 - sum(fi * ACF[1:length(fi)]))
+      PACF[i + 1] <- fi[i + 1]
+      fi[1:i] <- fi[1:i] - fi[i + 1] * rev(fi[1:i])
+  }
+  #PACF = as.numeric(pacf(x, nCoef, plot = FALSE)$acf)
   BAND = rep(2 / sqrt(length(x)), nCoef)
   SIGa = rep(".", nCoef)
   SIGa[ACF > BAND] = "+"
@@ -813,6 +830,8 @@ zplane = function(MApoly = 1, ARpoly = 1){
       arRoots = roots(ARpoly)
       maRoots = roots(MApoly)
   # }
+  reaux = NA
+  imaux = NA
   x = seq(-1, 1, 0.005)
   y = sqrt(1 - x ^ 2)
   # Dibujando círculo
@@ -830,14 +849,14 @@ zplane = function(MApoly = 1, ARpoly = 1){
     aux = arRoots[modAR < 0.99]
     aux = data.frame(reaux = Re(aux), imaux = Im(aux))
     if (size(aux)[1] > 0){
-      p = p + geom_point(data = aux, aes(x = aux$reaux, y = aux$imaux),
+      p = p + geom_point(data = aux, aes(x = reaux, y = imaux),
                          shape = "x", size = 4)
     }
     # Non-stationary
     aux = arRoots[modAR >= 0.99]
     aux = data.frame(reaux = Re(aux), imaux = Im(aux))
     if (size(aux)[1] > 0){
-      p = p + geom_point(data = aux, aes(x = aux$reaux, y = aux$imaux),
+      p = p + geom_point(data = aux, aes(x = reaux, y = imaux),
                          shape = "x", size = 4, color = "red")
     }
   }
@@ -847,17 +866,18 @@ zplane = function(MApoly = 1, ARpoly = 1){
     aux = maRoots[modMA < 0.99]
     aux = data.frame(reaux = Re(aux), imaux = Im(aux))
     if (size(aux)[1] > 0){
-      p = p + geom_point(data = aux, aes(x = aux$reaux, y = aux$imaux),
+      p = p + geom_point(data = aux, aes(x = reaux, y = imaux),
                          shape = "o", size = 4)
     }
     # Non-invertible
     aux = maRoots[modMA >= 0.99]
     aux = data.frame(reaux = Re(aux), imaux = Im(aux))
     if (size(aux)[1] > 0){
-      p = p + geom_point(data = aux, aes(x = aux$reaux, y = aux$imaux),
+      p = p + geom_point(data = aux, aes(x = reaux, y = imaux),
                          shape = "o", size = 4, color = "red")
     }
   }
+  print(p)
 }
 #' @title arma2tsi
 #' @description AR polynomial coefficients of ARMA model
@@ -1297,4 +1317,57 @@ Accuracy = function(py, y, s = frequency(y), collectFun = mean){
     }
     return(out)
 }
-
+#' @title box.cox
+#' @description Runs Box-Cox transform of a time series
+#'
+#' @param x Time series object.
+#' @param lambda Lambda parameter for Box-Cox transform.
+#' 
+#' @author Diego J. Pedregal
+#' 
+#' @seealso \code{\link{inv.box.cox}}, \code{\link{UC}}, \code{\link{UCmodel}}, \code{\link{UCvalidate}}, \code{\link{UCfilter}}, \code{\link{UCsmooth}}, 
+#'          \code{\link{UCdisturb}}, \code{\link{UCcomponents}}
+#'          
+#' @examples
+#' \dontrun{
+#' y <- box.cox(AirPassengers, 0.5)
+#' plot(y)
+#' }
+#' @rdname box.cox
+#' @export
+box.cox <- function(x, lambda){
+        if (abs(lambda) < 1e-4){
+                return(log(x))
+        } else if (lambda > 0.99 && lambda < 1.01) {
+                return(x)
+        } else {
+                return((x ^ lambda - 1) / lambda)
+        }
+}
+#' @title inv.box.cox
+#' @description Runs inverse of Box-Cox transform of a time series
+#'
+#' @param x Transformed time series object.
+#' @param lambda Lambda parameter used for Box-Cox transform.
+#' 
+#' @author Diego J. Pedregal
+#' 
+#' @seealso \code{\link{box.cox}}, \code{\link{UC}}, \code{\link{UCmodel}}, \code{\link{UCvalidate}}, \code{\link{UCfilter}}, \code{\link{UCsmooth}}, 
+#'          \code{\link{UCdisturb}}, \code{\link{UCcomponents}}
+#'          
+#' @examples
+#' \dontrun{
+#' y <- inv.box.cox(box.cox(AirPassengers, 0.5), 0.5)
+#' plot(y)
+#' }
+#' @rdname inv.box.cox
+#' @export
+inv.box.cox <- function(x, lambda){
+        if (abs(lambda) < 1e-4){
+                return(exp(x))
+        } else if (lambda > 0.99 && lambda < 1.01) {
+                return(x)
+        } else {
+                return((x * lambda + 1) ^ (1 / lambda))
+        }
+}

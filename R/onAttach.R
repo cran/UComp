@@ -6,7 +6,7 @@
              paste(sQuote("UComp"),
                    "is a package for time series modelling"),
              "using Unobserved Components, Exponential ",
-             "smoothing and other sorts of models",
+             "smoothing and ARIMA models",
              "\n",
              "Author: Diego J. Pedregal",
              "Diego.Pedregal@uclm.es",

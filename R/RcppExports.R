@@ -9,3 +9,11 @@ ETSc <- function(commands, ys, us, models, ss, hs, criterions, armaIdents, ident
     .Call(`_UComp_ETSc`, commands, ys, us, models, ss, hs, criterions, armaIdents, identAlls, forIntervalss, bootstraps, nSimuls, verboses, lambdas, alphaLs, betaLs, gammaLs, phiLs, p0s)
 }
 
+ARIMAc <- function(commands, ys, us, orderss, cnsts, ss, criterions, hs, verboses, lambdas, maxOrderss, bootstraps, nSimuls, fasts, identDiffs, identMethods) {
+    .Call(`_UComp_ARIMAc`, commands, ys, us, orderss, cnsts, ss, criterions, hs, verboses, lambdas, maxOrderss, bootstraps, nSimuls, fasts, identDiffs, identMethods)
+}
+
+TETSc <- function(commands, ys, us, models, ss, hs, criterions, armaIdents, identAlls, forIntervalss, bootstraps, nSimuls, verboses, lambdas, alphaLs, betaLs, gammaLs, phiLs, p0s, Ymins, Ymaxs) {
+    .Call(`_UComp_TETSc`, commands, ys, us, models, ss, hs, criterions, armaIdents, identAlls, forIntervalss, bootstraps, nSimuls, verboses, lambdas, alphaLs, betaLs, gammaLs, phiLs, p0s, Ymins, Ymaxs)
+}
+

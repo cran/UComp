@@ -5,6 +5,8 @@ using namespace std;
 using namespace Rcpp;
 #include "BSMmodel.h"
 #include "ETSmodel.h"
+#include "ARIMAmodel.h"
+#include "TETSmodel.h"
 
 // [[Rcpp::export]]
 SEXP UCompC(SEXP commands, SEXP ys, SEXP us, SEXP models, SEXP periodss, SEXP rhoss,
@@ -438,4 +440,229 @@ SEXP ETSc(SEXP commands, SEXP ys, SEXP us, SEXP models, SEXP ss, SEXP hs,
                             Named("compNames") = m.inputModel.compNames);
     }
     return List::create(Named("void") = datum::nan);
+}
+
+// [[Rcpp::export]]
+SEXP ARIMAc(SEXP commands, SEXP ys, SEXP us, SEXP orderss, SEXP cnsts, SEXP ss, 
+            SEXP criterions, SEXP hs, SEXP verboses, SEXP lambdas, SEXP maxOrderss, 
+            SEXP bootstraps, SEXP nSimuls, SEXP fasts, SEXP identDiffs,
+            SEXP identMethods){
+        // Translating inputs to armadillo data
+        //vec bas(1); bas(0) = 14.0; bas.save("bas.txt", raw_ascii);
+        string command = CHAR(STRING_ELT(commands, 0));
+        NumericVector yr(ys);
+        mat u;
+        if (Rf_isNull(us)){
+                u.set_size(0, 0);
+        } else {
+                NumericMatrix ur(us);
+                mat aux(ur.begin(), ur.nrow(), ur.ncol(), false);
+                u = aux;
+                if (u.n_rows > u.n_cols)
+                        u = u.t();
+        }
+        vec orders;
+        if (Rf_isNull(orderss)){
+                orders.set_size(0);
+        } else {
+                NumericVector ordersr(orderss);
+                vec aux(ordersr.begin(), ordersr.size(), false);
+                orders = aux;
+        }
+        double cnst = as<double>(cnsts);
+        int s = as<int>(ss);
+        string criterion = CHAR(STRING_ELT(criterions, 0));
+        int h = as<int>(hs);
+        bool verbose = as<bool>(verboses);
+        // bool fast = as<bool>(fasts);
+        // bool identDiff = as<bool>(identDiffs);
+        double lambda = as<double>(lambdas);
+        NumericVector maxOrdersr(maxOrderss);
+        bool bootstrap = as<bool>(bootstraps);    
+        int nSimul = as<int>(nSimuls);
+        string identMethod = CHAR(STRING_ELT(identMethods, 0));
+        // Second step
+        vec y(yr.begin(), yr.size(), false);
+        vec maxOrders(maxOrdersr.begin(), maxOrdersr.size(), false);
+        // Correcting inputs
+        ARIMAmodel input;
+        ARIMAclass m(input);
+        // m = preProcess(y, u, orders, cnst, s, h, criterion, verbose, lambda,
+        //                maxOrders, bootstrap, nSimul, identDiff, identMethod);
+        m = preProcess(y, u, orders, cnst, s, h, verbose, lambda,
+                       maxOrders, bootstrap, nSimul, criterion);
+        
+        if (m.m.errorExit)
+                return List::create(Named("void") = datum::nan);
+        // Commands
+        if (command == "estimate"){
+                m.identGM();
+                m.estim(false);
+        }
+        if (command== "validate"){
+                m.identGM();
+                m.validate();
+        }
+        m.forecast();
+        if (m.m.u.n_rows == 0){
+                m.m.cnst = 0.0;
+        }
+        if (m.m.cnst == 1.0){
+                uvec ind(1);
+                ind(0) = m.m.u.n_rows - 1;
+                m.m.u.shed_rows(ind);
+                if (u.n_rows == 0){
+                        u.reset();
+                }
+        }
+        return List::create(Named("p") = m.m.par,
+                            Named("yFor") = m.m.yFor,
+                            Named("yForV") = m.m.FFor,
+                            Named("ySimul") = m.m.ySimul,
+                            Named("lambda") = m.m.lambda,
+                            Named("orders") = m.m.orders,
+                            Named("cnst") = m.m.cnst,
+                            Named("u") = m.m.u,
+                            Named("BIC") = m.m.BIC,
+                            Named("AIC") = m.m.AIC,
+                            Named("AICc") = m.m.AICc,
+                            Named("IC") = m.m.IC,
+                            Named("table") = m.m.table,
+                            Named("error") = m.m.v
+        );
+}
+
+// [[Rcpp::export]]
+SEXP TETSc(SEXP commands, SEXP ys, SEXP us, SEXP models, SEXP ss, SEXP hs,
+           SEXP criterions, SEXP armaIdents, SEXP identAlls, SEXP forIntervalss,
+           SEXP bootstraps, SEXP nSimuls, SEXP verboses, SEXP lambdas,
+           SEXP alphaLs, SEXP betaLs, SEXP gammaLs, SEXP phiLs, SEXP p0s,
+           SEXP Ymins, SEXP Ymaxs){
+        // Translating inputs to armadillo data
+        //vec bas(1); bas(0) = 14.0; bas.save("bas.txt", raw_ascii);
+        string command = CHAR(STRING_ELT(commands, 0));
+        NumericVector yr(ys);
+        mat u;
+        if (Rf_isNull(us)){
+                u.set_size(0, 0);
+        } else {
+                NumericMatrix ur(us);
+                mat aux(ur.begin(), ur.nrow(), ur.ncol(), false);
+                u = aux;
+                if (u.n_rows > u.n_cols)
+                        u = u.t();
+        }
+        string model = CHAR(STRING_ELT(models, 0));
+        int s = as<int>(ss);
+        int h = as<int>(hs);
+        string criterion = CHAR(STRING_ELT(criterions, 0));
+        bool armaIdent = as<bool>(armaIdents);    
+        bool identAll = as<bool>(identAlls);    
+        bool forIntervals = as<bool>(forIntervalss);    
+        bool bootstrap = as<bool>(bootstraps);    
+        bool verbose = as<bool>(verboses);
+        double lambda = as<double>(lambdas);
+        int nSimul = as<int>(nSimuls);
+        NumericVector alphaLr(alphaLs);
+        NumericVector betaLr(betaLs);
+        NumericVector gammaLr(gammaLs);
+        NumericVector phiLr(phiLs);
+        NumericVector p0r(p0s);
+        NumericVector Yminr(Ymins);
+        NumericVector Ymaxr(Ymaxs);
+        // Second step
+        vec y(yr.begin(), yr.size(), false);
+        rowvec alphaL(alphaLr.begin(), alphaLr.size(), false);
+        rowvec betaL(betaLr.begin(), betaLr.size(), false);
+        rowvec gammaL(gammaLr.begin(), gammaLr.size(), false);
+        rowvec phiL(phiLr.begin(), phiLr.size(), false);
+        vec p0(p0r.begin(), p0r.size(), false);
+        vec Ymin(Yminr.begin(), Yminr.size(), false);
+        vec Ymax(Ymaxr.begin(), Ymaxr.size(), false);
+        
+        // Wrapper adaptation
+        if (p0.n_elem == 1 && p0(0) == -99999){
+                p0.resize(0); 
+        }
+        string parConstraints = "standard";
+        vec arma = {0, 0};
+        // Creating class
+        // TETSmodel input;
+        // BoxCox transformation
+        // if (lambda == 9999.9){
+        //         vec periods;
+        //         if (s > 1)
+        //                 periods = s / regspace(1, floor(s / 2));
+        //         else {
+        //                 periods.resize(1);
+        //                 periods(0) = 1.0;
+        //         }
+        //         lambda = testBoxCox(y, periods);
+        // }
+        // if (abs(lambda) > 1)
+        //         lambda = sign(lambda);
+        // input.lambda = lambda;
+        // input.y = BoxCox(input.y, input.lambda);
+        // Creating class
+        // TETSclass m(input);
+        // m = preProcess(y, u, model, s, h, verbose, criterion, identAll, alphaL, betaL, gammaL, phiL,
+        //                parConstraints, forIntervals, bootstrap, nSimul, arma, armaIdent, p0, lambda);
+        ETSmodel m1;
+        TETSclass m(m1, Ymin, Ymax);
+        //    ETSmodel input;
+        //    TETSclass m(input, Ymax, Ymin, false);
+        m = preProcess(y, u, model, s, h, verbose, criterion, identAll, alphaL, betaL, gammaL, phiL,
+                       parConstraints, forIntervals, bootstrap, nSimul, arma, armaIdent, p0, lambda,
+                       Ymax, Ymin);
+        if (m.data.m.errorExit)
+                return List::create(Named("errorExit") = m.data.m.errorExit);
+        // End of wrapper adaptation
+        
+        // Commands
+        if (command == "estimate"){
+                if (m.data.m.error == "?" || m.data.m.trend == "?" || m.data.m.seasonal == "?" || m.data.m.armaIdent)
+                        m.ident(verbose);
+                else {
+                        m.estim(verbose);
+                }
+                m.forecast();
+                if (bootstrap){
+                        ETSclass mETS(m.data.m);
+                        mETS.simulate(m.data.m.h, m.data.m.xn);
+                        m.data.m.ySimul = mETS.inputModel.ySimul;
+                }
+                // Output
+                return List::create(Named("p") = m.data.m.p,
+                                    Named("truep") = m.data.m.truep,
+                                    Named("model") = m.data.m.model,
+                                    Named("criteria") = m.data.m.criteria,
+                                    Named("yFor") = m.data.m.yFor,
+                                    Named("yForV") = m.data.m.yForV,
+                                    Named("ySimul") = m.data.m.ySimul,
+                                    Named("lambda") = m.data.m.lambda
+                );
+        }
+        if (command== "validate"){
+                if (m.data.m.error == "?" || m.data.m.trend == "?" || m.data.m.seasonal == "?" || m.data.m.armaIdent)
+                        m.ident(false);
+                else {
+                        m.estim(false);
+                }
+                m.validate();
+                return List::create(Named("comp") = m.data.m.comp,
+                                    Named("table") = m.data.m.table,
+                                    Named("compNames") = m.data.m.compNames
+                );
+        }
+        if (command== "components"){
+                if (m.data.m.error == "?" || m.data.m.trend == "?" || m.data.m.seasonal == "?" || m.data.m.armaIdent)
+                        m.ident(false);
+                else {
+                        m.estim(false);
+                }
+                m.components();
+                return List::create(Named("comp") = m.data.m.comp,
+                                    Named("compNames") = m.data.m.compNames);
+        }
+        return List::create(Named("void") = datum::nan);
 }

@@ -5,9 +5,9 @@
 #' @format Time series objects.
 #' \describe{
 #'   Monthly data from January 1995 to December 2019
+#'   
+#'   https://portal.mineco.gob.es/es-es/economiayempresa/EconomiaInformesMacro/Paginas/bdsice.aspx
 #' }
-#'
-#' @source \href{http://serviciosede.mineco.gob.es/indeco/}{sales}
 #'         
 #' @examples
 #' \dontrun{
@@ -39,10 +39,10 @@
 #' @format Time series objects.
 #' \describe{
 #'   Quarterly data from 1962 to 2019
+#'   
+#'   https://portal.mineco.gob.es/es-es/economiayempresa/EconomiaInformesMacro/Paginas/bdsice.aspx
 #' }
 #'
-#' @source \href{http://serviciosede.mineco.gob.es/indeco/}{OECDgdp}
-#'         
 #' @examples
 #' \dontrun{
 #'  OECDgdp
@@ -73,9 +73,9 @@
 #' @format Time series objects.
 #' \describe{
 #'   Monthly data from 1969
+#'   
+#'   https://portal.mineco.gob.es/es-es/economiayempresa/EconomiaInformesMacro/Paginas/bdsice.aspx
 #' }
-#'
-#' @source \href{http://serviciosede.mineco.gob.es/indeco/}{airpas}
 #' 
 #' @examples
 #' \dontrun{
@@ -90,10 +90,10 @@
 #' @format Time series objects.
 #' \describe{
 #'   Quarterly since 1995
+#'   
+#'   https://portal.mineco.gob.es/es-es/economiayempresa/EconomiaInformesMacro/Paginas/bdsice.aspx
 #' }
 #'
-#' @source \href{http://serviciosede.mineco.gob.es/indeco/}{gdp}
-#'         
 #' @examples
 #' \dontrun{
 #'  gdp
@@ -108,10 +108,10 @@
 #' @format Objeto time series.
 #' \describe{
 #'   Monthly since 1975
+#'   
+#'   https://portal.mineco.gob.es/es-es/economiayempresa/EconomiaInformesMacro/Paginas/bdsice.aspx
 #' }
 #'
-#' @source \href{http://serviciosede.mineco.gob.es/indeco/}{ipi}
-#' 
 #' @examples
 #' \dontrun{
 #'  ipi

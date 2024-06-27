@@ -1,3 +1,8 @@
+Changes from version 4.0.0 to 5.0.0
+* TETS (Tobit censored ExponenTial Smoothing) models. Two-sided and time varying
+  censorship
+* ARIMA models added with automatic identification based on Hannan-Rissanen method
+* Some bugs fixed
 Changes from version 3.0.0 to 4.0.0
  * ETS models a la Hyndman added with same syntax than UC
  * Multiple diagnostic statistics and other useful tools (tests, zplane, etc.)

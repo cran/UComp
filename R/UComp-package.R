@@ -1,18 +1,20 @@
 #' UComp
 #' 
-#' @description A package for fast automatic identification of Time series models of several kinds
-#'
-#' @docType package
 #' 
-#' @details UComp is a package for time series modelling and forecasting of 
+#' Package for time series modelling and forecasting of 
 #' times series models inspired on different sources:
-#'      1. the structural Unobserved Components models due to A.C. Harvey (Basic Structural Model: BSM), enhanced with automatic identification 
+#' 
+#' \itemize{
+#' \item Unobserved Components models due to A.C. Harvey (Basic Structural Model: BSM), enhanced with automatic identification 
 #' tools by Diego J. Pedregal. 
-#'      2. ExponenTial Smoothing by R.J. Hyndman and colaborators.
+#' \item ExponenTial Smoothing by R.J. Hyndman and colaborators.
+#' \item ARIMA models by V. Gómez and A. Maravall
+#' \item Tobit ETS models by Pedregal, Trapero and Holgado
+#' }
+#' 
 #' The package is designed for automatic identification 
-#' among a wide range of possible models for trends, cycles, seasonal and irregular 
-#' components. The models may include exogenous variables. ARMA irregular components 
-#' and automatic detection of outliers are also possible.
+#' among a wide range of possible models. The models may include exogenous variables. ARMA irregular components 
+#' and automatic detection of outliers in some instances.
 #' 
 #' @section References:
 #' Harvey AC (1989). Forecasting, Structural Time Series Models and the Kalman Filter. Cam- bridge University Press.
@@ -29,9 +31,13 @@
 #' Hyndman RJ, Koehler AB, Ord JK and Snyder RD (2008), Forecasting with exponential smoothing, The State Sapce approach,
 #' Berlin, Springer-Verlag.
 #' 
+#' Gómez V and Maravall, A (2000), Automatic methods for univariate series. In Peña, D., Tiao, G.C. and Tsay R.S., A course in time series analyis. Wiley.
+#' 
+#' Trapero JR, Holgado E, Pedregal DJ (2024), Demand forecasting under lost sales stock policies, International Journal of Forecasting, 40, 1055-1068.
+#' 
+#' @name UComp
+#' @aliases UComp-package
 #' @author Diego J. Pedregal
 #' 
 #' @section Maintainer: Diego J. Pedregal
-#' 
-#' @name UComp
 NULL

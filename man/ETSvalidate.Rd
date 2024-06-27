@@ -7,7 +7,7 @@
 ETSvalidate(m)
 }
 \arguments{
-\item{m}{an object of type \code{UComp} created with \code{UCmodel}}
+\item{m}{an object of type \code{ETS} created with \code{ETSmodel}}
 }
 \value{
 The same input object with the appropriate fields 
@@ -15,7 +15,7 @@ filled in, in particular:
 \item{table}{Estimation and validation table}
 }
 \description{
-Shows a table of estimation and diagnostics results for UC models
+Shows a table of estimation and diagnostics results for ETS models
 }
 \examples{
 \dontrun{

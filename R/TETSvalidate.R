@@ -1,7 +1,7 @@
-#' @title ETSvalidate
-#' @description Shows a table of estimation and diagnostics results for ETS models
+#' @title TETSvalidate
+#' @description Shows a table of estimation and diagnostics results for TOBIT TETS models
 #'
-#' @param m an object of type \code{ETS} created with \code{ETSmodel}
+#' @param m an object of type \code{TETS} created with \code{TETSmodel}
 #' 
 #' @return The same input object with the appropriate fields 
 #' filled in, in particular:
@@ -9,17 +9,17 @@
 #' 
 #' @author Diego J. Pedregal
 #' 
-#' @seealso \code{\link{ETS}}, \code{\link{ETSmodel}}, \code{\link{ETSvalidate}},
-#'          \code{\link{ETScomponents}}
+#' @seealso \code{\link{TETS}}, \code{\link{TETSmodel}}, \code{\link{TETSvalidate}},
+#'          \code{\link{TETScomponents}}
 #'          
 #' @examples
 #' \dontrun{
-#' m1 <- ETSmodel(log(gdp))
-#' m1 <- ETSvalidate(m1)
+#' m1 <- TETSmodel(log(gdp))
+#' m1 <- TETSvalidate(m1)
 #' }
-#' @rdname ETSvalidate
+#' @rdname TETSvalidate
 #' @export
-ETSvalidate = function(m){
+TETSvalidate = function(m){
     if (is.null(m$u))
         u = m$u
     else {
@@ -31,10 +31,10 @@ ETSvalidate = function(m){
             u = matrix(u, nu[1], nu[2])
         }
     }
-    output = ETSc("validate", as.numeric(m$y), u, m$model, m$s, m$h,
+    output = TETSc("validate", as.numeric(m$y), u, m$model, m$s, m$h,
                   m$criterion, m$armaIdent, m$identAll, m$forIntervals,
                   m$bootstrap, m$nSimul, FALSE, m$lambda,
-                  m$alphaL, m$betaL, m$gammaL, m$phiL, m$p0)
+                  m$alphaL, m$betaL, m$gammaL, m$phiL, m$p0, m$Ymin, m$Ymax)
     if (is.ts(m$y))
         m$comp = ts(output$comp, start = start(m$y), frequency = frequency(m$y))
     else

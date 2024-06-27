@@ -8,10 +8,9 @@
 Time series objects.
 \describe{
   Quarterly data from 1962 to 2019
+  
+  https://portal.mineco.gob.es/es-es/economiayempresa/EconomiaInformesMacro/Paginas/bdsice.aspx
 }
-}
-\source{
-\href{http://serviciosede.mineco.gob.es/indeco/}{OECDgdp}
 }
 \usage{
 OECDgdp

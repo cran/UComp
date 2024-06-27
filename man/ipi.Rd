@@ -8,10 +8,9 @@
 Objeto time series.
 \describe{
   Monthly since 1975
+  
+  https://portal.mineco.gob.es/es-es/economiayempresa/EconomiaInformesMacro/Paginas/bdsice.aspx
 }
-}
-\source{
-\href{http://serviciosede.mineco.gob.es/indeco/}{ipi}
 }
 \usage{
 ipi

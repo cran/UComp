@@ -79,10 +79,69 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// ARIMAc
+SEXP ARIMAc(SEXP commands, SEXP ys, SEXP us, SEXP orderss, SEXP cnsts, SEXP ss, SEXP criterions, SEXP hs, SEXP verboses, SEXP lambdas, SEXP maxOrderss, SEXP bootstraps, SEXP nSimuls, SEXP fasts, SEXP identDiffs, SEXP identMethods);
+RcppExport SEXP _UComp_ARIMAc(SEXP commandsSEXP, SEXP ysSEXP, SEXP usSEXP, SEXP orderssSEXP, SEXP cnstsSEXP, SEXP ssSEXP, SEXP criterionsSEXP, SEXP hsSEXP, SEXP verbosesSEXP, SEXP lambdasSEXP, SEXP maxOrderssSEXP, SEXP bootstrapsSEXP, SEXP nSimulsSEXP, SEXP fastsSEXP, SEXP identDiffsSEXP, SEXP identMethodsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type commands(commandsSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type ys(ysSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type us(usSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type orderss(orderssSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type cnsts(cnstsSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type ss(ssSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type criterions(criterionsSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type hs(hsSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type verboses(verbosesSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type lambdas(lambdasSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type maxOrderss(maxOrderssSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type bootstraps(bootstrapsSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type nSimuls(nSimulsSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type fasts(fastsSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type identDiffs(identDiffsSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type identMethods(identMethodsSEXP);
+    rcpp_result_gen = Rcpp::wrap(ARIMAc(commands, ys, us, orderss, cnsts, ss, criterions, hs, verboses, lambdas, maxOrderss, bootstraps, nSimuls, fasts, identDiffs, identMethods));
+    return rcpp_result_gen;
+END_RCPP
+}
+// TETSc
+SEXP TETSc(SEXP commands, SEXP ys, SEXP us, SEXP models, SEXP ss, SEXP hs, SEXP criterions, SEXP armaIdents, SEXP identAlls, SEXP forIntervalss, SEXP bootstraps, SEXP nSimuls, SEXP verboses, SEXP lambdas, SEXP alphaLs, SEXP betaLs, SEXP gammaLs, SEXP phiLs, SEXP p0s, SEXP Ymins, SEXP Ymaxs);
+RcppExport SEXP _UComp_TETSc(SEXP commandsSEXP, SEXP ysSEXP, SEXP usSEXP, SEXP modelsSEXP, SEXP ssSEXP, SEXP hsSEXP, SEXP criterionsSEXP, SEXP armaIdentsSEXP, SEXP identAllsSEXP, SEXP forIntervalssSEXP, SEXP bootstrapsSEXP, SEXP nSimulsSEXP, SEXP verbosesSEXP, SEXP lambdasSEXP, SEXP alphaLsSEXP, SEXP betaLsSEXP, SEXP gammaLsSEXP, SEXP phiLsSEXP, SEXP p0sSEXP, SEXP YminsSEXP, SEXP YmaxsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type commands(commandsSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type ys(ysSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type us(usSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type models(modelsSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type ss(ssSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type hs(hsSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type criterions(criterionsSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type armaIdents(armaIdentsSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type identAlls(identAllsSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type forIntervalss(forIntervalssSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type bootstraps(bootstrapsSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type nSimuls(nSimulsSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type verboses(verbosesSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type lambdas(lambdasSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type alphaLs(alphaLsSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type betaLs(betaLsSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type gammaLs(gammaLsSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type phiLs(phiLsSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type p0s(p0sSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type Ymins(YminsSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type Ymaxs(YmaxsSEXP);
+    rcpp_result_gen = Rcpp::wrap(TETSc(commands, ys, us, models, ss, hs, criterions, armaIdents, identAlls, forIntervalss, bootstraps, nSimuls, verboses, lambdas, alphaLs, betaLs, gammaLs, phiLs, p0s, Ymins, Ymaxs));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_UComp_UCompC", (DL_FUNC) &_UComp_UCompC, 29},
     {"_UComp_ETSc", (DL_FUNC) &_UComp_ETSc, 19},
+    {"_UComp_ARIMAc", (DL_FUNC) &_UComp_ARIMAc, 16},
+    {"_UComp_TETSc", (DL_FUNC) &_UComp_TETSc, 21},
     {NULL, NULL, 0}
 };
 

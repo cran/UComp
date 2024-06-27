@@ -8,10 +8,9 @@
 Time series objects.
 \describe{
   Monthly data from January 1995 to December 2019
+  
+  https://portal.mineco.gob.es/es-es/economiayempresa/EconomiaInformesMacro/Paginas/bdsice.aspx
 }
-}
-\source{
-\href{http://serviciosede.mineco.gob.es/indeco/}{sales}
 }
 \usage{
 sales

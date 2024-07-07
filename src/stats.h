@@ -593,13 +593,13 @@ void regressTable(REGmodel m, vector<string>& table){
   if (m.beta.n_elem > 0){
       tp = join_rows(m.beta, m.stdBeta, abs(m.beta / m.stdBeta));
       // Table of numbers
-      char namePar[14];
+      char namePar[10];
       for (unsigned i = 0; i < tp.n_rows; i++){
         if (all(m.X.row(i)) == 1)
-          snprintf(namePar, 10, "%*s", 14, "Cnst");
+          snprintf(namePar, 10, "Cnst");
         //            namePar = "Cnst";
         else
-          snprintf(namePar, 10, "%*s(%d)", 14, "Beta", i);
+          snprintf(namePar, 10, "%s(%d)", "Beta", i);
         //            namePar = "Beta";
         if (abs(tp(i, 0)) > 1e-4){
           snprintf(str, 70, "%*s: %d %12.4f %12.4f\n", 10, namePar, i, tp(i, 0), tp(i, 1));

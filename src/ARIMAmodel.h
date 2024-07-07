@@ -1706,30 +1706,31 @@ mat vDiff(mat x, uword d, uword D, uword s){
 // Parameter names for output table
 void parNames(uword s, uword p, uword q, uword ps, uword qs,
               int nu, double cnst, vector<string>& names){
-    char str[12];
+    char str[20];
     names.clear();
     for (uword i = 1; i <= p; i++){
-        snprintf(str, 10, "AR(%d)", (int)i);
+        snprintf(str, 20, "AR(%d)", (int)i);
         names.push_back(str);
     }
     for (uword i = 1; i <= ps; i++){
-        snprintf(str, 10, "ARs(%d)", (int)i * (int)s);
+        snprintf(str, 20, "ARs(%d)", (int)i * (int)s);
         names.push_back(str);
     }
     for (uword i = 1; i <= q; i++){
-        snprintf(str, 10, "MA(%d)", (int)i);
+        snprintf(str, 20, "MA(%d)", (int)i);
         names.push_back(str);
     }
     for (uword i = 1; i <= qs; i++){
-        snprintf(str, 10, "MAs(%d)", (int)i * (int)s);
+        snprintf(str, 20, "MAs(%d)", (int)i * (int)s);
         names.push_back(str);
     }
-    for (int i = 0; i < nu - cnst; i++){
-        snprintf(str, 10, "Beta(%d)", (int)i + 1);
+    for (uword i = 0; i < nu - cnst; i++){
+        int jj = 1;
+        snprintf(str, 20, "Beta(%d)", (int)i + jj);
         names.push_back(str);
     }
     if (abs(cnst) > 0.0){
-        snprintf(str, 10, "Cnst");
+        snprintf(str, 20, "Cnst");
         names.push_back(str);
     }
 }

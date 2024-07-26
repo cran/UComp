@@ -69,7 +69,7 @@ TETSsetup = function(y, u = NULL, model = "???", s = frequency(y), h = 2 * s, cr
                    bootstrap, nSimul, verbose, alphaL, betaL, gammaL, phiL, p0)
     out$Ymin = Ymin
     out$Ymax = Ymax
-    if (min(Ymax - y, na.rm = TRUE) > 0 && min(y - Ymin, na.rm = TRUE) > 0){
+    if (min(Ymax - y, na.rm = TRUE) != 0 && min(y - Ymin, na.rm = TRUE) != 0){
         return(structure(out, class = "ETS"))
     } else {
         return(structure(out, class = "TETS"))
@@ -160,10 +160,8 @@ TETS = function(y, u = NULL, model = "???", s = frequency(y), h = 2 * s, criteri
     m1 = TETSsetup(y, u, model, s, h, criterion, forIntervals,
                   bootstrap, nSimul, verbose, alphaL, betaL, gammaL, phiL, p0, Ymin, Ymax)
     if (inherits(m1, "ETS")){
-        m1 = ETSestim(m1)
         m1 = ETSvalidate(m1)
     } else {
-        m1 = TETSestim(m1)
         m1 = TETSvalidate(m1)
     }
     return(m1)

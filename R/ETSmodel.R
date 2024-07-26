@@ -189,7 +189,6 @@ ETS = function(y, u = NULL, model = "???", s = frequency(y), h = 2 * s, criterio
                phiL = c(0.8, 0.98), p0 = -99999){
     m1 = ETSsetup(y, u, model, s, h, criterion, lambda, armaIdent, identAll, forIntervals,
                   bootstrap, nSimul, verbose, alphaL, betaL, gammaL, phiL, p0)
-    m1 = ETSestim(m1)
     m1 = ETSvalidate(m1)
     return(m1)
 }

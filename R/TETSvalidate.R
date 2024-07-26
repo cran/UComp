@@ -31,10 +31,17 @@ TETSvalidate = function(m){
             u = matrix(u, nu[1], nu[2])
         }
     }
-    output = TETSc("validate", as.numeric(m$y), u, m$model, m$s, m$h,
-                  m$criterion, m$armaIdent, m$identAll, m$forIntervals,
-                  m$bootstrap, m$nSimul, FALSE, m$lambda,
-                  m$alphaL, m$betaL, m$gammaL, m$phiL, m$p0, m$Ymin, m$Ymax)
+    if (inherits(m, "ETS")){
+            output = ETSc("validate", as.numeric(m$y), u, m$model, m$s, m$h,
+                          m$criterion, m$armaIdent, m$identAll, m$forIntervals,
+                          m$bootstrap, m$nSimul, FALSE, m$lambda,
+                          m$alphaL, m$betaL, m$gammaL, m$phiL, m$p0)
+    } else {
+            output = TETSc("validate", as.numeric(m$y), u, m$model, m$s, m$h,
+                          m$criterion, m$armaIdent, m$identAll, m$forIntervals,
+                          m$bootstrap, m$nSimul, FALSE, m$lambda,
+                          m$alphaL, m$betaL, m$gammaL, m$phiL, m$p0, m$Ymin, m$Ymax)
+    }
     if (is.ts(m$y))
         m$comp = ts(output$comp, start = start(m$y), frequency = frequency(m$y))
     else

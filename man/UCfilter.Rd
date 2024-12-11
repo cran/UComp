@@ -31,7 +31,7 @@ m1 <- UCfilter(m1)
 }
 }
 \seealso{
-\code{\link{UC}}, \code{\link{UCmodel}}, \code{\link{UCvalidate}}, 
+\code{\link{UC}}, \code{\link{UCforecast}}, \code{\link{UCvalidate}}, 
          \code{\link{UCsmooth}}, \code{\link{UCdisturb}}, \code{\link{UCcomponents}},
          \code{\link{UChp}}
 }

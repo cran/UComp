@@ -7,7 +7,7 @@
 ETSvalidate(m)
 }
 \arguments{
-\item{m}{an object of type \code{ETS} created with \code{ETSmodel}}
+\item{m}{an object of type \code{ETS} created with \code{ETSforecast}}
 }
 \value{
 The same input object with the appropriate fields 
@@ -19,12 +19,12 @@ Shows a table of estimation and diagnostics results for ETS models
 }
 \examples{
 \dontrun{
-m1 <- ETSmodel(log(gdp))
+m1 <- ETSforecast(log(gdp))
 m1 <- ETSvalidate(m1)
 }
 }
 \seealso{
-\code{\link{ETS}}, \code{\link{ETSmodel}}, \code{\link{ETSvalidate}},
+\code{\link{ETS}}, \code{\link{ETSforecast}}, \code{\link{ETSvalidate}},
          \code{\link{ETScomponents}}
 }
 \author{

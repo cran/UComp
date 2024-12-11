@@ -52,7 +52,7 @@
 #'         part of the fields of any \code{UComp} object as specified in what follows (function 
 #'         \code{UC} fills in all of them at once):
 #' 
-#' After running \code{UCmodel} or \code{UCestim}:
+#' After running \code{UCforecast} or \code{UCestim}:
 #' \itemize{
 #' \item p:        Estimated parameters
 #' \item v:        Estimated innovations (white noise in correctly specified models)
@@ -94,7 +94,7 @@
 #' Standard methods applicable to UComp objects are print, summary, plot,
 #' fitted, residuals, logLik, AIC, BIC, coef, predict, tsdiag.
 #' 
-#' @seealso \code{\link{UC}}, \code{\link{UCmodel}}, \code{\link{UCvalidate}}, \code{\link{UCfilter}}, \code{\link{UCsmooth}}, 
+#' @seealso \code{\link{UC}}, \code{\link{UCforecast}}, \code{\link{UCvalidate}}, \code{\link{UCfilter}}, \code{\link{UCsmooth}}, 
 #'          \code{\link{UCdisturb}}, \code{\link{UCcomponents}},
 #'          \code{\link{UChp}}
 #'          
@@ -196,10 +196,10 @@ UCsetup = function(y, u = NULL, model = "?/none/?/?", h = 9999, lambda = 1, outl
     return(structure(out, class = "UComp"))
 }
 
-#' @title UCmodel
+#' @title UCforecast
 #' @description Estimates and forecasts UC general univariate models
 #'
-#' @details \code{UCmodel} is a function for modelling and forecasting univariate
+#' @details \code{UCforecast} is a function for modelling and forecasting univariate
 #' time series according to Unobserved Components models (UC). 
 #' It sets up the model with a number of control variables that
 #' govern the way the rest of functions in the package work. It also estimates 
@@ -214,7 +214,7 @@ UCsetup = function(y, u = NULL, model = "?/none/?/?", h = 9999, lambda = 1, outl
 #'         part of the fields of any \code{UComp} object as specified in what follows (function 
 #'         \code{UC} fills in all of them at once):
 #' 
-#' After running \code{UCmodel} or \code{UCestim}:
+#' After running \code{UCforecast} or \code{UCestim}:
 #' \itemize{
 #' \item p:        Estimated parameters
 #' \item v:        Estimated innovations (white noise in correctly specified models)
@@ -262,12 +262,12 @@ UCsetup = function(y, u = NULL, model = "?/none/?/?", h = 9999, lambda = 1, outl
 #' @examples
 #' \dontrun{
 #' y <- log(AirPassengers)
-#' m1 <- UCmodel(y)
-#' m1 <- UCmodel(y, model = "llt/equal/arma(0,0)")
+#' m1 <- UCforecast(y)
+#' m1 <- UCforecast(y, model = "llt/equal/arma(0,0)")
 #' }
-#' @rdname UCmodel
+#' @rdname UCforecast
 #' @export
-UCmodel = function(y, u = NULL, model = "?/none/?/?", h = 9999, lambda = 1, outlier = 9999, tTest = FALSE, criterion = "aic",
+UCforecast = function(y, u = NULL, model = "?/none/?/?", h = 9999, lambda = 1, outlier = 9999, tTest = FALSE, criterion = "aic",
                    periods = NA, verbose = FALSE, stepwise = FALSE, p0 = -9999.9, arma = TRUE,
                    TVP = NULL, trendOptions = "none/rw/llt/dt", seasonalOptions = "none/equal/different", irregularOptions = "none/arma(0,0)"){
     m = UCsetup(y, u, model, h, lambda, outlier, tTest, criterion, 
@@ -297,7 +297,7 @@ UCmodel = function(y, u = NULL, model = "?/none/?/?", h = 9999, lambda = 1, outl
 #'         part of the fields of any \code{UComp} object as specified in what follows (function 
 #'         \code{UC} fills in all of them at once):
 #' 
-#' After running \code{UCmodel} or \code{UCestim}:
+#' After running \code{UCforecast} or \code{UCestim}:
 #' \itemize{
 #' \item p:        Estimated parameters
 #' \item v:        Estimated innovations (white noise in correctly specified models)

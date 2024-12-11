@@ -7,7 +7,7 @@
 UCcomponents(sys)
 }
 \arguments{
-\item{sys}{an object of type \code{UComp} created with \code{UC} or \code{UCmodel}}
+\item{sys}{an object of type \code{UComp} created with \code{UC} or \code{UCforecast}}
 }
 \value{
 The same input object with the appropriate fields 
@@ -29,7 +29,7 @@ m1 <- UCcomponents(m1)
 }
 }
 \seealso{
-\code{\link{UC}}, \code{\link{UCmodel}}, \code{\link{UCvalidate}}, \code{\link{UCfilter}}, 
+\code{\link{UC}}, \code{\link{UCforecast}}, \code{\link{UCvalidate}}, \code{\link{UCfilter}}, 
          \code{\link{UCsmooth}}, \code{\link{UCdisturb}},
          \code{\link{UChp}}
 }

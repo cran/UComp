@@ -1325,7 +1325,7 @@ Accuracy = function(py, y, s = frequency(y), collectFun = mean){
 #' 
 #' @author Diego J. Pedregal
 #' 
-#' @seealso \code{\link{inv.box.cox}}, \code{\link{UC}}, \code{\link{UCmodel}}, \code{\link{UCvalidate}}, \code{\link{UCfilter}}, \code{\link{UCsmooth}}, 
+#' @seealso \code{\link{inv.box.cox}}, \code{\link{UC}}, \code{\link{UCforecast}}, \code{\link{UCvalidate}}, \code{\link{UCfilter}}, \code{\link{UCsmooth}}, 
 #'          \code{\link{UCdisturb}}, \code{\link{UCcomponents}}
 #'          
 #' @examples
@@ -1352,7 +1352,7 @@ box.cox <- function(x, lambda){
 #' 
 #' @author Diego J. Pedregal
 #' 
-#' @seealso \code{\link{box.cox}}, \code{\link{UC}}, \code{\link{UCmodel}}, \code{\link{UCvalidate}}, \code{\link{UCfilter}}, \code{\link{UCsmooth}}, 
+#' @seealso \code{\link{box.cox}}, \code{\link{UC}}, \code{\link{UCforecast}}, \code{\link{UCvalidate}}, \code{\link{UCfilter}}, \code{\link{UCsmooth}}, 
 #'          \code{\link{UCdisturb}}, \code{\link{UCcomponents}}
 #'          
 #' @examples

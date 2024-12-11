@@ -397,17 +397,22 @@ SEXP ETSc(SEXP commands, SEXP ys, SEXP us, SEXP models, SEXP ss, SEXP hs,
     // End of wrapper adaptation
     
     // Commands
-    if (command == "estimate"){
+    if (command == "estimate" || command == "validate"){
         if (m.inputModel.error == "?" || m.inputModel.trend == "?" || m.inputModel.seasonal == "?" || m.inputModel.armaIdent)
             m.ident(verbose);
         else {
             m.estim(verbose);
         }
         m.forecast();
+        if (command== "validate")
+            m.validate();
         if (bootstrap)
             m.simulate(m.inputModel.h, m.inputModel.xn);
         // Output
         return List::create(Named("p") = m.inputModel.p,
+                            Named("comp") = m.inputModel.comp,
+                            Named("table") = m.inputModel.table,
+                            Named("compNames") = m.inputModel.compNames,
                             Named("truep") = m.inputModel.truep,
                             Named("model") = m.inputModel.model,
                             Named("criteria") = m.inputModel.criteria,
@@ -415,18 +420,6 @@ SEXP ETSc(SEXP commands, SEXP ys, SEXP us, SEXP models, SEXP ss, SEXP hs,
                             Named("yForV") = m.inputModel.yForV,
                             Named("ySimul") = m.inputModel.ySimul,
                             Named("lambda") = m.inputModel.lambda
-        );
-    }
-    if (command== "validate"){
-        if (m.inputModel.error == "?" || m.inputModel.trend == "?" || m.inputModel.seasonal == "?" || m.inputModel.armaIdent)
-            m.ident(false);
-        else {
-            m.estim(false);
-        }
-        m.validate();
-        return List::create(Named("comp") = m.inputModel.comp,
-                            Named("table") = m.inputModel.table,
-                            Named("compNames") = m.inputModel.compNames
         );
     }
     if (command== "components"){
@@ -619,13 +612,15 @@ SEXP TETSc(SEXP commands, SEXP ys, SEXP us, SEXP models, SEXP ss, SEXP hs,
         // End of wrapper adaptation
         
         // Commands
-        if (command == "estimate"){
+        if (command == "estimate" || command== "validate"){
                 if (m.data.m.error == "?" || m.data.m.trend == "?" || m.data.m.seasonal == "?" || m.data.m.armaIdent)
                         m.ident(verbose);
                 else {
                         m.estim(verbose);
                 }
                 m.forecast();
+                if (command == "validate")
+                    m.validate();
                 if (bootstrap){
                         ETSclass mETS(m.data.m);
                         mETS.simulate(m.data.m.h, m.data.m.xn);
@@ -639,19 +634,10 @@ SEXP TETSc(SEXP commands, SEXP ys, SEXP us, SEXP models, SEXP ss, SEXP hs,
                                     Named("yFor") = m.data.m.yFor,
                                     Named("yForV") = m.data.m.yForV,
                                     Named("ySimul") = m.data.m.ySimul,
-                                    Named("lambda") = m.data.m.lambda
-                );
-        }
-        if (command== "validate"){
-                if (m.data.m.error == "?" || m.data.m.trend == "?" || m.data.m.seasonal == "?" || m.data.m.armaIdent)
-                        m.ident(false);
-                else {
-                        m.estim(false);
-                }
-                m.validate();
-                return List::create(Named("comp") = m.data.m.comp,
+                                    Named("comp") = m.data.m.comp,
                                     Named("table") = m.data.m.table,
-                                    Named("compNames") = m.data.m.compNames
+                                    Named("compNames") = m.data.m.compNames,
+                                    Named("lambda") = m.data.m.lambda
                 );
         }
         if (command== "components"){

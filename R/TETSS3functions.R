@@ -8,12 +8,12 @@
 #' 
 #' @author Diego J. Pedregal
 #' 
-#' @seealso \code{\link{TETS}}, \code{\link{TETSmodel}}, \code{\link{TETSvalidate}},
+#' @seealso \code{\link{TETS}}, \code{\link{TETSforecast}}, \code{\link{TETSvalidate}},
 #'          \code{\link{TETScomponents}}, \code{\link{TETSestim}}
 #'          
 #' @examples
 #' \dontrun{
-#' m1 <- TETSmodel(log(gdp))
+#' m1 <- TETSforecast(log(gdp))
 #' print(m1)
 #' }
 #' @rdname print
@@ -35,12 +35,12 @@ print.TETS = function(x, ...){
 #'
 #' @author Diego J. Pedregal
 #' 
-#' @seealso \code{\link{TETS}}, \code{\link{TETSmodel}}, \code{\link{TETSvalidate}},
+#' @seealso \code{\link{TETS}}, \code{\link{TETSforecast}}, \code{\link{TETSvalidate}},
 #'          \code{\link{TETScomponents}}, \code{\link{TETSestim}}
 #'          
 #' @examples
 #' \dontrun{
-#' m1 <- TETSmodel(log(gdp))
+#' m1 <- TETSforecast(log(gdp))
 #' summary(m1)
 #' }
 #' @rdname summary.TETS
@@ -58,12 +58,12 @@ summary.TETS = function(object, ...){
 #' 
 #' @author Diego J. Pedregal
 #' 
-#' @seealso \code{\link{TETS}}, \code{\link{TETSmodel}}, \code{\link{TETSvalidate}},
+#' @seealso \code{\link{TETS}}, \code{\link{TETSforecast}}, \code{\link{TETSvalidate}},
 #'          \code{\link{TETScomponents}}, \code{\link{TETSestim}}
 #'          
 #' @examples
 #' \dontrun{
-#' m1 <- TETSmodel(log(gdp))
+#' m1 <- TETSforecast(log(gdp))
 #' plot(m1)
 #' }
 #' @rdname plot
@@ -89,12 +89,12 @@ plot.TETS = function(x, ...){
 #' 
 #' @author Diego J. Pedregal
 #' 
-#' @seealso \code{\link{TETS}}, \code{\link{TETSmodel}}, \code{\link{TETSvalidate}},
+#' @seealso \code{\link{TETS}}, \code{\link{TETSforecast}}, \code{\link{TETSvalidate}},
 #'          \code{\link{TETScomponents}}, \code{\link{TETSestim}}
 #'          
 #' @examples
 #' \dontrun{
-#' m1 <- TETSmodel(log(gdp))
+#' m1 <- TETSforecast(log(gdp))
 #' fitted(m1)
 #' }
 #' @rdname fitted
@@ -115,12 +115,12 @@ fitted.TETS = function(object, ...){
 #' 
 #' @author Diego J. Pedregal
 #' 
-#' @seealso \code{\link{TETS}}, \code{\link{TETSmodel}}, \code{\link{TETSvalidate}},
+#' @seealso \code{\link{TETS}}, \code{\link{TETSforecast}}, \code{\link{TETSvalidate}},
 #'          \code{\link{TETScomponents}}, \code{\link{TETSestim}}
 #'          
 #' @examples
 #' \dontrun{
-#' m1 <- TETSmodel(log(gdp))
+#' m1 <- TETSforecast(log(gdp))
 #' residuals(m1)
 #' }
 #' @rdname residuals

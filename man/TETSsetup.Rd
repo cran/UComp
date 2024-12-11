@@ -84,13 +84,13 @@ model for each component with one or two letters:
 }}
 }
 \value{
-An object of class \code{TETS}. See \code{TETSmodel}.
+An object of class \code{TETS}. See \code{TETSforecast}.
 }
 \description{
 Sets up TOBIT TETS general univariate models
 }
 \details{
-See help of \code{TETSmodel}.
+See help of \code{TETSforecast}.
 }
 \examples{
 \dontrun{
@@ -101,7 +101,7 @@ m1 <- TETSsetup(y,  model = "?AA")
 }
 }
 \seealso{
-\code{\link{TETS}}, \code{\link{TETSmodel}}, \code{\link{TETSvalidate}},
+\code{\link{TETS}}, \code{\link{TETSforecast}}, \code{\link{TETSvalidate}},
          \code{\link{TETScomponents}}, \code{\link{TETSestim}}
 }
 \author{

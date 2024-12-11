@@ -8,12 +8,12 @@
 #' 
 #' @author Diego J. Pedregal
 #' 
-#' @seealso \code{\link{ETS}}, \code{\link{ETSmodel}}, \code{\link{ETSvalidate}},
+#' @seealso \code{\link{ETS}}, \code{\link{ETSforecast}}, \code{\link{ETSvalidate}},
 #'          \code{\link{ETScomponents}}, \code{\link{ETSestim}}
 #'          
 #' @examples
 #' \dontrun{
-#' m1 <- ETSmodel(log(gdp))
+#' m1 <- ETSforecast(log(gdp))
 #' print(m1)
 #' }
 #' @rdname print
@@ -35,12 +35,12 @@ print.ETS = function(x, ...){
 #'
 #' @author Diego J. Pedregal
 #' 
-#' @seealso \code{\link{ETS}}, \code{\link{ETSmodel}}, \code{\link{ETSvalidate}},
+#' @seealso \code{\link{ETS}}, \code{\link{ETSforecast}}, \code{\link{ETSvalidate}},
 #'          \code{\link{ETScomponents}}, \code{\link{ETSestim}}
 #'          
 #' @examples
 #' \dontrun{
-#' m1 <- ETSmodel(log(gdp))
+#' m1 <- ETSforecast(log(gdp))
 #' summary(m1)
 #' }
 #' @rdname summary.ETS
@@ -58,12 +58,12 @@ summary.ETS = function(object, ...){
 #' 
 #' @author Diego J. Pedregal
 #' 
-#' @seealso \code{\link{ETS}}, \code{\link{ETSmodel}}, \code{\link{ETSvalidate}},
+#' @seealso \code{\link{ETS}}, \code{\link{ETSforecast}}, \code{\link{ETSvalidate}},
 #'          \code{\link{ETScomponents}}, \code{\link{ETSestim}}
 #'          
 #' @examples
 #' \dontrun{
-#' m1 <- ETSmodel(log(gdp))
+#' m1 <- ETSforecast(log(gdp))
 #' plot(m1)
 #' }
 #' @rdname plot
@@ -89,12 +89,12 @@ plot.ETS = function(x, ...){
 #' 
 #' @author Diego J. Pedregal
 #' 
-#' @seealso \code{\link{ETS}}, \code{\link{ETSmodel}}, \code{\link{ETSvalidate}},
+#' @seealso \code{\link{ETS}}, \code{\link{ETSforecast}}, \code{\link{ETSvalidate}},
 #'          \code{\link{ETScomponents}}, \code{\link{ETSestim}}
 #'          
 #' @examples
 #' \dontrun{
-#' m1 <- ETSmodel(log(gdp))
+#' m1 <- ETSforecast(log(gdp))
 #' fitted(m1)
 #' }
 #' @rdname fitted
@@ -115,12 +115,12 @@ fitted.ETS = function(object, ...){
 #' 
 #' @author Diego J. Pedregal
 #' 
-#' @seealso \code{\link{ETS}}, \code{\link{ETSmodel}}, \code{\link{ETSvalidate}},
+#' @seealso \code{\link{ETS}}, \code{\link{ETSforecast}}, \code{\link{ETSvalidate}},
 #'          \code{\link{ETScomponents}}, \code{\link{ETSestim}}
 #'          
 #' @examples
 #' \dontrun{
-#' m1 <- ETSmodel(log(gdp))
+#' m1 <- ETSforecast(log(gdp))
 #' residuals(m1)
 #' }
 #' @rdname residuals

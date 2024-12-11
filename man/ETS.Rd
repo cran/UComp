@@ -84,13 +84,13 @@ model for each component with one or two letters:
 }}
 }
 \value{
-An object of class \code{ETS}. See \code{ETSmodel}.
+An object of class \code{ETS}. See \code{ETSforecast}.
 }
 \description{
 Runs all relevant functions for ETS modelling
 }
 \details{
-See help of \code{ETSmodel}.
+See help of \code{ETSforecast}.
 }
 \examples{
 \dontrun{
@@ -100,7 +100,7 @@ m1 <- ETS(y, model = "MAM")
 }
 }
 \seealso{
-\code{\link{ETSmodel}}, \code{\link{ETSvalidate}},
+\code{\link{ETSforecast}}, \code{\link{ETSvalidate}},
          \code{\link{ETScomponents}}, \code{\link{ETSestim}}
 }
 \author{

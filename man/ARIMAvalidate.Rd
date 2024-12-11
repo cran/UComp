@@ -7,7 +7,7 @@
 ARIMAvalidate(m)
 }
 \arguments{
-\item{m}{an object of type \code{ARIMA} created with \code{ARIMAmodel}}
+\item{m}{an object of type \code{ARIMA} created with \code{ARIMAforecast}}
 }
 \value{
 The same input object with the appropriate fields 
@@ -19,12 +19,12 @@ Shows a table of estimation and diagnostics results for ARIMA models
 }
 \examples{
 \dontrun{
-m1 <- ARIMAmodel(log(gdp))
+m1 <- ARIMAforecast(log(gdp))
 m1 <- ARIMAvalidate(m1)
 }
 }
 \seealso{
-\code{\link{ARIMA}}, \code{\link{ARIMAmodel}}, \code{\link{ARIMAvalidate}},
+\code{\link{ARIMA}}, \code{\link{ARIMAforecast}}, \code{\link{ARIMAvalidate}},
 }
 \author{
 Diego J. Pedregal

@@ -15,7 +15,7 @@ getp0(y, model = "llt/equal/arma(0,0)", periods = NA)
 }
 \value{
 A set of parameters p0 of an object of class \code{UComp}
-to use as input to \code{\link{UC}}, \code{\link{UCmodel}} or \code{\link{UCsetup}}.
+to use as input to \code{\link{UC}}, \code{\link{UCforecast}} or \code{\link{UCsetup}}.
 }
 \description{
 Get initial conditions for parameters of \code{UComp} object
@@ -23,7 +23,7 @@ Get initial conditions for parameters of \code{UComp} object
 \details{
 Provides initial parameters of a given model for the time series.
 They may be changed arbitrarily by the user to include as an input \code{p0} to
-\code{UC} or \code{UCmodel} functions (see example below).
+\code{UC} or \code{UCforecast} functions (see example below).
 There is no guarantee that the model will converge and selecting initial conditions
 should be used with care.
 }
@@ -31,7 +31,7 @@ should be used with care.
 \dontrun{
 p0 <- getp0(log(AirPassengers), model = "llt/equal/arma(0,0)")
 p0[1] <- 0  # p0[1] <- NA
-m <- UCmodel(log(AirPassengers), model = "llt/equal/arma(0,0)", p0 = p0)
+m <- UCforecast(log(AirPassengers), model = "llt/equal/arma(0,0)", p0 = p0)
 }
 }
 \seealso{

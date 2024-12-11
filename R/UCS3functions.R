@@ -8,13 +8,13 @@
 #' 
 #' @author Diego J. Pedregal
 #' 
-#' @seealso \code{\link{UC}}, \code{\link{UCmodel}}, \code{\link{UCvalidate}}, \code{\link{UCfilter}}, \code{\link{UCsmooth}}, 
+#' @seealso \code{\link{UC}}, \code{\link{UCforecast}}, \code{\link{UCvalidate}}, \code{\link{UCfilter}}, \code{\link{UCsmooth}}, 
 #'          \code{\link{UCdisturb}}, \code{\link{UCcomponents}}
 #'          
 #' @examples
 #' \dontrun{
 #' y <- log(AirPassengers)
-#' m1 <- UCmodel(y, model = "llt/equal/arma(0,0)")
+#' m1 <- UCforecast(y, model = "llt/equal/arma(0,0)")
 #' print(m1)
 #' }
 #' @noRd
@@ -32,13 +32,13 @@ print.UComp = function(x, ...){
 #'
 #' @author Diego J. Pedregal
 #' 
-#' @seealso \code{\link{UC}}, \code{\link{UCmodel}}, \code{\link{UCvalidate}}, \code{\link{UCfilter}}, \code{\link{UCsmooth}}, 
+#' @seealso \code{\link{UC}}, \code{\link{UCforecast}}, \code{\link{UCvalidate}}, \code{\link{UCfilter}}, \code{\link{UCsmooth}}, 
 #'          \code{\link{UCdisturb}}, \code{\link{UCcomponents}}
 #'          
 #' @examples
 #' \dontrun{
 #' y <- log(AirPassengers)
-#' m1 <- UCmodel(y, model = "llt/equal/arma(0,0)")
+#' m1 <- UCforecast(y, model = "llt/equal/arma(0,0)")
 #' summary(m1)
 #' }
 #' @noRd
@@ -56,13 +56,13 @@ summary.UComp = function(object, ...){
 #' 
 #' @author Diego J. Pedregal
 #' 
-#' @seealso \code{\link{UC}}, \code{\link{UCmodel}}, \code{\link{UCvalidate}}, \code{\link{UCfilter}}, \code{\link{UCsmooth}}, 
+#' @seealso \code{\link{UC}}, \code{\link{UCforecast}}, \code{\link{UCvalidate}}, \code{\link{UCfilter}}, \code{\link{UCsmooth}}, 
 #'          \code{\link{UCdisturb}}, \code{\link{UCcomponents}}
 #'          
 #' @examples
 #' \dontrun{
 #' y <- log(AirPassengers)
-#' m1 <- UCmodel(y, model = "llt/equal/arma(0,0)")
+#' m1 <- UCforecast(y, model = "llt/equal/arma(0,0)")
 #' plot(m1)
 #' }
 #' @noRd
@@ -88,13 +88,13 @@ plot.UComp = function(x, ...){
 #' 
 #' @author Diego J. Pedregal
 #' 
-#' @seealso \code{\link{UC}}, \code{\link{UCmodel}}, \code{\link{UCvalidate}}, \code{\link{UCfilter}}, \code{\link{UCsmooth}}, 
+#' @seealso \code{\link{UC}}, \code{\link{UCforecast}}, \code{\link{UCvalidate}}, \code{\link{UCfilter}}, \code{\link{UCsmooth}}, 
 #'          \code{\link{UCdisturb}}, \code{\link{UCcomponents}}
 #'          
 #' @examples
 #' \dontrun{
 #' y <- log(AirPassengers)
-#' m1 <- UCmodel(y, model = "llt/equal/arma(0,0)")
+#' m1 <- UCforecast(y, model = "llt/equal/arma(0,0)")
 #' fitted(m1)
 #' }
 #' @noRd
@@ -115,13 +115,13 @@ fitted.UComp = function(object, ...){
 #' 
 #' @author Diego J. Pedregal
 #' 
-#' @seealso \code{\link{UC}}, \code{\link{UCmodel}}, \code{\link{UCvalidate}}, \code{\link{UCfilter}}, \code{\link{UCsmooth}}, 
+#' @seealso \code{\link{UC}}, \code{\link{UCforecast}}, \code{\link{UCvalidate}}, \code{\link{UCfilter}}, \code{\link{UCsmooth}}, 
 #'          \code{\link{UCdisturb}}, \code{\link{UCcomponents}}
 #'          
 #' @examples
 #' \dontrun{
 #' y <- log(AirPassengers)
-#' m1 <- UCmodel(y, model = "llt/equal/arma(0,0)")
+#' m1 <- UCforecast(y, model = "llt/equal/arma(0,0)")
 #' residuals(m1)
 #' }
 #' @noRd
@@ -142,13 +142,13 @@ residuals.UComp = function(object, ...){
 #' 
 #' @author Diego J. Pedregal
 #' 
-#' @seealso \code{\link{UC}}, \code{\link{UCmodel}}, \code{\link{UCvalidate}}, \code{\link{UCfilter}}, \code{\link{UCsmooth}}, 
+#' @seealso \code{\link{UC}}, \code{\link{UCforecast}}, \code{\link{UCvalidate}}, \code{\link{UCfilter}}, \code{\link{UCsmooth}}, 
 #'          \code{\link{UCdisturb}}, \code{\link{UCcomponents}}
 #'          
 #' @examples
 #' \dontrun{
 #' y <- log(AirPassengers)
-#' m1 <- UCmodel(y, model = "llt/equal/arma(0,0)")
+#' m1 <- UCforecast(y, model = "llt/equal/arma(0,0)")
 #' logLik(m1)
 #' }
 #' @noRd
@@ -178,13 +178,13 @@ logLik.UComp = function(object, ...){
 #' 
 #' @author Diego J. Pedregal
 #' 
-#' @seealso \code{\link{UC}}, \code{\link{UCmodel}}, \code{\link{UCvalidate}}, \code{\link{UCfilter}}, \code{\link{UCsmooth}}, 
+#' @seealso \code{\link{UC}}, \code{\link{UCforecast}}, \code{\link{UCvalidate}}, \code{\link{UCfilter}}, \code{\link{UCsmooth}}, 
 #'          \code{\link{UCdisturb}}, \code{\link{UCcomponents}}
 #'          
 #' @examples
 #' \dontrun{
 #' y <- log(AirPassengers)
-#' m1 <- UCmodel(y, model = "llt/equal/arma(0,0)")
+#' m1 <- UCforecast(y, model = "llt/equal/arma(0,0)")
 #' AIC(m1)
 #' }
 #' @export 
@@ -208,13 +208,13 @@ AIC.UComp = function(object, ..., k = 2){
 #' 
 #' @author Diego J. Pedregal
 #' 
-#' @seealso \code{\link{UC}}, \code{\link{UCmodel}}, \code{\link{UCvalidate}}, \code{\link{UCfilter}}, \code{\link{UCsmooth}}, 
+#' @seealso \code{\link{UC}}, \code{\link{UCforecast}}, \code{\link{UCvalidate}}, \code{\link{UCfilter}}, \code{\link{UCsmooth}}, 
 #'          \code{\link{UCdisturb}}, \code{\link{UCcomponents}}
 #'          
 #' @examples
 #' \dontrun{
 #' y <- log(AirPassengers)
-#' m1 <- UCmodel(y, model = "llt/equal/arma(0,0)")
+#' m1 <- UCforecast(y, model = "llt/equal/arma(0,0)")
 #' BIC(m1)
 #' }
 #' @export 
@@ -231,13 +231,13 @@ BIC.UComp = function(object, ...){
 #' 
 #' @author Diego J. Pedregal
 #' 
-#' @seealso \code{\link{UC}}, \code{\link{UCmodel}}, \code{\link{UCvalidate}}, \code{\link{UCfilter}}, \code{\link{UCsmooth}}, 
+#' @seealso \code{\link{UC}}, \code{\link{UCforecast}}, \code{\link{UCvalidate}}, \code{\link{UCfilter}}, \code{\link{UCsmooth}}, 
 #'          \code{\link{UCdisturb}}, \code{\link{UCcomponents}}
 #'          
 #' @examples
 #' \dontrun{
 #' y <- log(AirPassengers)
-#' m1 <- UCmodel(y, model = "llt/equal/arma(0,0)")
+#' m1 <- UCforecast(y, model = "llt/equal/arma(0,0)")
 #' coef(m1)
 #' }
 #' @noRd
@@ -264,13 +264,13 @@ coef.UComp = function(object, ...){
 #' 
 #' @return A matrix with the mean forecasts and lower and upper prediction intervals
 #' 
-#' @seealso \code{\link{UC}}, \code{\link{UCmodel}}, \code{\link{UCvalidate}}, \code{\link{UCfilter}}, \code{\link{UCsmooth}}, 
+#' @seealso \code{\link{UC}}, \code{\link{UCforecast}}, \code{\link{UCvalidate}}, \code{\link{UCfilter}}, \code{\link{UCsmooth}}, 
 #'          \code{\link{UCdisturb}}, \code{\link{UCcomponents}}
 #'          
 #' @examples
 #' \dontrun{
 #' y <- log(AirPassengers)
-#' m1 <- UCmodel(y, model = "llt/eq/arma(0,0)")
+#' m1 <- UCforecast(y, model = "llt/eq/arma(0,0)")
 #' f1 <- predict(m1)
 #' }
 #' @export 
@@ -310,13 +310,13 @@ predict.UComp = function(object, newdata = NULL, n.ahead = NULL, level = 0.95, .
 #' 
 #' @author Diego J. Pedregal
 #' 
-#' @seealso \code{\link{UC}}, \code{\link{UCmodel}}, \code{\link{UCvalidate}}, \code{\link{UCfilter}}, \code{\link{UCsmooth}}, 
+#' @seealso \code{\link{UC}}, \code{\link{UCforecast}}, \code{\link{UCvalidate}}, \code{\link{UCfilter}}, \code{\link{UCsmooth}}, 
 #'          \code{\link{UCdisturb}}, \code{\link{UCcomponents}}
 #'          
 #' @examples
 #' \dontrun{
 #' y <- log(AirPassengers)
-#' m1 <- UCmodel(y, model = "llt/eq/arma(0,0)")
+#' m1 <- UCforecast(y, model = "llt/eq/arma(0,0)")
 #' tsdiag(m1)
 #' }
 #' @noRd
@@ -349,7 +349,7 @@ tsdiag.UComp = function(object, gof.lag = NULL, ...){
 #'
 #' @details Provides initial parameters of a given model for the time series.
 #' They may be changed arbitrarily by the user to include as an input \code{p0} to
-#' \code{UC} or \code{UCmodel} functions (see example below).
+#' \code{UC} or \code{UCforecast} functions (see example below).
 #' There is no guarantee that the model will converge and selecting initial conditions
 #' should be used with care.
 #'
@@ -360,7 +360,7 @@ tsdiag.UComp = function(object, gof.lag = NULL, ...){
 #' @author Diego J. Pedregal
 #' 
 #' @return A set of parameters p0 of an object of class \code{UComp}
-#' to use as input to \code{\link{UC}}, \code{\link{UCmodel}} or \code{\link{UCsetup}}.
+#' to use as input to \code{\link{UC}}, \code{\link{UCforecast}} or \code{\link{UCsetup}}.
 #' 
 #' @seealso \code{\link{UC}}, \code{\link{UCvalidate}}, \code{\link{UCfilter}}, \code{\link{UCsmooth}}, 
 #'          \code{\link{UCdisturb}}, \code{\link{UCcomponents}},
@@ -370,7 +370,7 @@ tsdiag.UComp = function(object, gof.lag = NULL, ...){
 #' \dontrun{
 #' p0 <- getp0(log(AirPassengers), model = "llt/equal/arma(0,0)")
 #' p0[1] <- 0  # p0[1] <- NA
-#' m <- UCmodel(log(AirPassengers), model = "llt/equal/arma(0,0)", p0 = p0)
+#' m <- UCforecast(log(AirPassengers), model = "llt/equal/arma(0,0)", p0 = p0)
 #' }
 #' @rdname getp0
 #' @export

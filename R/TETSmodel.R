@@ -1,7 +1,7 @@
 #' @title TETSsetup
 #' @description Sets up TOBIT TETS general univariate models
 #'
-#' @details See help of \code{TETSmodel}.
+#' @details See help of \code{TETSforecast}.
 #'
 #' @param y a time series to forecast (it may be either a numerical vector or
 #' a time series object). This is the only input required. If a vector, the additional
@@ -47,9 +47,9 @@
 #' 
 #' @author Diego J. Pedregal
 #' 
-#' @return An object of class \code{TETS}. See \code{TETSmodel}.
+#' @return An object of class \code{TETS}. See \code{TETSforecast}.
 #' 
-#' @seealso \code{\link{TETS}}, \code{\link{TETSmodel}}, \code{\link{TETSvalidate}},
+#' @seealso \code{\link{TETS}}, \code{\link{TETSforecast}}, \code{\link{TETSvalidate}},
 #'          \code{\link{TETScomponents}}, \code{\link{TETSestim}}
 #'          
 #' @examples
@@ -76,10 +76,10 @@ TETSsetup = function(y, u = NULL, model = "???", s = frequency(y), h = 2 * s, cr
     }
     return(out)
 }
-#' @title TETSmodel
+#' @title TETSforecast
 #' @description Estimates and forecasts TOBIT TETS general univariate models
 #'
-#' @details \code{TETSmodel} is a function for modelling and forecasting univariate
+#' @details \code{TETSforecast} is a function for modelling and forecasting univariate
 #' time series with TOBIT ExponenTial Smoothing (TETS) time series models. 
 #' It sets up the model with a number of control variables that
 #' govern the way the rest of functions in the package will work. It also estimates 
@@ -92,7 +92,7 @@ TETSsetup = function(y, u = NULL, model = "???", s = frequency(y), h = 2 * s, cr
 #'         part of the fields of any \code{TETS} object as specified in what follows (function 
 #'         \code{TETS} fills in all of them at once):
 #' 
-#' After running \code{TETSmodel} or \code{TETSestim}:
+#' After running \code{TETSforecast} or \code{TETSestim}:
 #' \item{p}{Estimated parameters}
 #' \item{criteria}{Values for estimation criteria (LogLik, AIC, BIC, AICc)}
 #' \item{yFor}{Forecasted values of output}
@@ -114,12 +114,12 @@ TETSsetup = function(y, u = NULL, model = "???", s = frequency(y), h = 2 * s, cr
 #' @examples
 #' \dontrun{
 #' y <- log(AirPAssengers)
-#' m1 <- TETSmodel(y)
-#' m1 <- TETSmodel(y, model = "A?A")
+#' m1 <- TETSforecast(y)
+#' m1 <- TETSforecast(y, model = "A?A")
 #' }
-#' @rdname TETSmodel
+#' @rdname TETSforecast
 #' @export
-TETSmodel = function(y, u = NULL, model = "???", s = frequency(y), h = max(2 * s, 6), criterion = "aicc", 
+TETSforecast = function(y, u = NULL, model = "???", s = frequency(y), h = max(2 * s, 6), criterion = "aicc", 
                     forIntervals = FALSE, bootstrap = FALSE, nSimul = 5000, verbose = FALSE,
                     alphaL = c(0, 1), betaL = alphaL, gammaL = alphaL, 
                     phiL = c(0.8, 0.98), p0 = -99999, Ymin = -Inf, Ymax = Inf){
@@ -134,15 +134,15 @@ TETSmodel = function(y, u = NULL, model = "???", s = frequency(y), h = max(2 * s
 #' @title TETS
 #' @description Runs all relevant functions for TETS modelling
 #'
-#' @details See help of \code{TETSmodel}.
+#' @details See help of \code{TETSforecast}.
 #'
 #' @inheritParams TETSsetup
 #' 
 #' @author Diego J. Pedregal
 #' 
-#' @return An object of class \code{TETS}. See \code{TETSmodel}.
+#' @return An object of class \code{TETS}. See \code{TETSforecast}.
 #' 
-#' @seealso \code{\link{TETSmodel}}, \code{\link{TETSvalidate}},
+#' @seealso \code{\link{TETSforecast}}, \code{\link{TETSvalidate}},
 #'          \code{\link{TETScomponents}}, \code{\link{TETSestim}}
 #'          
 #' @examples
@@ -164,5 +164,6 @@ TETS = function(y, u = NULL, model = "???", s = frequency(y), h = 2 * s, criteri
     } else {
         m1 = TETSvalidate(m1)
     }
+    m1$v = m1$comp[, 1]
     return(m1)
 }

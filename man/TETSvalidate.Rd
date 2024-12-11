@@ -7,7 +7,7 @@
 TETSvalidate(m)
 }
 \arguments{
-\item{m}{an object of type \code{TETS} created with \code{TETSmodel}}
+\item{m}{an object of type \code{TETS} created with \code{TETSforecast}}
 }
 \value{
 The same input object with the appropriate fields 
@@ -19,12 +19,12 @@ Shows a table of estimation and diagnostics results for TOBIT TETS models
 }
 \examples{
 \dontrun{
-m1 <- TETSmodel(log(gdp))
+m1 <- TETSforecast(log(gdp))
 m1 <- TETSvalidate(m1)
 }
 }
 \seealso{
-\code{\link{TETS}}, \code{\link{TETSmodel}}, \code{\link{TETSvalidate}},
+\code{\link{TETS}}, \code{\link{TETSforecast}}, \code{\link{TETSvalidate}},
          \code{\link{TETScomponents}}
 }
 \author{

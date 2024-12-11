@@ -3,7 +3,7 @@
 #' Standard methods applicable to UComp objects are print, summary, plot,
 #' fitted, residuals, logLik, AIC, BIC, coef, predict, tsdiag.
 #'
-#' @param sys an object of type \code{UComp} created with \code{UC} or \code{UCmodel}
+#' @param sys an object of type \code{UComp} created with \code{UC} or \code{UCforecast}
 #' 
 #' @return The same input object with the appropriate fields 
 #' filled in, in particular:
@@ -14,7 +14,7 @@
 #' 
 #' @author Diego J. Pedregal
 #' 
-#' @seealso \code{\link{UC}}, \code{\link{UCmodel}}, \code{\link{UCvalidate}}, \code{\link{UCfilter}}, 
+#' @seealso \code{\link{UC}}, \code{\link{UCforecast}}, \code{\link{UCvalidate}}, \code{\link{UCfilter}}, 
 #'          \code{\link{UCsmooth}}, \code{\link{UCdisturb}},
 #'          \code{\link{UChp}}
 #'          

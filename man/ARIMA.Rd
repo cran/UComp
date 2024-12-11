@@ -55,13 +55,13 @@ to search for in the automatic identification}
 \item{fast}{fast identification (avoids post-identification checks)}
 }
 \value{
-An object of class \code{ARIMA}. See \code{ARIMAmodel}.
+An object of class \code{ARIMA}. See \code{ARIMAforecast}.
 }
 \description{
 Runs all relevant functions for ARIMA modelling
 }
 \details{
-See help of \code{ARIMAmodel}.
+See help of \code{ARIMAforecast}.
 }
 \examples{
 \dontrun{
@@ -71,7 +71,7 @@ m1 <- ARIMA(y, lambda = NULL)
 }
 }
 \seealso{
-\code{\link{ARIMAmodel}}, \code{\link{ARIMAvalidate}},
+\code{\link{ARIMAforecast}}, \code{\link{ARIMAvalidate}},
 }
 \author{
 Diego J. Pedregal

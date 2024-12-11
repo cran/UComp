@@ -89,7 +89,7 @@ An object of class \code{UComp}. It is a list with fields including all the inpu
         part of the fields of any \code{UComp} object as specified in what follows (function 
         \code{UC} fills in all of them at once):
 
-After running \code{UCmodel} or \code{UCestim}:
+After running \code{UCforecast} or \code{UCestim}:
 \itemize{
 \item p:        Estimated parameters
 \item v:        Estimated innovations (white noise in correctly specified models)

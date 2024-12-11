@@ -84,13 +84,13 @@ model for each component with one or two letters:
 }}
 }
 \value{
-An object of class \code{ETS}. See \code{ETSmodel}.
+An object of class \code{ETS}. See \code{ETSforecast}.
 }
 \description{
 Sets up ETS general univariate models
 }
 \details{
-See help of \code{ETSmodel}.
+See help of \code{ETSforecast}.
 }
 \examples{
 \dontrun{
@@ -101,7 +101,7 @@ m1 <- ETSsetup(y,  model = "?AA")
 }
 }
 \seealso{
-\code{\link{ETS}}, \code{\link{ETSmodel}}, \code{\link{ETSvalidate}},
+\code{\link{ETS}}, \code{\link{ETSforecast}}, \code{\link{ETSvalidate}},
          \code{\link{ETScomponents}}, \code{\link{ETSestim}}
 }
 \author{

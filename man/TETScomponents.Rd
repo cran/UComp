@@ -7,7 +7,7 @@
 TETScomponents(m)
 }
 \arguments{
-\item{m}{an object of type \code{TETS} created with \code{TETSmodel}}
+\item{m}{an object of type \code{TETS} created with \code{TETSforecast}}
 }
 \value{
 The same input object with the appropriate fields 
@@ -24,7 +24,7 @@ m1 <- TETScomponents(m1)
 }
 }
 \seealso{
-\code{\link{TETS}}, \code{\link{TETSmodel}}, \code{\link{TETSvalidate}},
+\code{\link{TETS}}, \code{\link{TETSforecast}}, \code{\link{TETSvalidate}},
          \code{\link{TETSestim}}
 }
 \author{

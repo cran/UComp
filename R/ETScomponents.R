@@ -1,7 +1,7 @@
 #' @title ETScomponents
 #' @description Estimates components of ETS models
 #'
-#' @param m an object of type \code{ETS} created with \code{ETSmodel}
+#' @param m an object of type \code{ETS} created with \code{ETSforecast}
 #' 
 #' @return The same input object with the appropriate fields 
 #' filled in, in particular:
@@ -9,7 +9,7 @@
 #' 
 #' @author Diego J. Pedregal
 #' 
-#' @seealso \code{\link{ETS}}, \code{\link{ETSmodel}}, \code{\link{ETSvalidate}},
+#' @seealso \code{\link{ETS}}, \code{\link{ETSforecast}}, \code{\link{ETSvalidate}},
 #'          \code{\link{ETSestim}}
 #'        
 #' @examples

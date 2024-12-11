@@ -27,12 +27,12 @@ give different results, being m an UComp object.
 \examples{
 \dontrun{
 y <- log(AirPassengers)
-m1 <- UCmodel(y, model = "llt/equal/arma(0,0)")
+m1 <- UCforecast(y, model = "llt/equal/arma(0,0)")
 BIC(m1)
 }
 }
 \seealso{
-\code{\link{UC}}, \code{\link{UCmodel}}, \code{\link{UCvalidate}}, \code{\link{UCfilter}}, \code{\link{UCsmooth}}, 
+\code{\link{UC}}, \code{\link{UCforecast}}, \code{\link{UCvalidate}}, \code{\link{UCfilter}}, \code{\link{UCsmooth}}, 
          \code{\link{UCdisturb}}, \code{\link{UCcomponents}}
 }
 \author{

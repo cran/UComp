@@ -7,7 +7,7 @@
 ARIMAestim(m)
 }
 \arguments{
-\item{m}{an object of type \code{ARIMA} created with \code{ARIMAmodel}}
+\item{m}{an object of type \code{ARIMA} created with \code{ARIMAforecast}}
 }
 \value{
 The same input object with the appropriate fields 
@@ -31,7 +31,7 @@ m1 <- ARIMAestim(m1)
 }
 }
 \seealso{
-\code{\link{ARIMA}}, \code{\link{ARIMAmodel}}, \code{\link{ARIMAvalidate}},
+\code{\link{ARIMA}}, \code{\link{ARIMAforecast}}, \code{\link{ARIMAvalidate}},
 }
 \author{
 Diego J. Pedregal

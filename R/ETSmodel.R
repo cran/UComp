@@ -1,7 +1,7 @@
 #' @title ETSsetup
 #' @description Sets up ETS general univariate models
 #'
-#' @details See help of \code{ETSmodel}.
+#' @details See help of \code{ETSforecast}.
 #'
 #' @param y a time series to forecast (it may be either a numerical vector or
 #' a time series object). This is the only input required. If a vector, the additional
@@ -46,9 +46,9 @@
 #' 
 #' @author Diego J. Pedregal
 #' 
-#' @return An object of class \code{ETS}. See \code{ETSmodel}.
+#' @return An object of class \code{ETS}. See \code{ETSforecast}.
 #' 
-#' @seealso \code{\link{ETS}}, \code{\link{ETSmodel}}, \code{\link{ETSvalidate}},
+#' @seealso \code{\link{ETS}}, \code{\link{ETSforecast}}, \code{\link{ETSvalidate}},
 #'          \code{\link{ETScomponents}}, \code{\link{ETSestim}}
 #'          
 #' @examples
@@ -104,13 +104,14 @@ ETSsetup = function(y, u = NULL, model = "???", s = frequency(y), h = 2 * s, cri
                 ySimul = NULL,
                 table = "",
                 p = NULL,
-                truep = NULL)
+                truep = NULL,
+                v = NULL)
     return(structure(out, class = "ETS"))
 }
-#' @title ETSmodel
+#' @title ETSforecast
 #' @description Estimates and forecasts ETS general univariate models
 #'
-#' @details \code{ETSmodel} is a function for modelling and forecasting univariate
+#' @details \code{ETSforecast} is a function for modelling and forecasting univariate
 #' time series with ExponenTial Smoothing (ETS) time series models. 
 #' It sets up the model with a number of control variables that
 #' govern the way the rest of functions in the package will work. It also estimates 
@@ -123,7 +124,7 @@ ETSsetup = function(y, u = NULL, model = "???", s = frequency(y), h = 2 * s, cri
 #'         part of the fields of any \code{ETS} object as specified in what follows (function 
 #'         \code{ETS} fills in all of them at once):
 #' 
-#' After running \code{ETSmodel} or \code{ETSestim}:
+#' After running \code{ETSforecast} or \code{ETSestim}:
 #' \item{p}{Estimated parameters}
 #' \item{criteria}{Values for estimation criteria (LogLik, AIC, BIC, AICc)}
 #' \item{yFor}{Forecasted values of output}
@@ -145,12 +146,12 @@ ETSsetup = function(y, u = NULL, model = "???", s = frequency(y), h = 2 * s, cri
 #' @examples
 #' \dontrun{
 #' y <- log(AirPAssengers)
-#' m1 <- ETSmodel(y)
-#' m1 <- ETSmodel(y, model = "A?A")
+#' m1 <- ETSforecast(y)
+#' m1 <- ETSforecast(y, model = "A?A")
 #' }
-#' @rdname ETSmodel
+#' @rdname ETSforecast
 #' @export
-ETSmodel = function(y, u = NULL, model = "???", s = frequency(y), h = max(2 * s, 6), criterion = "aicc", 
+ETSforecast = function(y, u = NULL, model = "???", s = frequency(y), h = max(2 * s, 6), criterion = "aicc", 
                     lambda = 1, armaIdent = FALSE, identAll = FALSE, forIntervals = FALSE,
                     bootstrap = FALSE, nSimul = 5000, verbose = FALSE,
                     alphaL = c(1e-8, 1-1e-8), betaL = alphaL, gammaL = alphaL, 
@@ -163,15 +164,15 @@ ETSmodel = function(y, u = NULL, model = "???", s = frequency(y), h = max(2 * s,
 #' @title ETS
 #' @description Runs all relevant functions for ETS modelling
 #'
-#' @details See help of \code{ETSmodel}.
+#' @details See help of \code{ETSforecast}.
 #'
 #' @inheritParams ETSsetup
 #' 
 #' @author Diego J. Pedregal
 #' 
-#' @return An object of class \code{ETS}. See \code{ETSmodel}.
+#' @return An object of class \code{ETS}. See \code{ETSforecast}.
 #' 
-#' @seealso \code{\link{ETSmodel}}, \code{\link{ETSvalidate}},
+#' @seealso \code{\link{ETSforecast}}, \code{\link{ETSvalidate}},
 #'          \code{\link{ETScomponents}}, \code{\link{ETSestim}}
 #'          
 #' @examples
@@ -190,5 +191,6 @@ ETS = function(y, u = NULL, model = "???", s = frequency(y), h = 2 * s, criterio
     m1 = ETSsetup(y, u, model, s, h, criterion, lambda, armaIdent, identAll, forIntervals,
                   bootstrap, nSimul, verbose, alphaL, betaL, gammaL, phiL, p0)
     m1 = ETSvalidate(m1)
+    m1$v = m1$comp[, 1]
     return(m1)
 }

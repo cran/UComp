@@ -1,7 +1,7 @@
 #' @title ARIMAvalidate
 #' @description Shows a table of estimation and diagnostics results for ARIMA models
 #'
-#' @param m an object of type \code{ARIMA} created with \code{ARIMAmodel}
+#' @param m an object of type \code{ARIMA} created with \code{ARIMAforecast}
 #' 
 #' @return The same input object with the appropriate fields 
 #' filled in, in particular:
@@ -9,11 +9,11 @@
 #' 
 #' @author Diego J. Pedregal
 #' 
-#' @seealso \code{\link{ARIMA}}, \code{\link{ARIMAmodel}}, \code{\link{ARIMAvalidate}},
+#' @seealso \code{\link{ARIMA}}, \code{\link{ARIMAforecast}}, \code{\link{ARIMAvalidate}},
 #'          
 #' @examples
 #' \dontrun{
-#' m1 <- ARIMAmodel(log(gdp))
+#' m1 <- ARIMAforecast(log(gdp))
 #' m1 <- ARIMAvalidate(m1)
 #' }
 #' @rdname ARIMAvalidate
@@ -40,6 +40,7 @@ ARIMAvalidate = function(m){
     }
     m$table = output$table
     m$error = output$error
+    m$v = output$error
     m$p = output$p
     m$ySimul = output$ySimul
     m$lambda = output$lambda

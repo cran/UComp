@@ -1,7 +1,7 @@
 #' @title TETScomponents
 #' @description Estimates components of TOBIT TETS models
 #'
-#' @param m an object of type \code{TETS} created with \code{TETSmodel}
+#' @param m an object of type \code{TETS} created with \code{TETSforecast}
 #' 
 #' @return The same input object with the appropriate fields 
 #' filled in, in particular:
@@ -9,7 +9,7 @@
 #' 
 #' @author Diego J. Pedregal
 #' 
-#' @seealso \code{\link{TETS}}, \code{\link{TETSmodel}}, \code{\link{TETSvalidate}},
+#' @seealso \code{\link{TETS}}, \code{\link{TETSforecast}}, \code{\link{TETSvalidate}},
 #'          \code{\link{TETSestim}}
 #'        
 #' @examples

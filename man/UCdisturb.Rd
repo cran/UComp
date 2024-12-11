@@ -33,7 +33,7 @@ m1 <- UCdisturb(m1)
 }
 }
 \seealso{
-\code{\link{UC}}, \code{\link{UCmodel}}, \code{\link{UCvalidate}}, \code{\link{UCfilter}}, 
+\code{\link{UC}}, \code{\link{UCforecast}}, \code{\link{UCvalidate}}, \code{\link{UCfilter}}, 
          \code{\link{UCsmooth}}, \code{\link{UCcomponents}},
          \code{\link{UChp}}
 }

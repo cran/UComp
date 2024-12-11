@@ -19,12 +19,12 @@ See help of \code{ETS}.
 }
 \examples{
 \dontrun{
-m1 <- ETSmodel(log(gdp))
+m1 <- ETSforecast(log(gdp))
 summary(m1)
 }
 }
 \seealso{
-\code{\link{ETS}}, \code{\link{ETSmodel}}, \code{\link{ETSvalidate}},
+\code{\link{ETS}}, \code{\link{ETSforecast}}, \code{\link{ETSvalidate}},
          \code{\link{ETScomponents}}, \code{\link{ETSestim}}
 }
 \author{

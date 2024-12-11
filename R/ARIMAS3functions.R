@@ -8,11 +8,11 @@
 #' 
 #' @author Diego J. Pedregal
 #' 
-#' @seealso \code{\link{ARIMA}}, \code{\link{ARIMAmodel}}, \code{\link{ARIMAvalidate}},
+#' @seealso \code{\link{ARIMA}}, \code{\link{ARIMAforecast}}, \code{\link{ARIMAvalidate}},
 #'          
 #' @examples
 #' \dontrun{
-#' m1 <- ARIMAmodel(log(gdp))
+#' m1 <- ARIMAforecast(log(gdp))
 #' print(m1)
 #' }
 #' @rdname print
@@ -34,11 +34,11 @@ print.ARIMA = function(x, ...){
 #'
 #' @author Diego J. Pedregal
 #' 
-#' @seealso \code{\link{ARIMA}}, \code{\link{ARIMAmodel}}, \code{\link{ARIMAvalidate}},
+#' @seealso \code{\link{ARIMA}}, \code{\link{ARIMAforecast}}, \code{\link{ARIMAvalidate}},
 #'          
 #' @examples
 #' \dontrun{
-#' m1 <- ARIMAmodel(log(gdp))
+#' m1 <- ARIMAforecast(log(gdp))
 #' summary(m1)
 #' }
 #' @rdname summary.ARIMA
@@ -56,7 +56,7 @@ summary.ARIMA = function(object, ...){
 #' 
 #' @author Diego J. Pedregal
 #' 
-#' @seealso \code{\link{ARIMA}}, \code{\link{ARIMAmodel}}, \code{\link{ARIMAvalidate}},
+#' @seealso \code{\link{ARIMA}}, \code{\link{ARIMAforecast}}, \code{\link{ARIMAvalidate}},
 #'          
 #' @examples
 #' \dontrun{
@@ -79,11 +79,11 @@ residuals.ARIMA = function(object, ...){
 #' 
 #' @author Diego J. Pedregal
 #' 
-#' @seealso \code{\link{ARIMA}}, \code{\link{ARIMAmodel}}, \code{\link{ARIMAvalidate}},
+#' @seealso \code{\link{ARIMA}}, \code{\link{ARIMAforecast}}, \code{\link{ARIMAvalidate}},
 #'          
 #' @examples
 #' \dontrun{
-#' m1 <- ARIMAmodel(log(gdp))
+#' m1 <- ARIMAforecast(log(gdp))
 #' plot(m1)
 #' }
 #' @rdname plot.ARIMA

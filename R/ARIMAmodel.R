@@ -1,7 +1,7 @@
 #' @title ARIMAsetup
 #' @description Sets up ARIMA general models
 #'
-#' @details See help of \code{ARIMAmodel}.
+#' @details See help of \code{ARIMAforecast}.
 #'
 #' @param y a time series to forecast (it may be either a numerical vector or
 #' a time series object). This is the only input required. If a vector, the additional
@@ -26,9 +26,9 @@
 #' 
 #' @author Diego J. Pedregal
 #' 
-#' @return An object of class \code{ARIMA}. See \code{ARIMAmodel}.
+#' @return An object of class \code{ARIMA}. See \code{ARIMAforecast}.
 #' 
-#' @seealso \code{\link{ARIMA}}, \code{\link{ARIMAmodel}}, \code{\link{ARIMAvalidate}},
+#' @seealso \code{\link{ARIMA}}, \code{\link{ARIMAforecast}}, \code{\link{ARIMAvalidate}},
 #'          
 #' @examples
 #' \dontrun{
@@ -79,13 +79,14 @@ ARIMAsetup = function(y, u = NULL, model = NULL, cnst = NULL, s = frequency(y),
                     BIC = NA,
                     AIC = NA,
                     AICc = NA,
-                    IC = NA)
+                    IC = NA,
+                    v = NULL)
         return(structure(out, class = "ARIMA"))
 }
-#' @title ARIMAmodel
+#' @title ARIMAforecast
 #' @description Estimates and forecasts ARIMA general univariate models
 #'
-#' @details \code{ARIMAmodel} is a function for modelling and forecasting univariate
+#' @details \code{ARIMAforecast} is a function for modelling and forecasting univariate
 #' time series with Autoregressive Integrated Moving Average (ARIMA) time series models. 
 #' It sets up the model with a number of control variables that
 #' govern the way the rest of functions in the package will work. It also estimates 
@@ -98,7 +99,7 @@ ARIMAsetup = function(y, u = NULL, model = NULL, cnst = NULL, s = frequency(y),
 #'         part of the fields of any \code{ARIMA} object as specified in what follows (function 
 #'         \code{ARIMA} fills in all of them at once):
 #' 
-#' After running \code{ARIMAmodel} or \code{ARIMA}:
+#' After running \code{ARIMAforecast} or \code{ARIMA}:
 #' \item{p}{Estimated parameters}
 #' \item{yFor}{Forecasted values of output}
 #' \item{yForV}{Variance of forecasted values of output}
@@ -114,12 +115,12 @@ ARIMAsetup = function(y, u = NULL, model = NULL, cnst = NULL, s = frequency(y),
 #' @examples
 #' \dontrun{
 #' y <- log(AirPAssengers)
-#' m1 <- ARIMAmodel(y)
-#' m1 <- ARIMAmodel(y, lambda = NULL)
+#' m1 <- ARIMAforecast(y)
+#' m1 <- ARIMAforecast(y, lambda = NULL)
 #' }
-#' @rdname ARIMAmodel
+#' @rdname ARIMAforecast
 #' @export
-ARIMAmodel = function(y, u = NULL, model = NULL, cnst = NULL, s = frequency(y), 
+ARIMAforecast = function(y, u = NULL, model = NULL, cnst = NULL, s = frequency(y), 
                       criterion = "bic", h = 2 * s, verbose = FALSE, lambda = 1, 
                       maxOrders = c(3, 2, 3, 2, 1, 2), bootstrap = FALSE, nSimul = 5000,
                       fast = FALSE){
@@ -187,15 +188,15 @@ ARIMAmodel = function(y, u = NULL, model = NULL, cnst = NULL, s = frequency(y),
 #' @title ARIMA
 #' @description Runs all relevant functions for ARIMA modelling
 #'
-#' @details See help of \code{ARIMAmodel}.
+#' @details See help of \code{ARIMAforecast}.
 #'
 #' @inheritParams ARIMAsetup
 #' 
 #' @author Diego J. Pedregal
 #' 
-#' @return An object of class \code{ARIMA}. See \code{ARIMAmodel}.
+#' @return An object of class \code{ARIMA}. See \code{ARIMAforecast}.
 #' 
-#' @seealso \code{\link{ARIMAmodel}}, \code{\link{ARIMAvalidate}},
+#' @seealso \code{\link{ARIMAforecast}}, \code{\link{ARIMAvalidate}},
 #'          
 #' @examples
 #' \dontrun{

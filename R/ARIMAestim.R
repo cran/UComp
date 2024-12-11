@@ -4,7 +4,7 @@
 #' @details \code{ARIMAestim} estimates and forecasts a time series using 
 #' an ARIMA model
 #'
-#' @param m an object of type \code{ARIMA} created with \code{ARIMAmodel}
+#' @param m an object of type \code{ARIMA} created with \code{ARIMAforecast}
 #' 
 #' @return The same input object with the appropriate fields 
 #' filled in, in particular:
@@ -15,7 +15,7 @@
 #' 
 #' @author Diego J. Pedregal
 #' 
-#' @seealso \code{\link{ARIMA}}, \code{\link{ARIMAmodel}}, \code{\link{ARIMAvalidate}},
+#' @seealso \code{\link{ARIMA}}, \code{\link{ARIMAforecast}}, \code{\link{ARIMAvalidate}},
 #'          
 #' @examples
 #' \dontrun{

@@ -19,12 +19,12 @@ See help of \code{ARIMA}.
 }
 \examples{
 \dontrun{
-m1 <- ARIMAmodel(log(gdp))
+m1 <- ARIMAforecast(log(gdp))
 plot(m1)
 }
 }
 \seealso{
-\code{\link{ARIMA}}, \code{\link{ARIMAmodel}}, \code{\link{ARIMAvalidate}},
+\code{\link{ARIMA}}, \code{\link{ARIMAforecast}}, \code{\link{ARIMAvalidate}},
 }
 \author{
 Diego J. Pedregal

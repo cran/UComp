@@ -84,13 +84,13 @@ model for each component with one or two letters:
 }}
 }
 \value{
-An object of class \code{TETS}. See \code{TETSmodel}.
+An object of class \code{TETS}. See \code{TETSforecast}.
 }
 \description{
 Runs all relevant functions for TETS modelling
 }
 \details{
-See help of \code{TETSmodel}.
+See help of \code{TETSforecast}.
 }
 \examples{
 \dontrun{
@@ -100,7 +100,7 @@ m1 <- TETS(y, model = "MAM")
 }
 }
 \seealso{
-\code{\link{TETSmodel}}, \code{\link{TETSvalidate}},
+\code{\link{TETSforecast}}, \code{\link{TETSvalidate}},
          \code{\link{TETScomponents}}, \code{\link{TETSestim}}
 }
 \author{

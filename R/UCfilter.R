@@ -158,7 +158,7 @@ filter_ = function(sys, command){
 #' 
 #' @author Diego J. Pedregal
 #' 
-#' @seealso \code{\link{UC}}, \code{\link{UCmodel}}, \code{\link{UCvalidate}}, 
+#' @seealso \code{\link{UC}}, \code{\link{UCforecast}}, \code{\link{UCvalidate}}, 
 #'          \code{\link{UCsmooth}}, \code{\link{UCdisturb}}, \code{\link{UCcomponents}},
 #'          \code{\link{UChp}}
 #'          
@@ -191,7 +191,7 @@ UCfilter = function(sys){
 #' 
 #' @author Diego J. Pedregal
 #' 
-#' @seealso \code{\link{UC}}, \code{\link{UCmodel}}, \code{\link{UCvalidate}}, \code{\link{UCfilter}}, 
+#' @seealso \code{\link{UC}}, \code{\link{UCforecast}}, \code{\link{UCvalidate}}, \code{\link{UCfilter}}, 
 #'          \code{\link{UCdisturb}}, \code{\link{UCcomponents}},
 #'          \code{\link{UChp}}
 #'          
@@ -226,7 +226,7 @@ UCsmooth = function(sys){
 #' 
 #' @author Diego J. Pedregal
 #' 
-#' @seealso \code{\link{UC}}, \code{\link{UCmodel}}, \code{\link{UCvalidate}}, \code{\link{UCfilter}}, 
+#' @seealso \code{\link{UC}}, \code{\link{UCforecast}}, \code{\link{UCvalidate}}, \code{\link{UCfilter}}, 
 #'          \code{\link{UCsmooth}}, \code{\link{UCcomponents}},
 #'          \code{\link{UChp}}
 #'          
@@ -252,7 +252,7 @@ UCdisturb = function(sys){
 #' 
 #' @author Diego J. Pedregal
 #' 
-#' @seealso \code{\link{UC}}, \code{\link{UCmodel}}, \code{\link{UCvalidate}}, \code{\link{UCfilter}}, 
+#' @seealso \code{\link{UC}}, \code{\link{UCforecast}}, \code{\link{UCvalidate}}, \code{\link{UCfilter}}, 
 #'          \code{\link{UCsmooth}}, \code{\link{UCcomponents}}, \code{\link{UCdisturb}}
 #'          
 #' @examples

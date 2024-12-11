@@ -21,7 +21,7 @@ plot(y)
 }
 }
 \seealso{
-\code{\link{inv.box.cox}}, \code{\link{UC}}, \code{\link{UCmodel}}, \code{\link{UCvalidate}}, \code{\link{UCfilter}}, \code{\link{UCsmooth}}, 
+\code{\link{inv.box.cox}}, \code{\link{UC}}, \code{\link{UCforecast}}, \code{\link{UCvalidate}}, \code{\link{UCfilter}}, \code{\link{UCsmooth}}, 
          \code{\link{UCdisturb}}, \code{\link{UCcomponents}}
 }
 \author{

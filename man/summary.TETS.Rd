@@ -19,12 +19,12 @@ See help of \code{TETS}.
 }
 \examples{
 \dontrun{
-m1 <- TETSmodel(log(gdp))
+m1 <- TETSforecast(log(gdp))
 summary(m1)
 }
 }
 \seealso{
-\code{\link{TETS}}, \code{\link{TETSmodel}}, \code{\link{TETSvalidate}},
+\code{\link{TETS}}, \code{\link{TETSforecast}}, \code{\link{TETSvalidate}},
          \code{\link{TETScomponents}}, \code{\link{TETSestim}}
 }
 \author{

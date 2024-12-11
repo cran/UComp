@@ -1,8 +1,8 @@
 Package: UComp
 Type: Package
 Title: Automatic Univariate Time Series Modelling of many Kinds
-Version: 5.0.4
-Date: 2024-07-25
+Version: 5.0.5
+Date: 2024-12-20
 Author: Diego J. Pedregal [aut, cre] (<https://orcid.org/0000-0003-4958-0969>)
 Authors@R: c(person("Diego J.", "Pedregal", role = c("aut", "cre"),
                      email = "Diego.Pedregal@uclm.es",
@@ -25,8 +25,8 @@ LinkingTo: Rcpp, RcppArmadillo
 Depends: Rcpp (>= 1.0.3), R (>= 3.5.0)
 LazyData: true
 Suggests: knitr, rmarkdown
-RoxygenNote: 7.3.1
+RoxygenNote: 7.3.2
 NeedsCompilation: yes
-Packaged: 2024-07-26 07:45:31 UTC; diego.pedregal
+Packaged: 2024-12-11 12:48:53 UTC; diego.pedregal
 Repository: CRAN
-Date/Publication: 2024-07-26 08:20:05 UTC
+Date/Publication: 2024-12-11 13:10:02 UTC

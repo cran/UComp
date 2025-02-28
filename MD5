@@ -1,5 +1,5 @@
 9abe9802f5eefc9497192986b98b9bdc *ChangeLog
-a2bdc2ce694da0f749b58f7ec81d5580 *DESCRIPTION
+6753e8989feaf063d281fbbfa1881be9 *DESCRIPTION
 53549a0baed371fec76dfd1d8d0e94d7 *NAMESPACE
 20fa75d55e0dcb2fee159ef437b97944 *R/ARIMAS3functions.R
 d17e2815ad822f438a20b5c517bfed0f *R/ARIMAestim.R
@@ -124,4 +124,4 @@ ba440686ca1654b67df8186909457a6c *src/SSpace.h
 6d12523ffe8d040f50571e20231bfce3 *src/UCompC.cpp
 980758e4a1dcb1e82fcd2ea5455afe9f *src/boxcox.h
 4febb2d67f192eb94b6fad03dc495627 *src/optim.h
-45a1531dd2827b970eab1baf55538077 *src/stats.h
+7d2a99b2c34d2628964f9de3477eec0c *src/stats.h

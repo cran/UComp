@@ -1,3 +1,7 @@
+Changes from version 5.0.6 to 5.1
+* TETS models extended to include non-linear and heteroscedastic models
+Changes from version 5.0.5 to 5.0.6
+* Adapt to Armadillo 14.4.0
 Changes from version 5.0.4 to 5.0.5
 * Remove PTS models (it will appear in another package)
 * All *model (*= UC, ARIMA, ETS, TETS) functions renamed as *forecast

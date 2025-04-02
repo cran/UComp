@@ -542,14 +542,14 @@ void ETSclass::validate(){
     }
     inputModel.table.push_back("-------------------------------------------------------------\n");
      // Show Table
-     if (inputModel.verbose){
+     // if (inputModel.verbose){
          // for (auto i = inputs.table.begin(); i != inputs.table.end(); i++){
          //   cout << *i << " ";
          // }
-         for (unsigned int i = 0; i < inputModel.table.size(); i++){
-           Rprintf("%s ", inputModel.table[i].c_str());
-         }
-     }
+     //     for (unsigned int i = 0; i < inputModel.table.size(); i++){
+     //       Rprintf("%s ", inputModel.table[i].c_str());
+     //     }
+     // }
 }
 // Simulate system for forecasts confidence bands estimation
 void ETSclass::simulate(uword n, vec x0){
@@ -842,7 +842,7 @@ void AAM(vec& y, rowvec fitu, int n, int ns, vec& x, vec g, double phi, double e
             e = a(t);
             y(t) = fit * s + e + fitu(t);
         }
-        x(1) += g(1) * e / x(0);
+        x(1) = phi * x(1) + g(1) * e / x(0);
         x(0) = fit + g(0) * e / s;
         x.rows(3, ns) = x.rows(2, ns - 1);
         x(2) = s + g(2) * e / fit;
@@ -1076,7 +1076,7 @@ void ETSclass::components(){
                         m->comp(t, 0) = e;
                     } else
                         e = 0.0;
-                    x(1) += g(1) * e / x(0);
+                    x(1) = m->phi * x(1) + g(1) * e / x(0);
                     x(0) = fit + g(0) * e / s;
                     x.rows(3, ns) = x.rows(2, ns - 1);
                     x(2) = s + g(2) * e / fit;
@@ -1601,8 +1601,8 @@ void etsMatrices(ETSmodel* m, vec p){
                 recalculate = true;
                 limits(1, 1) = aux(0);
                 if (limits(1, 1) < limits(1, 0)){
-                    if (m->verbose)
-                        Rprintf("WARNING: Inadmissible value for beta parameter!!\n");
+                    // if (m->verbose)
+                    //     Rprintf("WARNING: Inadmissible value for beta parameter!!\n");
                     aux(1) = datum::nan;
                 }
             }
@@ -1612,8 +1612,8 @@ void etsMatrices(ETSmodel* m, vec p){
                 recalculate = true;
                 limits(m->nPar(0), 1) = 1 - aux(0);
                 if (limits(m->nPar(0), 1) < limits(m->nPar(0), 0)){
-                    if (m->verbose)
-                        Rprintf("WARNING: Inadmissible value for gamma parameter!!\n");
+                    // if (m->verbose)
+                    //     Rprintf("WARNING: Inadmissible value for gamma parameter!!\n");
                     aux(m->nPar(0)) = datum::nan;
                 }
             }
@@ -1765,88 +1765,14 @@ double llikETS(vec& p, void* opt_data){
             // Additive error
             if (m->model == "AMN" || m->model == "AMdN") {
                 AMN(m->y, fitu, n, x, g, phi, e, a, obj, logr);
-                /*
-                for (int t = 0; t < n; t++){
-                    b = pow(x(1), phi);
-                    fit = x(0) * b;
-                    if (isfinite(m->y(t)))
-                        e = m->y(t) - fit;
-                    else
-                        e = 0.0;
-                    x(1) = b + g(1) * e / x(0);
-                    x(0) = fit + g(0) * e;
-                    obj += e * e;
-                }
-                */
             } else if (m->model == "ANM"){
                 ANM(m->y, fitu, n, ns, x, g, e, a, obj, logr);
-                /*
-                for (int t = 0; t < n; t++){
-                    s = x(ns);
-                    fit = x(0);
-                    if (isfinite(m->y(t)))
-                        e = m->y(t) - fit * s;
-                    else
-                        e = 0.0;
-                    x(0) += g(0) * e / s;
-                    x.rows(2, ns) = x.rows(1, ns - 1);
-                    x(1) = s + g(1) * e / fit;
-                    obj += e * e;
-                }
-                */
             } else if (m->model == "AMA" || m->model == "AMdA"){
                 AMA(m->y, fitu, n, ns, x, g, phi, e, a, obj, logr);
-                /*
-                for (int t = 0; t < n; t++){
-                    b = pow(x(1), phi);
-                    s = x(ns);
-                    fit = x(0) * b;
-                    if (isfinite(m->y(t)))
-                        e = m->y(t) - fit - s;
-                    else
-                        e = 0.0;
-                    x(1) = b + g(1) * e / x(0);
-                    x(0) = fit + g(0) * e;
-                    x.rows(3, ns) = x.rows(2, ns - 1);
-                    x(2) = s + g(2) * e;
-                    obj += e * e;
-                }
-                */
             } else if (m->model == "AAM" || m->model == "AAdM"){
                 AAM(m->y, fitu, n, ns, x, g, phi, e, a, obj, logr);
-                /*
-                for (int t = 0; t < n; t++){
-                    s = x(ns);
-                    fit = x(0) + phi * x(1);
-                    if (isfinite(m->y(t)))
-                        e = m->y(t) - fit * s;
-                    else
-                        e = 0.0;
-                    x(1) += g(1) * e / x(0);
-                    x(0) = fit + g(0) * e / s;
-                    x.rows(3, ns) = x.rows(2, ns - 1);
-                    x(2) = s + g(2) * e / fit;
-                    obj += e * e;
-                }
-                */
             } else if (m->model == "AMM" || m->model == "AMdM"){
                 AMM(m->y, fitu, n, ns, x, g, phi, e, a, obj, logr);
-                /*
-                for (int t = 0; t < n; t++){
-                    s = x(ns);
-                    b = pow(x(1), phi);
-                    fit = x(0) * b;
-                    if (isfinite(m->y(t)))
-                        e = m->y(t) - fit * s;
-                    else
-                        e = 0.0;
-                    x(1) = b + g(1) * e / (s * x(0));
-                    x(0) = fit + g(0) * e / s;
-                    x.rows(3, ns) = x.rows(2, ns - 1);
-                    x(2) = s + g(2) * e / fit;
-                    obj += e * e;
-                }
-                */
             }
             obj = log(obj);
             if (!isnan(obj)){
@@ -1880,20 +1806,6 @@ double llikETS(vec& p, void* opt_data){
                 }
             } else if (m->model == "MMN" || m->model == "MMdN"){
                 MMN(m->y, fitu, n, x, g, phi, e, a, obj, logr);
-                /*
-                for (int t = 0; t < n; t++){
-                    b = pow(x(1), phi);
-                    fit = x(0) * b;
-                    if (isfinite(m->y(t)))
-                        e = m->y(t) / fit - 1;
-                    else
-                        e = 0.0;
-                    x(1) = b *(1 + g(1) * e);
-                    x(0) = fit * (1 + g(0) * e);
-                    obj += e * e;
-                    logr *= log(fit);
-                }
-                */
             } else if (m->model == "MNA"){
                 for (int t = 0; t < n; t++){
                     s = x(ns);
@@ -1961,42 +1873,8 @@ double llikETS(vec& p, void* opt_data){
                 }
             } else if (m->model == "MMM" || m->model == "MMdM"){
                 MMM(m->y, fitu, n, ns, x, g, phi, e, a, obj, logr);
-                /*
-                for (int t = 0; t < n; t++){
-                    b = pow(x(1), phi);
-                    s = x(ns);
-                    fit = x(0) * b * s;
-                    if (isfinite(m->y(t)))
-                        e = m->y(t) / fit - 1;
-                    else
-                        e = 0.0;
-                    x(1) = b * (1 + g(1) * e);
-                    x(0) = x(0) * b * (1 + g(0) * e);
-                    x.rows(3, ns) = x.rows(2, ns - 1);
-                    x(2) = s * (1 + g(2) * e);
-                    obj += e * e;
-                    logr *= log(fit);
-                }
-                */
             } else if (m->model == "MMA" || m->model == "MMdA"){
                 MMA(m->y, fitu, n, ns, x, g, phi, e, a, obj, logr);
-                /*
-                for (int t = 0; t < n; t++){
-                    b = pow(x(1), phi);
-                    s = x(ns);
-                    fit = x(0) * b + s;
-                    if (isfinite(m->y(t)))
-                        e = m->y(t) / fit - 1;
-                    else
-                        e = 0.0;
-                    x(1) = b + g(1) * fit * e / x(0);
-                    x(0) = x(0) * b + g(0) * fit * e;
-                    x.rows(3, ns) = x.rows(2, ns - 1);
-                    x(2) = s + g(2) * fit * e;
-                    obj += e * e;
-                    logr *= log(fit);
-                }
-                */
             }
             //m->loge2 = log(obj);
             //m->logr = log(logr);
@@ -2282,9 +2160,12 @@ int quasiNewtonETS(std::function <double (vec& x, void* inputs)> objFun,
     flag = stopCriteria(crit, mean(abs(gradNew)), objOld - objNew,
                         mean(abs(xOld - xNew) / abs(xOld)), nIter, nOverallFuns);
     if (flag > 5){
-        objNew = objOld;
+        // objNew = objOld;
+        // gradNew = gradOld;
+        // xNew = xOld;
         gradNew = gradOld;
         xNew = xOld;
+        objNew = objFun(xNew, inputs);
     }
     // Inverse Hessian BFGS update
     if (!flag){

@@ -1,16 +1,4 @@
 // Hacer version R, MATLAB y Python
-// #include <iostream>
-// #include <math.h>
-// #include <string.h>
-// #include <armadillo>
-// using namespace arma;
-// using namespace std;
-// #include "DJPTtools.h"
-// #include "optim.h"
-// #include "stats.h"
-// #include "boxcox.h"
-// #include "SSpace.h"
-// #include "ARMAmodel.h"
 // #include "ETSmodel.h"
 
 // Tobit Exponential Smoothing models
@@ -61,7 +49,7 @@ double llikTETS(vec&, void*);
 vec gradTETS(vec&, void*, double&, int&);
 // One step ahead prediction
 void oneStep(double, vec&, vec&, vec&, double, double, double, bool,
-             vec&, vec&, double&, double&);
+             double&, vec&, double&, double&);
 // System matrices for given p
 // void tetsMatrices(TETSmodel*, vec);
 /****************************************************
@@ -268,11 +256,11 @@ void TETSclass::validate(){
     data.m.table.push_back("-------------------------------------------------------------\n");
     string firstLine = data.m.table[1];
     data.m.table[1].replace(7, 1, " TOBIT T");
-    if (data.m.verbose){
-        for (unsigned int i = 0; i < data.m.table.size(); i++){
-            Rprintf("%s ", data.m.table[i].c_str());
-        }
-    }
+    // if (data.m.verbose){
+    //     for (unsigned int i = 0; i < data.m.table.size(); i++){
+    //         Rprintf("%s ", data.m.table[i].c_str());
+    //     }
+    // }
     m.inputModel.verbose = VERBOSE;
 }
 // Identification
@@ -286,26 +274,26 @@ void TETSclass::ident(bool verbose){
     vector<string> allModels;
     string error, trend, seasonal;
     if (data.m.error == "?"){
-        // if (data.m.negative)
+        if (data.m.negative)
             error = "A";
-        // else
-        //     error = "A";
+        else
+            error = "A/M";
     } else {
         error = data.m.error;
     }
     if (data.m.trend == "?"){
-        // if (data.m.negative)
+        if (data.m.negative)
             trend = "N/A/Ad";
-        // else
-        //     trend = "N/A/Ad/M/Md";
+        else
+            trend = "N/A/Ad/M/Md";
     } else {
         trend = data.m.trend;
     }
     if (data.m.seasonal == "?"){
-        // if (data.m.negative)
+        if (data.m.negative)
             seasonal = "N/A";
-        // else
-        //     seasonal = "N/A/M";
+        else
+            seasonal = "N/A/M";
     } else {
         seasonal = data.m.seasonal;
     }
@@ -369,6 +357,7 @@ void TETSclass::components(){
     bool seas = (m->s > 1), slope = (m->trend != "N"), arma = (sum(m->arma) > 0);
     vec x = m->x0;
     bool nu = (data.m.u.n_rows > 0);
+    int ns = m->x0.n_elem - 1;
     mat fitu;
     // Components names
     m->compNames = "Error/Fit/Level";
@@ -411,7 +400,8 @@ void TETSclass::components(){
         Ymin = join_vert(data.Ymin, aux),
         Ymax = join_vert(data.Ymax, aux);
     if (m->modelType == 0){
-        vec e(1), Za(1);
+        vec Za(1);
+        double e;
         int ind = m->ns(0) + m->ns(1);
         // double lMin, lMax, cdfMin, cdfMax, pUn, pdfMin, pdfMax,
         //     lt, ct, ctpUn, yhat;
@@ -424,50 +414,8 @@ void TETSclass::components(){
             Fx = m->F * x;
             oneStep(y(t), Za, Fx, m->g, sigma, Ymin(t),
                     Ymax(t), t < n, e, x, cdfMin, cdfMax);
-            // if (isfinite(y(t)) && t < n){
-                // if (t >142){
-                //     cout << "t400: " << t << endl;
-                // }
-            //     lMin = (data.Ymin(t) - Za(0)) / sigma;
-            //     lMax = (data.Ymax(t) - Za(0)) / sigma;
-            //     cdfMax = 1 - normcdf(lMax);
-            //     cdfMin = normcdf(lMin);
-            //     pUn = 1 - cdfMax - cdfMin;
-            //     pdfMin = normpdf(lMin);
-            //     pdfMax = normpdf(lMax);
-            //     if (pUn < 1e-5){
-            //         lt = 0;
-            //         ctpUn = 0;
-            //         yhat = 0;
-            //     } else {
-            //         lt = (pdfMax - pdfMin) / pUn;  // Inversa del ratio de Mills
-            //         yhat = pUn * (Za(0) - sigma * lt);
-            //     }
-            //     if (!isfinite(lMin) && isfinite(lMax)){
-            //         ct = -lMax * pdfMax;
-            //         yhat = yhat + cdfMax * data.Ymax(t);
-            //     } else if (!isfinite(lMax) && isfinite(lMin)){
-            //         ct = lMin * pdfMin;
-            //         yhat = yhat + cdfMin * data.Ymin(t);
-            //     } else if (!isfinite(lMax) && !isfinite(lMin)){
-            //         ct = 0;
-            //     } else {
-            //         ct = lMin * pdfMin - lMax * pdfMax;
-            //         yhat = yhat + cdfMin * data.Ymin(t) + cdfMax * data.Ymax(t);
-            //     }
-            //     if (pUn >= 1e-5)
-            //         ctpUn = ct / pUn;
-            // // if (isfinite(y(t))){
-            //     e(0) = y(t) - yhat;
-            //     x = m->F * x + (pUn / (1 + ctpUn - lt * lt)) * m->g * e;
-            //     if (y(t) == data.Ymax(t) || y(t) == data.Ymin(t))
-            //         e(0) = datum::nan;
-            // } else {
-            //     e(0) = datum::nan;
-            //     x = m->F * x;
-            // }
             // Storing information
-            m->comp(t, 0) = e(0);
+            m->comp(t, 0) = e;
             m->comp(t, 1) = Za(0);
             m->comp(t, 2) = x(0);
             if (seas)
@@ -477,7 +425,354 @@ void TETSclass::components(){
             if (nu)
                 m->comp.submat(t, 3 + seas + slope, t, 3 + seas + slope + m->u.n_rows - 1) = fitu.col(t).t();
             if (arma)
-                m->comp(t, 3 + seas + slope + m->u.n_rows) = x(ind) - e(0);
+                m->comp(t, 3 + seas + slope + m->u.n_rows) = x(ind) - e;
+        }
+    } else {   // Non-linear models
+        vec g = m->g, Fx, Za(1);
+        double fit, b, s, phi = 1.0, r = 1.0,
+            cdfMin, cdfMax, e;
+        if (m->model.length() > 3){
+            phi = m->phi;
+        }
+        if (m->error == "A"){
+            for (uword t = 0; t < n; t++){
+                // Additive error
+                if (m->model == "AMN" || m->model == "AMdN") {
+                    b = pow(x(1), phi);
+                    fit = x(0) * b;
+                    Za(0) = fit + fitu(t);
+                    g(0) = m->g(0);
+                    g(1) = m->g(1) / x(0);
+                    x(1) = b;
+                    x(0) = fit;
+                    // b = pow(x(1), phi);
+                    // fit = x(0) * b;
+                    // if (isfinite(m->y(t))) {
+                    //     e = m->y(t) - fit - fitu(t);
+                    // } else {
+                    //     e = 0.0;
+                    // }
+                    // Za(0) = fit + e + fitu(t);
+                    // x(1) = b + g(1) * e / x(0);
+                    // x(0) = fit + g(0) * e;
+                } else if (m->model == "ANM"){
+                    s = x(ns);
+                    fit = x(0);
+                    Za(0) = fit * s + fitu(t);
+                    g(0) = m->g(0) / s;
+                    g(1) = m->g(1) / (x(0) + x(1));
+                    // x(0) += g(0) * e / s;
+                    x.rows(2, ns) = x.rows(1, ns - 1);
+                    x(1) = s;
+                    // s = x(ns);
+                    // fit = x(0);
+                    // if (isfinite(m->y(t)))
+                    //     e = m->y(t) - fit * s- fitu(t);
+                    // else
+                    //     e = 0.0;
+                    // Za(0) = fit * s + e + fitu(t);
+                    // x(0) += g(0) * e / s;
+                    // x.rows(2, ns) = x.rows(1, ns - 1);
+                    // x(1) = s + g(1) * e / fit;
+                } else if (m->model == "AMA" || m->model == "AMdA"){
+                    b = pow(x(1), phi);
+                    s = x(ns);
+                    fit = x(0) * b;
+                    Za(0) = fit + s + fitu(t);
+                    g(0) = m->g(0);
+                    g(1) = m->g(1) / x(0);
+                    g(2) = m->g(2);
+                    x(1) = b;
+                    x(0) = fit;
+                    x.rows(3, ns) = x.rows(2, ns - 1);
+                    x(2) = s;
+                    // b = pow(x(1), phi);
+                    // s = x(ns);
+                    // fit = x(0) * b;
+                    // if (isfinite(m->y(t)))
+                    //     e = m->y(t) - fit - s - fitu(t);
+                    // else
+                    //     e = 0.0;
+                    // Za(0) = fit + s + e + fitu(t);
+                    // x(1) = b + g(1) * e / x(0);
+                    // x(0) = fit + g(0) * e;
+                    // x.rows(3, ns) = x.rows(2, ns - 1);
+                    // x(2) = s + g(2) * e;
+                } else if (m->model == "AAM" || m->model == "AAdM"){
+                    s = x(ns);
+                    fit = x(0) + phi * x(1);
+                    Za(0) = fit * s + fitu(t);
+                    g(0) = m->g(0) / s;
+                    g(1) = m->g(1) / s;
+                    g(2) = m->g(2) / fit;
+                    x(1) = phi * x(1);
+                    x(0) = fit;
+                    x.rows(3, ns) = x.rows(2, ns - 1);
+                    x(2) = s;
+                    // s = x(ns);
+                    // fit = x(0) + phi * x(1);
+                    // if (isfinite(m->y(t)))
+                    //     e = m->y(t) - fit * s - fitu(t);
+                    // else
+                    //     e = 0.0;
+                    // Za(0) = fit * s + e + fitu(t);
+                    // x(1) = phi * x(1) + g(1) * e / x(0);
+                    // x(0) = fit + g(0) * e / s;
+                    // x.rows(3, ns) = x.rows(2, ns - 1);
+                    // x(2) = s + g(2) * e / fit;
+                } else if (m->model == "AMM" || m->model == "AMdM"){
+                    s = x(ns);
+                    b = pow(x(1), phi);
+                    fit = x(0) * b;
+                    Za(0) = fit * s + fitu(t);
+                    g(0) = m->g(0) / s;
+                    g(1) = m->g(1) / (s * x(0));
+                    g(2) = m->g(2) / (s * x(1));
+                    x(1) = b;
+                    x(0) = fit;
+                    x.rows(3, ns) = x.rows(2, ns - 1);
+                    x(2) = s;
+                    // s = x(ns);
+                    // b = pow(x(1), phi);
+                    // fit = x(0) * b;
+                    // if (isfinite(m->y(t)))
+                    //     e = m->y(t) - fit * s - fitu(t);
+                    // else
+                    //     e = 0.0;
+                    // Za(0) = fit * s + e + fitu(t);
+                    // x(1) = b + g(1) * e / (s * x(0));
+                    // x(0) = fit + g(0) * e / s;
+                    // x.rows(3, ns) = x.rows(2, ns - 1);
+                    // x(2) = s + g(2) * e / fit;
+                }
+                Fx = x;
+                oneStep(m->y(t), Za, Fx, g, sigma, Ymin(t),
+                        Ymax(t), true, e, x, cdfMin, cdfMax);
+                // Storing information
+                m->comp(t, 0) = e;
+                m->comp(t, 1) = Za(0);
+                m->comp(t, 2) = x(0);
+                if (seas)
+                    m->comp(t, 3) = x(posSeas);
+                if (slope)
+                    m->comp(t, 3 + seas) = x(1);
+                if (nu)
+                    m->comp.submat(t, 3 + seas + slope, t, 3 + seas + slope + m->u.n_rows - 1) = fitu.col(t).t();
+            }
+        } else {
+            for (uword t = 0; t < n; t++){
+                if (m->model == "MNN"){
+                    fit = x(0);
+                    g(0) = m->g(0) * x(0);
+                    // x(0) = x(0) * (1 + g(0) * e);
+                    Za(0) = fit;
+                    r = abs(Za(0));
+                    // fit = x(0);
+                    // if (isfinite(m->y(t)))
+                    //     e = (m->y(t) - fitu(t)) / fit - 1;
+                    // else
+                    //     e = 0.0;
+                    // x(0) = x(0) * (1 + g(0) * e);
+                    // Za(0) = fit;
+                    // r = abs(Za(0));
+                } else if (m->model == "MAN" || m->model == "MAdN"){
+                    fit = x(0) + phi * x(1);
+                    g(0) = m->g(0) * fit;
+                    g(1) = m->g(1) * fit;
+                    x(1) = phi * x(1);
+                    x(0) = fit;
+                    Za(0) = fit + fitu(t);
+                    r = abs(Za(0));
+                    // fit = x(0) + phi * x(1);
+                    // if (isfinite(m->y(t)))
+                    //     e = (m->y(t) - fitu(t)) / fit - 1;
+                    // else
+                    //     e = 0.0;
+                    // x(1) = phi * x(1) + g(1) * fit * e;
+                    // x(0) = fit * (1 + g(0) * e);
+                    // Za(0) = fit;
+                    // r = abs(Za(0));
+                } else if (m->model == "MMN" || m->model == "MMdN"){
+                    b = pow(x(1), phi);
+                    fit = x(0) * b;
+                    Za(0) = fit + fitu(t);
+                    g(0) = m->g(0) * fit;
+                    g(1) = m->g(1) * b;
+                    x(1) = b;
+                    x(0) = fit;
+                    r = abs(Za(0));
+                    // b = pow(x(1), phi);
+                    // fit = x(0) * b;
+                    // if (isfinite(m->y(t)))
+                    //     e = (m->y(t) - fitu(t)) / fit - 1;
+                    // else
+                    //     e = 0.0;
+                    // Za(0) = fit * (1 + e) + fitu(t);
+                    // x(1) = b *(1 + g(1) * e);
+                    // x(0) = fit * (1 + g(0) * e);
+                    // r = abs(Za(0));
+                } else if (m->model == "MNA"){
+                    s = x(ns);
+                    fit = x(0) + s;
+                    g(0) = m->g(0) / fit;
+                    g(1) = m->g(1) / fit;
+                    // x(0) = x(0) + g(0) * fit * e;
+                    x.rows(2, ns) = x.rows(1, ns - 1);
+                    x(1) = s;
+                    Za(0) = fit;
+                    r = abs(Za(0));
+                    // s = x(ns);
+                    // fit = x(0) + s;
+                    // if (isfinite(m->y(t)))
+                    //     e = (m->y(t) - fitu(t)) / fit - 1;
+                    // else
+                    //     e = 0.0;
+                    // x(0) = x(0) + g(0) * fit * e;
+                    // x.rows(2, ns) = x.rows(1, ns - 1);
+                    // x(1) = s + g(1) * fit * e;
+                    // Za(0) = fit;
+                    // r = abs(Za(0));
+                } else if (m->model == "MAA" || m->model == "MAdA"){
+                    b = phi * x(1);
+                    s = x(ns);
+                    fit = x(0) + b + s;
+                    g(0) = m->g(0) * fit;
+                    g(1) = m->g(1) * fit;
+                    g(2) = m->g(2) * fit;
+                    x(1) = b;
+                    x(0) += b;
+                    x.rows(3, ns) = x.rows(2, ns - 1);
+                    x(2) = s;
+                    Za(0) = fit;
+                    r = abs(Za(0));
+                    // b = phi * x(1);
+                    // s = x(ns);
+                    // fit = x(0) + b + s;
+                    // if (isfinite(m->y(t)))
+                    //     e = (m->y(t) - fitu(t)) / fit - 1;
+                    // else
+                    //     e = 0.0;
+                    // x(1) = b + g(1) * fit * e;
+                    // x(0) += b + g(0) * fit * e;
+                    // x.rows(3, ns) = x.rows(2, ns - 1);
+                    // x(2) = s + g(2) * fit * e;
+                    // Za(0) = fit;
+                    // r = abs(Za(0));
+                } else if (m->model == "MNM"){
+                    s = x(ns);
+                    fit = x(0) * s;
+                    g(0) = m->g(0);
+                    g(1) = m->g(1);
+                    // x(0) = x(0) * (1 + g(0) * e);
+                    x.rows(2, ns) = x.rows(1, ns - 1);
+                    x(1) = s;
+                    Za(0) = fit;
+                    r = abs(Za(0));
+                    // s = x(ns);
+                    // fit = x(0) * s;
+                    // if (isfinite(m->y(t)))
+                    //     e = (m->y(t) - fitu(t)) / fit - 1;
+                    // else
+                    //     e = 0.0;
+                    // x(0) = x(0) * (1 + g(0) * e);
+                    // x.rows(2, ns) = x.rows(1, ns - 1);
+                    // x(1) = s * (1 + g(1) * e);
+                    // Za(0) = fit;
+                    // r = abs(Za(0));
+                } else if (m->model == "MAM" || m->model == "MAdM"){
+                    b = phi * x(1);
+                    s = x(ns);
+                    fit = x(0) + b;
+                    g(0) = m->g(0) * fit;
+                    g(1) = m->g(1) * fit;
+                    g(2) = m->g(2) * s;
+                    x(1) = b;
+                    x(0) = fit;
+                    x.rows(3, ns) = x.rows(2, ns - 1);
+                    x(2) = s;
+                    Za(0) = fit * s;
+                    r = abs(Za(0));
+                    // b = phi * x(1);
+                    // s = x(ns);
+                    // fit = x(0) + b;
+                    // if (isfinite(m->y(t)))
+                    //     e = (m->y(t) - fitu(t)) / (fit * s) - 1;
+                    // else
+                    //     e = 0.0;
+                    // x(1) = b + g(1) * fit * e;
+                    // x(0) = fit * (1 + g(0) * e);
+                    // x.rows(3, ns) = x.rows(2, ns - 1);
+                    // x(2) = s * (1 + g(2) * e);
+                    // Za(0) = fit;
+                    // r = abs(Za(0));
+                } else if (m->model == "MMM" || m->model == "MMdM"){
+                    b = pow(x(1), phi);
+                    s = x(ns);
+                    fit = x(0) * b * s;
+                    g(0) = m->g(0) * x(0) * b;
+                    g(1) = m->g(1) * b;
+                    g(2) = m->g(2) * s;
+                    x(1) = b;
+                    x(0) = x(0) * b;
+                    x.rows(3, ns) = x.rows(2, ns - 1);
+                    x(2) = s;
+                    Za(0) = fit + fitu(t);
+                    r = abs(Za(0));
+                    // b = pow(x(1), phi);
+                    // s = x(ns);
+                    // fit = x(0) * b * s;
+                    // if (isfinite(m->y(t)))
+                    //     e = (m->y(t) - fitu(t)) / fit - 1;
+                    // else
+                    //     e = 0.0;
+                    // Za(0) = fit * (1 + e) + fitu(t);
+                    // x(1) = b * (1 + g(1) * e);
+                    // x(0) = x(0) * b * (1 + g(0) * e);
+                    // x.rows(3, ns) = x.rows(2, ns - 1);
+                    // x(2) = s * (1 + g(2) * e);
+                    // r = abs(Za(0));
+                } else if (m->model == "MMA" || m->model == "MMdA"){
+                    b = pow(x(1), phi);
+                    s = x(ns);
+                    fit = x(0) * b + s;
+                    Za(0) = fit + fitu(t);
+                    g(0) = m->g(0) * fit;
+                    g(1) = m->g(1) * fit;
+                    g(2) = m->g(2) * fit;
+                    x(1) = b;
+                    x(0) = x(0) * b;
+                    x.rows(3, ns) = x.rows(2, ns - 1);
+                    x(2) = s;
+                    r = abs(Za(0));
+                    // b = pow(x(1), phi);
+                    // s = x(ns);
+                    // fit = x(0) * b + s;
+                    // if (isfinite(m->y(t)))
+                    //     e = (m->y(t) - fitu(t)) / fit - 1;
+                    // else
+                    //     e = 0.0;
+                    // Za(0) = fit * (1 + e) + fitu(t);
+                    // x(1) = b + g(1) * fit * e / x(0);
+                    // x(0) = x(0) * b + g(0) * fit * e;
+                    // x.rows(3, ns) = x.rows(2, ns - 1);
+                    // x(2) = s + g(2) * fit * e;
+                    // r = abs(Za(0));
+                }
+                Fx = x;
+                g = g / r;
+                oneStep(m->y(t), Za, Fx, g, sigma * r, Ymin(t),
+                        Ymax(t), true, e, x, cdfMin, cdfMax);
+                // Storing information
+                m->comp(t, 0) = e;
+                m->comp(t, 1) = Za(0);
+                m->comp(t, 2) = x(0);
+                if (seas)
+                    m->comp(t, 3) = x(posSeas);
+                if (slope)
+                    m->comp(t, 3 + seas) = x(1);
+                if (nu)
+                    m->comp.submat(t, 3 + seas + slope, t, 3 + seas + slope + m->u.n_rows - 1) = fitu.col(t).t();
+            }
         }
     }
     if (m->missing.n_elem > 0){
@@ -539,9 +834,12 @@ void TETS(vec y, mat u, string model, int s, int h,
     else {
         m.estim(verbose);
     }
-    m.validate();
-    m.forecast();
-    m.components();
+//    cout << "model: " << model << endl;
+//    m.validate();
+//    m.forecast();
+//    m.components();
+//    m.data.m.yFor.print("yFor 533");
+//    m.data.m.p.print("p");
 //    m.simulate(24, m.m.xn);
 
 //    postProcess(m.m);
@@ -565,13 +863,13 @@ TETSclass preProcess(vec y, mat u, string model, int s, int h,
     uword ml = model.length();
     if (ml > 0){
         upper(model);
-        for (uword i = 0; i < ml; i++){
-            if (model[i] == 'M')
-                errorExit = true;
-        }
-        if (errorExit){
-            Rprintf("%s", "ERROR: multiplicative components not allowed!!!\n");
-        }
+        // for (uword i = 0; i < ml; i++){
+        //     if (model[i] == 'M')
+        //         errorExit = true;
+        // }
+        // if (errorExit){
+        //     Rprintf("%s", "ERROR: multiplicative components not allowed!!!\n");
+        // }
     }
     TETSmodel input;
     double p0sigma = 0.5;
@@ -666,10 +964,10 @@ double llikTETS(vec& p, void* opt_data){
     // etsMatrices(&*(ETSmodel*)&m, p.head(p.n_elem - 1));
     etsMatrices(m, p.head(p.n_elem - 1));
     double sigma = sqrt(exp(2 * p(p.n_elem - 1)));
-    int n = m->y.n_elem;
+    uword n = m->y.n_elem;
     vec x = m->x0, a(1);
     a(0) = datum::nan;
-    // int ns = m->x0.n_elem - 1;
+    int ns = m->x0.n_elem - 1;
     double obj = 0.0;
     rowvec fitu(m->y.n_elem + m->h);
     bool nu = (m->u.n_rows > 0);
@@ -677,55 +975,19 @@ double llikTETS(vec& p, void* opt_data){
         fitu = m->d * m->u;
     else
         fitu.fill(0.0);
+    vec llik(m->y.n_elem, fill::value(1.0));
     if (m->modelType == 0){
-        vec e(1), Za(1), Fx, llik(m->y.n_elem, fill::value(1.0));
-        double ehat, cdfMin, cdfMax;
+        vec Za(1), Fx;
+        double e;
+        double ehat, cdfMin = 0.0, cdfMax = 0.0;
         // double lMin, lMax, cdfMin, cdfMax, pUn, pdfMin, pdfMax,
         //        lt, ct, ctpUn, yhat, ehat;
         // Linear model
-        for (int t = 0; t < n; t++){
+        for (uword t = 0; t < n; t++){
             Za = m->w * x + sum(fitu.col(t));
             Fx = m->F * x;
             oneStep(m->y(t), Za, Fx, m->g, sigma, Ymin(t),
                     Ymax(t), true, e, x, cdfMin, cdfMax);
-            // if (!isfinite(m->y(t))){
-            //     x *= m->F;
-            // }
-            // lMin = (Ymin(t) - Za(0)) / sigma;
-            // lMax = (Ymax(t) - Za(0)) / sigma;
-            // cdfMax = 1 - normcdf(lMax);
-            // cdfMin = normcdf(lMin);
-            // pUn = 1 - cdfMax - cdfMin;
-            // pdfMin = normpdf(lMin);
-            // pdfMax = normpdf(lMax);
-            // if (pUn < 1e-5){
-            //     lt = 0;
-            //     ctpUn = 0;
-            //     yhat = 0;
-            // } else {
-            //     lt = (pdfMax - pdfMin) / pUn;  // Inversa del ratio de Mills
-            //     yhat = pUn * (Za(0) - sigma * lt);
-            // }
-            // if (!isfinite(lMin) && isfinite(lMax)){
-            //     ct = -lMax * pdfMax;
-            //     yhat = yhat + cdfMax * Ymax(t);
-            // } else if (!isfinite(lMax) && isfinite(lMin)){
-            //     ct = lMin * pdfMin;
-            //     yhat = yhat + cdfMin * Ymin(t);
-            // } else if (!isfinite(lMax) && !isfinite(lMin)){
-            //     ct = 0;
-            // } else {
-            //     ct = lMin * pdfMin - lMax * pdfMax;
-            //     yhat = yhat + cdfMin * Ymin(t) + cdfMax * Ymax(t);
-            // }
-            // if (pUn >= 1e-5)
-            //     ctpUn = ct / pUn;
-            // if (isfinite(m->y(t))){
-            //     e(0) = m->y(t) - yhat;
-            //     x = m->F * x + pUn / (1 + ctpUn - lt * lt) * m->g * e;
-            // }
-            // Log-likelihood
-            // llikt = 1.0;
             if (m->y(t) <= Ymin(t)){
                 llik(t) = cdfMin;
             } else if (m->y(t) >= Ymax(t)){
@@ -737,6 +999,353 @@ double llikTETS(vec& p, void* opt_data){
         }
         uvec ll = find(llik > 0);
         obj = -sum(log(llik(ll))) / m->y.n_elem;
+    } else {   // Non-linear models
+        vec g = m->g, Fx, Za(1);
+        double fit, b, s, phi = 1.0, r = 1.0,
+            cdfMin, cdfMax, ehat, e;
+        if (m->model.length() > 3){
+            phi = m->phi;
+        }
+        if (m->error == "A"){
+            for (uword t = 0; t < n; t++){
+                // Additive error
+                if (m->model == "AMN" || m->model == "AMdN") {
+                    b = pow(x(1), phi);
+                    fit = x(0) * b;
+                    Za(0) = fit + fitu(t);
+                    g(0) = m->g(0);
+                    g(1) = m->g(1) / x(0);
+                    x(1) = b;
+                    x(0) = fit;
+                    // b = pow(x(1), phi);
+                    // fit = x(0) * b;
+                    // if (isfinite(m->y(t))) {
+                    //     e = m->y(t) - fit - fitu(t);
+                    // } else {
+                    //     e = 0.0;
+                    // }
+                    // Za(0) = fit + e + fitu(t);
+                    // x(1) = b + g(1) * e / x(0);
+                    // x(0) = fit + g(0) * e;
+                } else if (m->model == "ANM"){
+                    s = x(ns);
+                    fit = x(0);
+                    Za(0) = fit * s + fitu(t);
+                    g(0) = m->g(0) / s;
+                    g(1) = m->g(1) / (x(0) + x(1));
+                    // x(0) += g(0) * e / s;
+                    x.rows(2, ns) = x.rows(1, ns - 1);
+                    x(1) = s;
+                    // s = x(ns);
+                    // fit = x(0);
+                    // if (isfinite(m->y(t)))
+                    //     e = m->y(t) - fit * s- fitu(t);
+                    // else
+                    //     e = 0.0;
+                    // Za(0) = fit * s + e + fitu(t);
+                    // x(0) += g(0) * e / s;
+                    // x.rows(2, ns) = x.rows(1, ns - 1);
+                    // x(1) = s + g(1) * e / fit;
+                } else if (m->model == "AMA" || m->model == "AMdA"){
+                    b = pow(x(1), phi);
+                    s = x(ns);
+                    fit = x(0) * b;
+                    Za(0) = fit + s + fitu(t);
+                    g(0) = m->g(0);
+                    g(1) = m->g(1) / x(0);
+                    g(2) = m->g(2);
+                    x(1) = b;
+                    x(0) = fit;
+                    x.rows(3, ns) = x.rows(2, ns - 1);
+                    x(2) = s;
+                    // b = pow(x(1), phi);
+                    // s = x(ns);
+                    // fit = x(0) * b;
+                    // if (isfinite(m->y(t)))
+                    //     e = m->y(t) - fit - s - fitu(t);
+                    // else
+                    //     e = 0.0;
+                    // Za(0) = fit + s + e + fitu(t);
+                    // x(1) = b + g(1) * e / x(0);
+                    // x(0) = fit + g(0) * e;
+                    // x.rows(3, ns) = x.rows(2, ns - 1);
+                    // x(2) = s + g(2) * e;
+                } else if (m->model == "AAM" || m->model == "AAdM"){
+                    s = x(ns);
+                    fit = x(0) + phi * x(1);
+                    Za(0) = fit * s + fitu(t);
+                    g(0) = m->g(0) / s;
+                    g(1) = m->g(1) / s;
+                    g(2) = m->g(2) / fit;
+                    x(1) = phi * x(1);
+                    x(0) = fit;
+                    x.rows(3, ns) = x.rows(2, ns - 1);
+                    x(2) = s;
+                    // s = x(ns);
+                    // fit = x(0) + phi * x(1);
+                    // if (isfinite(m->y(t)))
+                    //     e = m->y(t) - fit * s - fitu(t);
+                    // else
+                    //     e = 0.0;
+                    // Za(0) = fit * s + e + fitu(t);
+                    // x(1) = phi * x(1) + g(1) * e / x(0);
+                    // x(0) = fit + g(0) * e / s;
+                    // x.rows(3, ns) = x.rows(2, ns - 1);
+                    // x(2) = s + g(2) * e / fit;
+                } else if (m->model == "AMM" || m->model == "AMdM"){
+                    s = x(ns);
+                    b = pow(x(1), phi);
+                    fit = x(0) * b;
+                    Za(0) = fit * s + fitu(t);
+                    g(0) = m->g(0) / s;
+                    g(1) = m->g(1) / (s * x(0));
+                    g(2) = m->g(2) / (s * x(1));
+                    x(1) = b;
+                    x(0) = fit;
+                    x.rows(3, ns) = x.rows(2, ns - 1);
+                    x(2) = s;
+                    // s = x(ns);
+                    // b = pow(x(1), phi);
+                    // fit = x(0) * b;
+                    // if (isfinite(m->y(t)))
+                    //     e = m->y(t) - fit * s - fitu(t);
+                    // else
+                    //     e = 0.0;
+                    // Za(0) = fit * s + e + fitu(t);
+                    // x(1) = b + g(1) * e / (s * x(0));
+                    // x(0) = fit + g(0) * e / s;
+                    // x.rows(3, ns) = x.rows(2, ns - 1);
+                    // x(2) = s + g(2) * e / fit;
+                }
+                Fx = x;
+                oneStep(m->y(t), Za, Fx, g, sigma, Ymin(t),
+                          Ymax(t), true, e, x, cdfMin, cdfMax);
+                if (m->y(t) <= Ymin(t)){
+                    llik(t) = cdfMin;
+                } else if (m->y(t) >= Ymax(t)){
+                    llik(t) = cdfMax;
+                } else {
+                    ehat = (m->y(t) - Za(0)) / sigma;
+                    llik(t) = 1.0 / sigma * normpdf(ehat);
+                }
+            }
+            uvec ll = find(llik > 0);
+            obj = -sum(log(llik(ll))) / m->y.n_elem;
+        } else {
+            for (uword t = 0; t < n; t++){
+                if (m->model == "MNN"){
+                    fit = x(0);
+                    g(0) = m->g(0) * x(0);
+                    // x(0) = x(0) * (1 + g(0) * e);
+                    Za(0) = fit;
+                    r = abs(Za(0));
+                    // fit = x(0);
+                    // if (isfinite(m->y(t)))
+                    //     e = (m->y(t) - fitu(t)) / fit - 1;
+                    // else
+                    //     e = 0.0;
+                    // x(0) = x(0) * (1 + g(0) * e);
+                    // Za(0) = fit;
+                    // r = abs(Za(0));
+               } else if (m->model == "MAN" || m->model == "MAdN"){
+                    fit = x(0) + phi * x(1);
+                    g(0) = m->g(0) * fit;
+                    g(1) = m->g(1) * fit;
+                    x(1) = phi * x(1);
+                    x(0) = fit;
+                    Za(0) = fit + fitu(t);
+                    r = abs(Za(0));
+                    // fit = x(0) + phi * x(1);
+                    // if (isfinite(m->y(t)))
+                    //     e = (m->y(t) - fitu(t)) / fit - 1;
+                    // else
+                    //     e = 0.0;
+                    // x(1) = phi * x(1) + g(1) * fit * e;
+                    // x(0) = fit * (1 + g(0) * e);
+                    // Za(0) = fit;
+                    // r = abs(Za(0));
+                } else if (m->model == "MMN" || m->model == "MMdN"){
+                   b = pow(x(1), phi);
+                   fit = x(0) * b;
+                   Za(0) = fit + fitu(t);
+                   g(0) = m->g(0) * fit;
+                   g(1) = m->g(1) * b;
+                   x(1) = b;
+                   x(0) = fit;
+                   r = abs(Za(0));
+                   // b = pow(x(1), phi);
+                   // fit = x(0) * b;
+                   // if (isfinite(m->y(t)))
+                   //     e = (m->y(t) - fitu(t)) / fit - 1;
+                   // else
+                   //     e = 0.0;
+                   // Za(0) = fit * (1 + e) + fitu(t);
+                   // x(1) = b *(1 + g(1) * e);
+                   // x(0) = fit * (1 + g(0) * e);
+                   // r = abs(Za(0));
+                } else if (m->model == "MNA"){
+                    s = x(ns);
+                    fit = x(0) + s;
+                    g(0) = m->g(0) / fit;
+                    g(1) = m->g(1) / fit;
+                    // x(0) = x(0) + g(0) * fit * e;
+                    x.rows(2, ns) = x.rows(1, ns - 1);
+                    x(1) = s;
+                    Za(0) = fit;
+                    r = abs(Za(0));
+                    // s = x(ns);
+                    // fit = x(0) + s;
+                    // if (isfinite(m->y(t)))
+                    //     e = (m->y(t) - fitu(t)) / fit - 1;
+                    // else
+                    //     e = 0.0;
+                    // x(0) = x(0) + g(0) * fit * e;
+                    // x.rows(2, ns) = x.rows(1, ns - 1);
+                    // x(1) = s + g(1) * fit * e;
+                    // Za(0) = fit;
+                    // r = abs(Za(0));
+                } else if (m->model == "MAA" || m->model == "MAdA"){
+                    b = phi * x(1);
+                    s = x(ns);
+                    fit = x(0) + b + s;
+                    g(0) = m->g(0) * fit;
+                    g(1) = m->g(1) * fit;
+                    g(2) = m->g(2) * fit;
+                    x(1) = b;
+                    x(0) += b;
+                    x.rows(3, ns) = x.rows(2, ns - 1);
+                    x(2) = s;
+                    Za(0) = fit;
+                    r = abs(Za(0));
+                    // b = phi * x(1);
+                    // s = x(ns);
+                    // fit = x(0) + b + s;
+                    // if (isfinite(m->y(t)))
+                    //     e = (m->y(t) - fitu(t)) / fit - 1;
+                    // else
+                    //     e = 0.0;
+                    // x(1) = b + g(1) * fit * e;
+                    // x(0) += b + g(0) * fit * e;
+                    // x.rows(3, ns) = x.rows(2, ns - 1);
+                    // x(2) = s + g(2) * fit * e;
+                    // Za(0) = fit;
+                    // r = abs(Za(0));
+                } else if (m->model == "MNM"){
+                    s = x(ns);
+                    fit = x(0) * s;
+                    g(0) = m->g(0);
+                    g(1) = m->g(1);
+                    // x(0) = x(0) * (1 + g(0) * e);
+                    x.rows(2, ns) = x.rows(1, ns - 1);
+                    x(1) = s;
+                    Za(0) = fit;
+                    r = abs(Za(0));
+                    // s = x(ns);
+                    // fit = x(0) * s;
+                    // if (isfinite(m->y(t)))
+                    //     e = (m->y(t) - fitu(t)) / fit - 1;
+                    // else
+                    //     e = 0.0;
+                    // x(0) = x(0) * (1 + g(0) * e);
+                    // x.rows(2, ns) = x.rows(1, ns - 1);
+                    // x(1) = s * (1 + g(1) * e);
+                    // Za(0) = fit;
+                    // r = abs(Za(0));
+                } else if (m->model == "MAM" || m->model == "MAdM"){
+                    b = phi * x(1);
+                    s = x(ns);
+                    fit = x(0) + b;
+                    g(0) = m->g(0) * fit;
+                    g(1) = m->g(1) * fit;
+                    g(2) = m->g(2) * s;
+                    x(1) = b;
+                    x(0) = fit;
+                    x.rows(3, ns) = x.rows(2, ns - 1);
+                    x(2) = s;
+                    Za(0) = fit * s;
+                    r = abs(Za(0));
+                    // b = phi * x(1);
+                    // s = x(ns);
+                    // fit = x(0) + b;
+                    // if (isfinite(m->y(t)))
+                    //     e = (m->y(t) - fitu(t)) / (fit * s) - 1;
+                    // else
+                    //     e = 0.0;
+                    // x(1) = b + g(1) * fit * e;
+                    // x(0) = fit * (1 + g(0) * e);
+                    // x.rows(3, ns) = x.rows(2, ns - 1);
+                    // x(2) = s * (1 + g(2) * e);
+                    // Za(0) = fit;
+                    // r = abs(Za(0));
+                } else if (m->model == "MMM" || m->model == "MMdM"){
+                    b = pow(x(1), phi);
+                    s = x(ns);
+                    fit = x(0) * b * s;
+                    g(0) = m->g(0) * x(0) * b;
+                    g(1) = m->g(1) * b;
+                    g(2) = m->g(2) * s;
+                    x(1) = b;
+                    x(0) = x(0) * b;
+                    x.rows(3, ns) = x.rows(2, ns - 1);
+                    x(2) = s;
+                    Za(0) = fit + fitu(t);
+                    r = abs(Za(0));
+                    // b = pow(x(1), phi);
+                    // s = x(ns);
+                    // fit = x(0) * b * s;
+                    // if (isfinite(m->y(t)))
+                    //     e = (m->y(t) - fitu(t)) / fit - 1;
+                    // else
+                    //     e = 0.0;
+                    // Za(0) = fit * (1 + e) + fitu(t);
+                    // x(1) = b * (1 + g(1) * e);
+                    // x(0) = x(0) * b * (1 + g(0) * e);
+                    // x.rows(3, ns) = x.rows(2, ns - 1);
+                    // x(2) = s * (1 + g(2) * e);
+                    // r = abs(Za(0));
+                } else if (m->model == "MMA" || m->model == "MMdA"){
+                    b = pow(x(1), phi);
+                    s = x(ns);
+                    fit = x(0) * b + s;
+                    Za(0) = fit + fitu(t);
+                    g(0) = m->g(0) * fit;
+                    g(1) = m->g(1) * fit;
+                    g(2) = m->g(2) * fit;
+                    x(1) = b;
+                    x(0) = x(0) * b;
+                    x.rows(3, ns) = x.rows(2, ns - 1);
+                    x(2) = s;
+                    r = abs(Za(0));
+                    // b = pow(x(1), phi);
+                    // s = x(ns);
+                    // fit = x(0) * b + s;
+                    // if (isfinite(m->y(t)))
+                    //     e = (m->y(t) - fitu(t)) / fit - 1;
+                    // else
+                    //     e = 0.0;
+                    // Za(0) = fit * (1 + e) + fitu(t);
+                    // x(1) = b + g(1) * fit * e / x(0);
+                    // x(0) = x(0) * b + g(0) * fit * e;
+                    // x.rows(3, ns) = x.rows(2, ns - 1);
+                    // x(2) = s + g(2) * fit * e;
+                    // r = abs(Za(0));
+                }
+                Fx = x;
+                g = g / r;
+                oneStep(m->y(t), Za, Fx, g, sigma * r, Ymin(t),
+                        Ymax(t), true, e, x, cdfMin, cdfMax);
+                if (m->y(t) <= Ymin(t)){
+                    llik(t) = cdfMin;
+                } else if (m->y(t) >= Ymax(t)){
+                    llik(t) = cdfMax;
+                } else {
+                    ehat = (m->y(t) - Za(0)) / (sigma * r);
+                    llik(t) = 1.0 / (sigma  * r) * normpdf(ehat);
+                }
+            }
+            uvec ll = find(llik > 0);
+            obj = -sum(log(llik(ll))) / m->y.n_elem;
+        }
     }
     if (!x.has_nan())
         m->xn = x;
@@ -766,16 +1375,16 @@ vec gradTETS(vec& p, void* opt_data, double& obj, int& nFuns){
     m->grad = grad;
     return grad;
 }
-// One step agead prediction
+// One step ahead prediction
 void oneStep(double yt, vec& Za, vec& Fx, vec& g, double sigma, double ymin, double ymax,
-             bool tln, vec& e, vec& x, double& cdfMin, double&cdfMax){
-    e.resize(1);
+             bool tln, double& e, vec& x, double& cdfMin, double&cdfMax){
+    // e.resize(1);
     if (isfinite(yt) && tln){
         // if (t >142){
         //     cout << "t400: " << t << endl;
         // }
         double lMin, lMax, pUn, pdfMin, pdfMax,
-            lt, ct, ctpUn, yhat;
+            lt, ct, ctpUn = 0.0, yhat;
         lMin = (ymin - Za(0)) / sigma;
         lMax = (ymax - Za(0)) / sigma;
         cdfMax = 1 - normcdf(lMax);
@@ -806,12 +1415,12 @@ void oneStep(double yt, vec& Za, vec& Fx, vec& g, double sigma, double ymin, dou
         if (pUn >= 1e-5)
             ctpUn = ct / pUn;
         // if (isfinite(y(t))){
-        e(0) = yt - yhat;
+        e = yt - yhat;
         x = Fx + (pUn / (1 + ctpUn - lt * lt)) * g * e;
         if (yt == ymax || yt == ymin)
-            e(0) = datum::nan;
+            e = datum::nan;
     } else {
-        e(0) = datum::nan;
+        e = datum::nan;
         x = Fx;
     }
 }

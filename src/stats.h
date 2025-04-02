@@ -410,6 +410,7 @@ void beraj(vec& y, double& bj, double& pbj){
     vec skew = media3 / pow(stdb, 3);
     vec kurto = media4 / pow(stdb, 4) - 3;
     bj = (n - nNan) / 6 * (pow(as_scalar(skew), 2) + pow(as_scalar(kurto), 2) / 4);
+    pbj = exp(-bj / 2);
 }
 // Heteroskedasticity ratio of variances
 void heterosk(vec& y, double& F, double& pF, int& df){
@@ -429,7 +430,7 @@ void heterosk(vec& y, double& F, double& pF, int& df){
   } else {
     F= cov1 / cov2;
   }
-  pF = 2 * fCdf(F, df, df);
+  pF = 2 * fCdf(F, min(df, 170), min(df, 170));
 }
 
 // Binomial CDF calculation
@@ -445,8 +446,9 @@ vec binoCdf(double k, double n, vec p){
   if (k >= n){
     pCdf.fill(1);
   } else {
+    double tagammanp1 = tgamma(n + 1);
     for (int i = 0; i <= k; i++){
-      pCdf += (tgamma(n + 1)) / (tgamma(i + 1) * tgamma(n - i + 1)) * (pow(p, i) % pow(1 - p, n - i));
+      pCdf += (tagammanp1) / (tgamma(i + 1) * tgamma(n - i + 1)) * (pow(p, i) % pow(1 - p, n - i));
     }
   }
   return pCdf;

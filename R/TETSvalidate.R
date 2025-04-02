@@ -35,12 +35,12 @@ TETSvalidate = function(m){
     if (inherits(m, "ETS")){
             output = ETSc("validate", as.numeric(m$y), u, m$model, m$s, m$h,
                           m$criterion, m$armaIdent, m$identAll, m$forIntervals,
-                          m$bootstrap, m$nSimul, FALSE, m$lambda,
+                          m$bootstrap, m$nSimul, m$verbose, m$lambda,
                           m$alphaL, m$betaL, m$gammaL, m$phiL, m$p0)
     } else {
             output = TETSc("validate", as.numeric(m$y), u, m$model, m$s, m$h,
                           m$criterion, m$armaIdent, m$identAll, m$forIntervals,
-                          m$bootstrap, m$nSimul, FALSE, m$lambda,
+                          m$bootstrap, m$nSimul, m$verbose, m$lambda,
                           m$alphaL, m$betaL, m$gammaL, m$phiL, m$p0, m$Ymin, m$Ymax)
     }
     if (length(output) == 1){   # ERROR!!
@@ -52,17 +52,21 @@ TETSvalidate = function(m){
             m$comp = output$comp
         m$table = output$table
         # Buscando test heterocedasticidad con valor p NaN
-        ind = which(grepl("nan", m$table))
-        if (any(ind)){
-            for (i in 1 : length(ind)){
-                line = m$table[ind[i]]
-                df = as.numeric(substr(line, 9, 12))
-                Fstat = as.numeric(substr(line, 15, 31))
-                pval = round(pf(Fstat, df, df), 4)
-                line = gsub("   nan", pval, line)
-                m$table[ind[i]] = line
-            }
-        }
+        # ind = which(grepl("nan", m$table))
+        # if (any(ind)){
+        #     for (i in 1 : length(ind)){
+        #         line = m$table[ind[i]]
+        #         Fstat = as.numeric(substr(line, 15, 31))
+        #         if (grepl("Bera", line)) {
+        #             pval = round(pchisq(Fstat, 2), 4)
+        #         } else if (grepl("H(", line)) {
+        #             df = as.numeric(substr(line, 9, 12))
+        #             pval = round(pf(Fstat, df, df), 4)
+        #         }
+        #         line = gsub("   nan", pval, line)
+        #         m$table[ind[i]] = line
+        #     }
+        # }
         if (m$verbose)
             cat(m$table)
         colnames(m$comp) = strsplit(output$compNames, split = "/")[[1]]

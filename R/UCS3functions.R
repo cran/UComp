@@ -20,7 +20,12 @@
 #' @noRd
 #' @export 
 print.UComp = function(x, ...){
-    x = UCvalidate(x, TRUE)
+    if (x$model != "error") {
+        x = UCvalidate(x, TRUE)
+    } else {
+        cat("ERROR: Model is not valid!!")
+        return()
+    }
 }
 #' @title summary.UComp
 #' @description Prints an UComp object on screen
@@ -68,8 +73,15 @@ summary.UComp = function(object, ...){
 #' @noRd
 #' @export 
 plot.UComp = function(x, ...){
+    if (x$model == "error") {
+        cat("ERROR: Model is not valid!!")
+        return()
+    }
     if (length(x$comp) < 2){
+        VERBOSE = x$verbose
+        x$verbose = FALSE
         x = UCcomponents(x)
+        x$verbose = VERBOSE
     }
     if (is.ts(x$comp)){
         plot(x$comp, main = "Time Series Decomposition")
@@ -100,10 +112,17 @@ plot.UComp = function(x, ...){
 #' @noRd
 #' @export 
 fitted.UComp = function(object, ...){
-    if (length(object$yFit) < 2){
-        object = UCsmooth(object)
-    }
-    return(object$yFit)
+       if (object$model == "error") {
+                cat("ERROR: Model is not valid!!")
+                return()
+        }
+        if (length(object$yFit) < 2){
+                VERBOSE = x$verbose
+                x$verbose = FALSE
+                object = UCsmooth(object)
+                x$verbose = VERBOSE
+        }
+        return(object$yFit)
 }
 #' @title residuals.UComp
 #' @description Standardised innovations values of UComp object
@@ -127,8 +146,15 @@ fitted.UComp = function(object, ...){
 #' @noRd
 #' @export 
 residuals.UComp = function(object, ...){
+    if (object$model == "error") {
+        cat("ERROR: Model is not valid!!")
+        return()
+    }
     if (length(object$yFit) < 2){
+        VERBOSE = object$verbose
+        object$verbose = FALSE
         object = UCfilter(object)
+        object$verbose = VERBOSE
     }
     return(object$v)
 }
@@ -154,6 +180,10 @@ residuals.UComp = function(object, ...){
 #' @noRd
 #' @export 
 logLik.UComp = function(object, ...){
+    if (object$model == "error") {
+        cat("ERROR: Model is not valid!!")
+        return()
+    }
     out = object$criteria[1]
     class(out) = "logLik"
     attr(out, "df") = length(object$p) - 1
@@ -189,7 +219,11 @@ logLik.UComp = function(object, ...){
 #' }
 #' @export 
 AIC.UComp = function(object, ..., k = 2){
-    return(object$criteria[2])
+     if (object$model == "error") {
+        cat("ERROR: Model is not valid!!")
+        return()
+     }
+     return(object$criteria[2])
 }
 #' @title BIC.UComp
 #' @description Extract BIC (or SBC) value of UComp object
@@ -219,6 +253,10 @@ AIC.UComp = function(object, ..., k = 2){
 #' }
 #' @export 
 BIC.UComp = function(object, ...){
+    if (object$model == "error") {
+        cat("ERROR: Model is not valid!!")
+        return()
+    }
     return(object$criteria[3])
 }
 #' @title coef.UComp
@@ -243,8 +281,15 @@ BIC.UComp = function(object, ...){
 #' @noRd
 #' @export 
 coef.UComp = function(object, ...){
+    if (object$model == "error") {
+        cat("ERROR: Model is not valid!!")
+        return()
+    }
     if (length(object$table) < 2){
+        VERBOSE = object$verbose
+        object$verbose = FALSE
         object = UCvalidate(object, FALSE)
+        object$verbose = VERBOSE
     }
     return(object$p)
 }
@@ -275,6 +320,10 @@ coef.UComp = function(object, ...){
 #' }
 #' @export 
 predict.UComp = function(object, newdata = NULL, n.ahead = NULL, level = 0.95, ...){
+    if (object$model == "error") {
+        cat("ERROR: Model is not valid!!")
+        return()
+    }
     cnst = qt(level + (1 - level) / 2, length(object$y) - length(object$p))
     if (!is.null(newdata)){
         object$y = newdata
@@ -322,6 +371,10 @@ predict.UComp = function(object, newdata = NULL, n.ahead = NULL, level = 0.95, .
 #' @noRd
 #' @export 
 tsdiag.UComp = function(object, gof.lag = NULL, ...){
+    if (object$model == "error") {
+        cat("ERROR: Model is not valid!!")
+        return()
+    }
     if (length(object$v) < 2){
         object = UCfilter(object)
     }
@@ -375,6 +428,10 @@ tsdiag.UComp = function(object, gof.lag = NULL, ...){
 #' @rdname getp0
 #' @export
 getp0 = function(y, model = "llt/equal/arma(0,0)", periods = NA){
+    if (model == "error") {
+        cat("ERROR: Model is not valid!!")
+        return()
+    }
     if (any(utf8ToInt(model) == utf8ToInt("?"))){
         stop("UComp ERROR: Model should not contain any \'?\'!!!")
     }

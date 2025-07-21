@@ -273,6 +273,9 @@ void SSmodel::forecast(){
         int npar = inputs.betaAug.n_elem;
         inputs.system.D = inputs.betaAug.rows(npar - k, npar - 1).t();
     }
+    if (k == 0) {
+        inputs.system.D = {0};
+    }
     for (int i = 0; i < inputs.h; i++){
       if (TVP)
           Z = inputs.system.Z.row(t + i);

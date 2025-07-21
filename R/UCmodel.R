@@ -109,7 +109,7 @@
 #' }
 #' @rdname UCsetup
 #' @export
-UCsetup = function(y, u = NULL, model = "?/none/?/?", h = 9999, lambda = 1, outlier = 9999, tTest = FALSE, criterion = "aic",
+UCsetup = function(y, u = NULL, model = "?/none/?/?", h = 24, lambda = 1, outlier = 9999, tTest = FALSE, criterion = "aic",
                    periods = NA, verbose = FALSE, stepwise = FALSE, p0 = -9999.9, arma = FALSE,
                    TVP = NULL, trendOptions = "none/rw/llt/dt", seasonalOptions = "none/equal/different", irregularOptions = "none/arma(0,0)"){
     # Converting u vector to matrix
@@ -127,11 +127,14 @@ UCsetup = function(y, u = NULL, model = "?/none/?/?", h = 9999, lambda = 1, outl
     }
     if (is.null(lambda))
         lambda = 9999.9
+    seas = frequency(y)
     # Checking periods
     if (is.ts(y) && any(is.na(periods)) && frequency(y) > 1){
-        periods = frequency(y) / (1 : floor(frequency(y) / 2))
+        seas = frequency(y)
+        periods = seas / (1 : floor(seas / 2))
     } else if (is.ts(y) && any(is.na(periods))){
         periods = 1
+        seas = 1
     } else if (!is.ts(y) && any(is.na(periods))){
         stop("Input \"periods\" should be supplied!!")
     }
@@ -157,12 +160,14 @@ UCsetup = function(y, u = NULL, model = "?/none/?/?", h = 9999, lambda = 1, outl
                seasonalOptions = seasonalOptions,
                irregularOptions = irregularOptions,
                # Outputs
+               seas = seas,
                comp = NA,
                compPlus = NA,
                compMinus = NA,
+               coef = NA,
                p = NA,
                covp = NA,
-               grad = NA,
+               # grad = NA,
                v= NA,
                yFit = NA,
                yFor = NA,
@@ -172,27 +177,28 @@ UCsetup = function(y, u = NULL, model = "?/none/?/?", h = 9999, lambda = 1, outl
                P = NA,
                eta = NA,
                eps = NA,
-               table = NA,
-               iter = 0,
+               estimOk = "Not estimated",
+               table = NA)
+               # iter = 0,
                # Other variables
-               hidden = list(d_t = 0,
-                             estimOk = "Not estimated",
-                             objFunValue = 0,
-                             innVariance = 1,
-                             nonStationaryTerms = NA,
-                             ns = NA,
-                             nPar = NA,
-                             harmonics = 0,
-                             constPar = NA,
-                             typePar = NA,
-                             cycleLimits = NA,
-                             typeOutliers = matrix(-1, 1, 2),
-                             truePar = NA,
-                             beta = NA,
-                             betaV = NA,
-                             seas = frequency(y),
-                             MSOE = FALSE,
-                             PTSnames = FALSE))
+               # hidden = list(d_t = 0,
+               #               estimOk = "Not estimated",
+               #               objFunValue = 0,
+               #               innVariance = 1,
+               #               nonStationaryTerms = NA,
+               #               ns = NA,
+               #               nPar = NA,
+               #               harmonics = 0,
+               #               constPar = NA,
+               #               typePar = NA,
+               #               cycleLimits = NA,
+               #               typeOutliers = matrix(-1, 1, 2),
+               #               truePar = NA,
+               #               beta = NA,
+               #               betaV = NA,
+               #               seas = frequency(y),
+               #               MSOE = FALSE,
+               #               PTSnames = FALSE))
     return(structure(out, class = "UComp"))
 }
 
@@ -267,8 +273,8 @@ UCsetup = function(y, u = NULL, model = "?/none/?/?", h = 9999, lambda = 1, outl
 #' }
 #' @rdname UCforecast
 #' @export
-UCforecast = function(y, u = NULL, model = "?/none/?/?", h = 9999, lambda = 1, outlier = 9999, tTest = FALSE, criterion = "aic",
-                   periods = NA, verbose = FALSE, stepwise = FALSE, p0 = -9999.9, arma = TRUE,
+UCforecast = function(y, u = NULL, model = "?/none/?/?", h = 24, lambda = 1, outlier = 9999, tTest = FALSE, criterion = "aic",
+                   periods = NA, verbose = FALSE, stepwise = FALSE, p0 = -9999.9, arma = FALSE,
                    TVP = NULL, trendOptions = "none/rw/llt/dt", seasonalOptions = "none/equal/different", irregularOptions = "none/arma(0,0)"){
     m = UCsetup(y, u, model, h, lambda, outlier, tTest, criterion, 
                 periods, verbose, stepwise, p0, arma,
@@ -348,18 +354,21 @@ UCforecast = function(y, u = NULL, model = "?/none/?/?", h = 9999, lambda = 1, o
 #' }
 #' @rdname UC
 #' @export
-UC = function(y, u = NULL, model = "?/none/?/?", h = 9999, lambda = 1, outlier = 9999, tTest = FALSE, criterion = "aic",
-              periods = NA, verbose = FALSE, stepwise = FALSE, p0 = -9999.9, arma = TRUE,
+UC = function(y, u = NULL, model = "?/none/?/?", h = 24, lambda = 1, outlier = 9999, tTest = FALSE, criterion = "aic",
+              periods = NA, verbose = FALSE, stepwise = FALSE, p0 = -9999.9, arma = FALSE,
               TVP = NULL, trendOptions = "none/rw/llt/dt", seasonalOptions = "none/equal/different", irregularOptions = "none/arma(0,0)"){
     m = UCsetup(y, u, model, h, lambda, outlier, tTest, criterion, 
                 periods, verbose, stepwise, p0, arma,
                 TVP, trendOptions, seasonalOptions, irregularOptions)
-    m = UCestim(m)
-    if (m$model == "error")
-        return(m)
-    m = UCvalidate(m, verbose)
-    m = UCdisturb(m)
-    m = UCsmooth(m)
-    m = UCcomponents(m)
+    m = UCcommand("all", m)
+    if (verbose)
+        cat(m$table)
+    # m = UCestim(m)
+    # if (m$model == "error")
+    # #     return(m)
+    # if (verbose)
+    #     m = UCvalidate(m, verbose)
+    # else
+    #     m = UCcomponents(m)
     return(m)
 }

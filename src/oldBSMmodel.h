@@ -30,8 +30,7 @@ struct BSMmodel{
     vec periods,                // vector of periods for harmonics
         TVP;                    // vector of zeros and ones to allocate position of TVP parameters
     bool MSOE = false,          // MSOE model or BSM
-         PTSnames = false,      // PTS model names or UC
-         succeed = true;        // identification sucseed or not
+         PTSnames = false;      // PTS model names or UC
     // OUTPUTS:
     string trend,               // type of trend
         cycle,                  // type of cycle
@@ -1217,6 +1216,8 @@ void BSMclass::estimUCs(vector <string> allUCModels, uvec harmonics,
         inputs.rhos = RHOS;
         setModel(allUCModels[i], inputs.periods(harmonics), inputs.rhos(harmonics), false);
         // setModel(allUCModels[i], PERIODS(harmonics), RHOS(harmonics), false);
+        inputs.periods = PERIODS;
+        inputs.rhos = RHOS;
         inputs.arma = arma;
         // Cleaning variables for outliers starting anew
         if (SSmodel::inputs.u.n_elem > 0){
@@ -1228,8 +1229,6 @@ void BSMclass::estimUCs(vector <string> allUCModels, uvec harmonics,
         }
         // Model estimation
         estim(SSmodel::inputs.verbose);
-        inputs.periods = PERIODS;
-        inputs.rhos = RHOS;
         AIC = SSmodel::inputs.criteria(1);
         BIC = SSmodel::inputs.criteria(2);
         AICc = SSmodel::inputs.criteria(3);
@@ -1348,10 +1347,6 @@ void BSMclass::ident(string show, bool VERBOSE){
         harmonics.reset();
         harmonics = regspace<uvec>(0, 1);
     }
-    // 18/07/2025 Correction
-    uvec rhosm1 = find(inputs.rhos == -1);
-    harmonics = harmonics + rhosm1.n_rows;
-    ///
     inputs.harmonics = harmonics;
     // UC identification
     double minCrit; // = 1e12, minCrit1;
@@ -1473,8 +1468,7 @@ void BSMclass::ident(string show, bool VERBOSE){
     }
     // Checking for identification total failure
     bool succeed = true;
-    if (SSmodel::inputs.p.has_nan() || minCrit > 1e10){
-        inputs.succeed = false;
+    if (SSmodel::inputs.p.has_nan() || isnan(minCrit)){
         succeed = false;
         // Setting up default model
         setModel("rw/none/none/none", inputs.periods(harmonics), inputs.rhos(harmonics), false);

@@ -1,9 +1,10 @@
 Package: UComp
 Type: Package
 Title: Automatic Univariate Time Series Modelling of many Kinds
-Version: 5.1
-Date: 2025-04-01
-Author: Diego J. Pedregal [aut, cre] (<https://orcid.org/0000-0003-4958-0969>)
+Version: 5.1.1
+Date: 2025-07-21
+Author: Diego J. Pedregal [aut, cre] (ORCID:
+    <https://orcid.org/0000-0003-4958-0969>)
 Authors@R: c(person("Diego J.", "Pedregal", role = c("aut", "cre"),
                      email = "Diego.Pedregal@uclm.es",
                      comment = c(ORCID = "0000-0003-4958-0969")))
@@ -27,6 +28,6 @@ LazyData: true
 Suggests: knitr, rmarkdown
 RoxygenNote: 7.3.2
 NeedsCompilation: yes
-Packaged: 2025-04-02 07:59:21 UTC; diego.pedregal
+Packaged: 2025-07-21 11:30:07 UTC; diego.pedregal
 Repository: CRAN
-Date/Publication: 2025-04-02 08:30:02 UTC
+Date/Publication: 2025-07-21 11:50:01 UTC

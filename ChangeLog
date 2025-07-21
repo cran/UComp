@@ -1,3 +1,6 @@
+Changes from version 5.1 to 5.1.1
+* UC models code simplified
+* Some bugs fixed
 Changes from version 5.0.6 to 5.1
 * TETS models extended to include non-linear and heteroscedastic models
 Changes from version 5.0.5 to 5.0.6

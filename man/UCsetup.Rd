@@ -8,7 +8,7 @@ UCsetup(
   y,
   u = NULL,
   model = "?/none/?/?",
-  h = 9999,
+  h = 24,
   lambda = 1,
   outlier = 9999,
   tTest = FALSE,

@@ -159,6 +159,8 @@ ETSforecast = function(y, u = NULL, model = "???", s = frequency(y), h = max(2 *
     m1 = ETSsetup(y, u, model, s, h, criterion, lambda, armaIdent, identAll, forIntervals,
                   bootstrap, nSimul, verbose, alphaL, betaL, gammaL, phiL, p0)
     m1 = ETSestim(m1)
+    if (verbose)
+            cat(m1$table)
     return(m1)
 }
 #' @title ETS
@@ -192,5 +194,7 @@ ETS = function(y, u = NULL, model = "???", s = frequency(y), h = 2 * s, criterio
                   bootstrap, nSimul, verbose, alphaL, betaL, gammaL, phiL, p0)
     m1 = ETSvalidate(m1)
     m1$v = m1$comp[, 1]
+    if (verbose)
+            cat(m1$table)
     return(m1)
 }

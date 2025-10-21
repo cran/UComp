@@ -1,4 +1,9 @@
 UCcommand = function(command, sys) {
+    isnullu = FALSE
+    if (is.null(sys$u)) {
+        isnullu = TRUE
+        sys$u = matrix(0, 1, 2)
+    }
     if (sys$model == "error") {
         cat("ERROR: Model not specified or estimation failed!!\n")
         return(sys)
@@ -63,7 +68,7 @@ UCcommand = function(command, sys) {
     sys$p = as.vector(output$p)
     nPar = length(sys$p)
     names(sys$p) = output$parNames[1 : nPar]
-    sys$p0 = output$p0
+    # sys$p0 = output$p0
     # Adapting periods of estimated cycles, rhos and model
     # ind = which(sys$rhos < 0)
     # if (length(ind) > 0) {
@@ -84,8 +89,13 @@ UCcommand = function(command, sys) {
     # print(sys$model)
     # print(MODEL)
     # print(sys$periods)
-    
-    
+    if (is.ts(sys$y)){
+        nNan = min(which(!is.na(y))) - 1
+        initial = start(sys$y, frequency = frequency(y))
+        if (nNan > 0){
+            initial = end(ts(1 : (nNan + 1), start=initial, frequency=frequency(sys$y)))
+        }
+    }
     if (command == "validate" || command == "all") {
         sys$table = output$table
         sys$v = output$v
@@ -109,16 +119,16 @@ UCcommand = function(command, sys) {
         # Re-building matrices to their original sizes
         n = length(sys$comp) / m
         if (is.ts(sys$y)){
-            sys$comp = ts(t(matrix(sys$comp, m, n)), start(sys$y, frequency = frequency(sys$y)), frequency = frequency(sys$y))
-            sys$compV = ts(t(matrix(sys$compV, m, n)), start(sys$y, frequency = frequency(sys$y)), frequency = frequency(sys$y))
+            sys$comp = ts(t(matrix(sys$comp, m, n)), start= initial, frequency = frequency(sys$y))
+            sys$compV = ts(t(matrix(sys$compV, m, n)), start = initial, frequency = frequency(sys$y))
         } else {
             sys$comp = t(matrix(sys$comp, m, n))
             sys$compV = t(matrix(sys$compV, m, n))
         }
         if (length(size(sys$comp)) == 1){
             if (is.ts(sys$y)){
-                sys$comp = ts(matrix(sys$comp, n + sys$h, 1), start = start(sys$y, frequency = frequency(sys$y)), frequency = frequency(sys$y))
-                sys$compV = ts(matrix(sys$compV, n + sys$h, 1), start = start(sys$y, frequency = frequency(sys$y)), frequency = frequency(sys$y))
+                sys$comp = ts(matrix(sys$comp, n + sys$h, 1), start = initial, frequency = frequency(sys$y))
+                sys$compV = ts(matrix(sys$compV, n + sys$h, 1), start = initial, frequency = frequency(sys$y))
             } else {
                 sys$comp = matrix(sys$comp, n + sys$h, 1)
                 sys$compV = matrix(sys$compV, n + sys$h, 1)
@@ -129,11 +139,14 @@ UCcommand = function(command, sys) {
         colnames(sys$compV) = names1[[1]][1 : ncol(sys$comp)]
     }
     if (command == "filter" || command == "smooth" || command == "disturb" || command == "all") {
-        n = length(sys$y) + sys$h
-        m = output$ns
+        # n = length(sys$y) + sys$h
+        # m = output$ns
+        aux = dim(output$a)
+        n = aux[2]
+        m = aux[1]
         if (is.ts(sys$y)){
             fY = frequency(sys$y)
-            sY = start(sys$y, frequency = fY)
+            sY = initial
             if (command == "disturb"){
                 n = length(sys$y)
                 mEta = length(output$eta) / n
@@ -183,6 +196,8 @@ UCcommand = function(command, sys) {
             }
         }
     }
+    if (isnullu)
+         sys$u = NULL
     return(sys)
 }
  

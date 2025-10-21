@@ -1,3 +1,6 @@
+Changes from version 5.1.1 to 5.1.2
+* Some bugs fixed
+* Adaptation to Armadillo 15.0.3.
 Changes from version 5.1 to 5.1.1
 * UC models code simplified
 * Some bugs fixed

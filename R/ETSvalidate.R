@@ -60,8 +60,8 @@ ETSvalidate = function(m){
         #         m$table[ind[i]] = line
         #     }
         # }
-        if (m$verbose)
-            cat(m$table)
+        # if (m$verbose)
+        #     cat(m$table)
         colnames(m$comp) = strsplit(output$compNames, split = "/")[[1]]
         m$model = output$model
         m$lambda = output$lambda

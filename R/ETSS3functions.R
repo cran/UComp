@@ -19,11 +19,10 @@
 #' @rdname print
 #' @export 
 print.ETS = function(x, ...){
-    if (length(x$table) == 0){
+    if (length(x$table) < 3){
         x = ETSvalidate(x)
-    } else {
-        cat(x$table)
     }
+    cat(x$table)
 }
 #' @title summary.ETS
 #' @description Prints an ETS object on screen

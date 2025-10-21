@@ -971,13 +971,13 @@ acft = function(MApoly = 1, ARpoly = 1, ncoef = 38, s = 1){
 #' @title slide
 #' @description Rolling forecasting of a matrix of time series
 #'
-#' @details Takes a time series and run forecasting methods implemented in function
+#' @details Takes time series and run forecasting methods implemented in function
 #' forecFun h steps ahead along the time series y, starting at forecasting
 #' origin orig, and moving step observations ahead. Forecasts may be run in parallel
 #' by setting parallel to TRUE. A fixed window width may be
 #' specified with input window. The output is of dimensions (h, nOrigs, nModels, nSeries)
 #'
-#' @param y a vector or matrix of time series
+#' @param y a vector, a matrix or a list of time series
 #' @param orig starting forecasting origin
 #' @param forecFun user function that implements forecasting methods
 #' @param ... rest of inputs to forecFun function
@@ -987,7 +987,7 @@ acft = function(MApoly = 1, ARpoly = 1, ncoef = 38, s = 1){
 #' @param window fixed window width in number of observations (NA for non fixed)
 #' @param parallel run forecasts in parallel
 #'
-#' @return A vector with all the dimensions
+#' @return A matrix with all the dimensions
 #'
 #' @author Diego J. Pedregal
 #'
@@ -1012,58 +1012,68 @@ slide = function(y,
                  output = TRUE,
                  window = NA,
                  parallel = FALSE){
-  # Rolling for nSeries
-  # out = [h, nOrigs, nModels, nSeries]
-  #functionInputs = list(...)
-  if (parallel){
-      if (substr(.Platform$OS.type, 1, 1) == "w"){
-          if ("parallelsugar" %in% (.packages()) == FALSE){
-              stop(paste0("Packages parallel and parallelsugar should ",
-                          "be installed and loaded for parallel processing!! \n",
-                          "  Run: \n  library(parallel) \n  library(parallelsugar)"))
-          }
-          if ("parallel" %in% (.packages()) == FALSE){
-              stop(paste0("Package parallel should ",
-                          "be installed and loaded for parallel processing!! \n",
-                          "  Run: \n  library(parallel) \n "))
-          }
-      }
-  }
-  y = as.ts(y)
-  if (length(size(y)) == 1){
-    y = ts(matrix(y, length(y), 1), start = start(y), frequency = frequency(y))
-    nSeries = 1
-    n = length(y)
-  } else {
-    n = nrow(y)
-    nSeries = ncol(y)
-  }
-  dataList = vector(mode = "list", length = nSeries)
-  for (j in 1 : nSeries){
-    dataList[[j]] = y[, j]
-  }
-  nOr = length(seq(orig, n - h, step))
-  if (!parallel || (nSeries == 1 && nOr == 1)){
-    listOut = lapply(dataList, slideAux, orig, forecFun, h, step, output, FALSE, window, FALSE, ...)
-  } else {
-    if (nSeries > 1){
-            # if (substr(.Platform$OS.type, 1, 1) == "w"){
-            #         listOut = parallelsugar::mclapply(dataList, slideAux, orig, forecFun, h, step, output, FALSE, window, FALSE, ..., mc.cores = detectCores())
-            # } else {
-            #         listOut = parallel::mclapply(dataList, slideAux, orig, forecFun, h, step, output, FALSE, window, FALSE, ..., mc.cores = detectCores())
-            # }
-            listOut = mclapply(dataList, slideAux, orig, forecFun, h, step, output, FALSE, window, FALSE, ..., mc.cores = detectCores())
-    } else if (nOr > 1) {
-      listOut = lapply(dataList, slideAux, orig, forecFun, h, step, output, FALSE, window, TRUE, ...) #, mc.cores = detectCores())
-    }
-  }
-  out = array(NA, c(dim(listOut[[1]]), nSeries))
-  # nMethods = dim(outi)[2]
-  for (i in 1 : nSeries){
-    out[, , , i] = listOut[[i]]
-  }
-  dimnames(out)[[3]] = dimnames(listOut[[1]])[[3]]
-  return(out)
+        # Rolling for nSeries
+        # out = [h, nOrigs, nModels, nSeries]
+        #functionInputs = list(...)
+        if (parallel){
+                if (substr(.Platform$OS.type, 1, 1) == "w"){
+                        if ("parallelsugar" %in% (.packages()) == FALSE){
+                                stop(paste0("Packages parallel and parallelsugar should ",
+                                            "be installed and loaded for parallel processing!! \n",
+                                            "  Run: \n  library(parallel) \n  library(parallelsugar)"))
+                        }
+                        if ("parallel" %in% (.packages()) == FALSE){
+                                stop(paste0("Package parallel should ",
+                                            "be installed and loaded for parallel processing!! \n",
+                                            "  Run: \n  library(parallel) \n "))
+                        }
+                }
+        }
+        # Generating list of lists
+        yisList = is.list(y)
+        yisListList = FALSE
+        if (yisList)
+                yisListList = is.list(y[[1]])
+        if (!yisList) {
+                if (!is.ts(y))
+                        y = as.ts(y)
+                if (length(size(y)) == 1){
+                        # y = ts(matrix(y, length(y), 1), start = start(y), frequency = frequency(y))
+                        nSeries = 1
+                        y = list(list(y))
+                } else {
+                        nSeries = ncol(y)
+                        aux = frequency(y)
+                        auxs = start(y)
+                        y = split(y, col(y))
+                        y = lapply(y, ts, start = auxs, frequency = aux)
+                        y = lapply(y, function(x) list(x))
+                }
+        } else if (!yisListList) {
+                nSeries = length(y)
+                y = lapply(y, function(x) list(x))
+        } else {
+                nSeries = length(y)
+        }
+        if (!parallel || (nSeries == 1)){
+                listOut = lapply(y, slideAux, orig, forecFun, h, step, output, FALSE, window, FALSE, ...)
+        } else {
+                if (nSeries > 1){
+                        # if (substr(.Platform$OS.type, 1, 1) == "w"){
+                        #         listOut = parallelsugar::mclapply(y, slideAux, orig, forecFun, h, step, output, FALSE, window, FALSE, ..., mc.cores = detectCores())
+                        # } else {
+                        #         listOut = parallel::mclapply(y, slideAux, orig, forecFun, h, step, output, FALSE, window, FALSE, ..., mc.cores = detectCores())
+                        # }
+                        listOut = mclapply(y, slideAux, orig, forecFun, h, step, output, FALSE, window, FALSE, ..., mc.cores = detectCores())
+                }
+        }
+        out = array(NA, c(dim(listOut[[1]]), nSeries))
+        # nMethods = dim(outi)[2]
+        for (i in 1 : nSeries){
+                out[, , , i] = listOut[[i]]
+        }
+        dimnames(out)[[3]] = dimnames(listOut[[1]])[[3]]
+        return(out)
 }
 #' @title slideAux
 #' @description Auxiliary function run from slide
@@ -1095,55 +1105,71 @@ slideAux = function(y,
                     window = NA,
                     parallel = FALSE,
                     ...){
-  # Rolling for 1 series
-  # out = [h, nOrigs, nModels]
-  n = length(y)
-  origs = seq(orig, n - h, step)
-  nOr = length(origs)
-  # if (!parallel && output)
-  #   cat(paste0("Forecasting origin 1 of ", nOr, "\n"))
-  if (is.na(window)){
-    outi = forecFun(subset(y, end = orig), h, ...)
-  } else {
-    outi = forecFun(subset(y, start = orig - window + 1, end = orig), h, ...)
-  }
-  outi = as.matrix(outi)
-  nMethods = dim(outi)[2]
-  out = array(NA, c(h, length(origs), nMethods))
-  out[, 1, ] = outi
-  dimnames(out)[[3]] = colnames(outi)
-  dataList = vector(mode = "list", length = nOr - 1)
-  if (nOr > 1){
-    for (j in 1 : (nOr - 1)){
-      if (is.na(window)){
-        dataList[[j]] = subset(y, end = orig + j)
-      } else {
-        dataList[[j]] = subset(y, start = orig - window + step, end = orig + j)
-      }
-    }
-  }
-  if (parallel){
-      listOut = mclapply(dataList, forecFun, h, ..., mc.cores = detectCores())
-      # if (substr(.Platform$OS.type, 1, 1) == "w"){
-      #     listOut = parallelsugar::mclapply(dataList, forecFun, h, ..., mc.cores = detectCores())
-      # } else {
-      #     listOut = parallel::mclapply(dataList, forecFun, h, ..., mc.cores = detectCores())
-      # }
-  } else {
-    listOut = lapply(dataList, forecFun, h, ...)
-  }
-  if (nOr > 1){
-    for (i in 2 : nOr){
-      out[, i, ] = as.matrix(listOut[[i - 1]])
-    }
-  }
-  return(out)
+        # Rolling for 1 series
+        # out = [h, nOrigs, nModels]
+        n = length(y[[1]])
+        origs = seq(orig, n - h, step)
+        nOr = length(origs)
+        isList = TRUE
+        # Checking kind of input to function forecFun
+        outi = tryCatch({
+                forecFun(y, h, ...)  # llamada a la función
+        }, error = function(e) {
+                return(NULL)  # puedes devolver un valor por defecto si lo deseas
+        })
+        isList = TRUE
+        if (is.null(outi)) {
+                outi = forecFun(y[[1]], h, ...)
+                isList = FALSE
+        }
+        outi = as.matrix(outi)
+        nMethods = dim(outi)[2]
+        out = array(NA, c(h, length(origs), nMethods))
+        out[, 1, ] = outi
+        dimnames(out)[[3]] = colnames(outi)
+        dataList = vector(mode = "list", length = nOr - 1)
+        if (nOr > 1){
+                for (j in 1 : (nOr - 1)){
+                        if (isList) {
+                                dataList[[j]] = y
+                                if (is.na(window)){
+                                        dataList[[j]][[1]] = subset(y[[1]], end = orig + j)
+                                } else {
+                                        dataList[[j]][[1]] = subset(y[[1]], start = orig - window + step, end = orig + j)
+                                }
+                        } else {
+                                if (is.na(window)){
+                                        dataList[[j]] = subset(y[[1]], end = orig + j)
+                                } else {
+                                        dataList[[j]] = subset(y[[1]], start = orig - window + step, end = orig + j)
+                                }
+                        }
+                }
+                
+        }
+        if (parallel){
+                listOut = mclapply(dataList, forecFun, h, ..., mc.cores = detectCores())
+                # if (substr(.Platform$OS.type, 1, 1) == "w"){
+                #     listOut = parallelsugar::mclapply(dataList, forecFun, h, ..., mc.cores = detectCores())
+                # } else {
+                #     listOut = parallel::mclapply(dataList, forecFun, h, ..., mc.cores = detectCores())
+                # }
+                
+        } else {
+                listOut = lapply(dataList, forecFun, h, ...)
+        }
+        if (nOr > 1){
+                for (i in 2 : nOr){
+                        out[, i, ] = as.matrix(listOut[[i - 1]])
+                }
+        }
+        return(out)
 }
 #' @title plotSlide
 #' @description Plot summarised results from slide
 #'
 #' @param py1 output from slide function
-#' @param y a vector or matrix of time series (the same used in slide call)
+#' @param y a vector, matrix or list of time series (the same used in slide call)
 #' @param orig starting forecasting origin (the same used in slide call)
 #' @param step observations ahead to move the forecasting origin (the same used in slide call)
 #' @param errorFun user function to calculate error measures
@@ -1181,12 +1207,26 @@ plotSlide = function(py1, y, orig, step = 1,
     } else {
         py = py1
     }
-    y = as.ts(y)
     metrics = matrix(NA, h, nMethods)
     colnames(metrics) = dimnames(py)[[3]]
     outj = array(NA, c(h, nOrigs, nMethods, nSeries))
+    # Converting list of list to just a list of time series
+    yisList = is.list(y)
+    yisListList = FALSE
+    if (yisList)
+        yisListList = is.list(y[[1]])
+    if (yisListList) {
+        y = lapply(y, function(x) x[[1]])
+    }
+    # End of converting list of lists
     for (i in 1 : nOrigs){
-        actuali = subset(y, end = orig + (i - 1) * step + h)
+        if (yisList) {
+            actuali = lapply(y, function(serie) {
+                subset(serie, end = orig + (i - 1) * step + h)
+            })
+        } else {
+            actuali = subset(y, end = orig + (i - 1) * step + h)
+        }
         aux = array(NA, c(h, nMethods, nSeries))
         aux[, , ] = py[, i, , ]
         colnames(aux) = dimnames(py)[[3]]
@@ -1197,7 +1237,12 @@ plotSlide = function(py1, y, orig, step = 1,
         } else {
             for (k in 1 : nSeries){
                 for (j in 1 : nMethods){
-                    outj[, i, j, k] = errorFun(aux[, j, k], as.vector(actuali[, k]))
+                    if (yisList) {
+                        auxx = as.vector(actuali[[k]])
+                    } else {
+                        auxx = as.vector(actuali[, k])
+                    }
+                    outj[, i, j, k] = errorFun(aux[, j, k], auxx)
                 }
             }
         }

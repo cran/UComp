@@ -17,7 +17,7 @@ slide(
 )
 }
 \arguments{
-\item{y}{a vector or matrix of time series}
+\item{y}{a vector, a matrix or a list of time series}
 
 \item{orig}{starting forecasting origin}
 
@@ -36,13 +36,13 @@ slide(
 \item{parallel}{run forecasts in parallel}
 }
 \value{
-A vector with all the dimensions
+A matrix with all the dimensions
 }
 \description{
 Rolling forecasting of a matrix of time series
 }
 \details{
-Takes a time series and run forecasting methods implemented in function
+Takes time series and run forecasting methods implemented in function
 forecFun h steps ahead along the time series y, starting at forecasting
 origin orig, and moving step observations ahead. Forecasts may be run in parallel
 by setting parallel to TRUE. A fixed window width may be

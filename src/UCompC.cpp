@@ -61,15 +61,19 @@ SEXP UCompC(SEXP commands, SEXP ys, SEXP us, SEXP models, SEXP hs, SEXP lambdas,
         if (sum(TVP) > 0)
                 outlier = 0;
         // End of pre-processing
-        if (command == "estimate"){
+        // if (command == "estimate"){
+                // Missing at beginning
                 inputsSS.y = y.rows(iniObs, y.n_elem - 1);
-        } else {
-                inputsSS.y = y;
-        }
-        mat uIni;
-        if (iniObs > 0 && u.n_rows > 0 && command == "estimate"){
-                inputsSS.u = u.cols(iniObs, u.n_cols - 1);
-                uIni = u.cols(0, iniObs - 1);
+        // } else {
+        //         inputsSS.y = y;
+        // }
+        // mat uIni;
+        // if (iniObs > 0 && u.n_rows > 0 && command == "estimate"){
+        if (u.n_rows > 0) {
+                // Missing at beginning
+                // inputsSS.u = u.cols(iniObs, u.n_cols - 1);
+                inputsSS.u = u.cols(iniObs, y.n_elem - 1);
+                // uIni = u.cols(0, iniObs - 1);
         } else {
                 inputsSS.u= u;
         }
@@ -107,6 +111,11 @@ SEXP UCompC(SEXP commands, SEXP ys, SEXP us, SEXP models, SEXP hs, SEXP lambdas,
         sysBSM.estim(inputsSS.verbose);
         sysBSM.forecast();
         sysBSM.parLabels();
+        // Missing at beginning
+        if (iniObs > 0){
+                inputsSS.y = y;
+                inputsSS.u = u;
+        }
         inputs = sysBSM.SSmodel::getInputs();
         inputs2 = sysBSM.getInputs();
         if (inputs2.cycle[0] != 'n' && inputs2.cycle != "?"){
@@ -164,7 +173,10 @@ SEXP UCompC(SEXP commands, SEXP ys, SEXP us, SEXP models, SEXP hs, SEXP lambdas,
                 output("coef") = inputs.coef;
         }
         if (command == "filter" || command == "smooth" || command == "disturb" || command == "all"){
-                sysBSM.setSystemMatrices();
+                // sysBSM.initMatricesBsm(inputs2.periods, inputs2.rhos, inputs2.trend, inputs2.cycle, inputs2.seasonal, inputs2.irregular);
+                // sysBSM.setSystemMatrices();
+                if (command != "all")
+                        sysBSM.validate(false);
                 if (command == "filter"){
                         sysBSM.filter();
                 } else if (command == "smooth") {
@@ -205,7 +217,8 @@ SEXP UCompC(SEXP commands, SEXP ys, SEXP us, SEXP models, SEXP hs, SEXP lambdas,
                 output("stateNames") = statesN;
         }
         if (command == "components" || command == "all"){
-                sysBSM.setSystemMatrices();
+                // sysBSM.initMatricesBsm(inputs2.periods, inputs2.rhos, inputs2.trend, inputs2.cycle, inputs2.seasonal, inputs2.irregular);
+                // sysBSM.setSystemMatrices();
                 sysBSM.components();
                 inputs2 = sysBSM.getInputs();
                 string compNames = inputs2.compNames;

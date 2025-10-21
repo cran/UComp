@@ -129,6 +129,8 @@ TETSforecast = function(y, u = NULL, model = "???", s = frequency(y), h = max(2 
         m1 = ETSestim(m1)
     else
         m1 = TETSestim(m1)
+    if (verbose)
+            cat(m1$table)
     return(m1)
 }
 #' @title TETS
@@ -165,5 +167,7 @@ TETS = function(y, u = NULL, model = "???", s = frequency(y), h = 2 * s, criteri
         m1 = TETSvalidate(m1)
     }
     m1$v = m1$comp[, 1]
+    if (verbose)
+            cat(m1$table)
     return(m1)
 }

@@ -538,7 +538,8 @@ void ETSclass::validate(){
     if (auxx.n_elem < 5){
       inputModel.table.push_back("  All innovations are NaN!!\n");
     } else {
-      outputTable(inputModel.comp.submat(0, 0, inputModel.y.n_elem - 1, 0), inputModel.table);
+      vec v = inputModel.comp.submat(0, 0, inputModel.y.n_elem - 1, 0);
+      outputTable(v, inputModel.table);
     }
     inputModel.table.push_back("-------------------------------------------------------------\n");
      // Show Table
@@ -766,7 +767,7 @@ void AMM(vec& y, rowvec fitu, int n, int ns, vec& x, vec g, double phi, double e
         s = x(ns);
         b = pow(x(1), phi);
         fit = x(0) * b;
-        if (isfinite(y(t)))
+        if (std::isfinite(y(t)))
             e = y(t) - fit * s - fitu(t);
         else if (a.has_nan())
             e = 0.0;
@@ -790,7 +791,7 @@ void AMA(vec& y, rowvec fitu, int n, int ns, vec& x, vec g, double phi, double e
         b = pow(x(1), phi);
         s = x(ns);
         fit = x(0) * b;
-        if (isfinite(y(t)))
+        if (std::isfinite(y(t)))
             e = y(t) - fit - s - fitu(t);
         else if (a.has_nan())
             e = 0.0;
@@ -813,7 +814,7 @@ void AMN(vec& y, rowvec fitu, int n, vec& x, vec g, double phi, double e, vec a,
     for (int t = 0; t < n; t++){
         b = pow(x(1), phi);
         fit = x(0) * b;
-        if (isfinite(y(t)))
+        if (std::isfinite(y(t)))
             e = y(t) - fit - fitu(t);
         else if (a.has_nan())
             e = 0.0;
@@ -834,7 +835,7 @@ void AAM(vec& y, rowvec fitu, int n, int ns, vec& x, vec g, double phi, double e
     for (int t = 0; t < n; t++){
         s = x(ns);
         fit = x(0) + phi * x(1);
-        if (isfinite(y(t)))
+        if (std::isfinite(y(t)))
             e = y(t) - fit * s - fitu(t);
         else if (a.has_nan())
             e = 0.0;
@@ -857,7 +858,7 @@ void ANM(vec& y, rowvec fitu, int n, int ns, vec& x, vec g, double e, vec a, dou
     for (int t = 0; t < n; t++){
         s = x(ns);
         fit = x(0);
-        if (isfinite(y(t)))
+        if (std::isfinite(y(t)))
             e = y(t) - fit * s- fitu(t);
         else if (a.has_nan())
             e = 0.0;
@@ -880,7 +881,7 @@ void MMM(vec& y, rowvec fitu, int n, int ns, vec& x, vec g, double phi, double e
         b = pow(x(1), phi);
         s = x(ns);
         fit = x(0) * b * s;
-        if (isfinite(y(t)))
+        if (std::isfinite(y(t)))
             e = (y(t) - fitu(t)) / fit - 1;
         else if (a.has_nan())
             e = 0.0;
@@ -904,7 +905,7 @@ void MMN(vec& y, rowvec fitu, int n, vec& x, vec g, double phi, double e, vec a,
     for (int t = 0; t < n; t++){
         b = pow(x(1), phi);
         fit = x(0) * b;
-        if (isfinite(y(t)))
+        if (std::isfinite(y(t)))
             e = (y(t) - fitu(t)) / fit - 1;
         else if (a.has_nan())
             e = 0.0;
@@ -927,7 +928,7 @@ void MMA(vec& y, rowvec fitu, int n, int ns, vec& x, vec g, double phi, double e
         b = pow(x(1), phi);
         s = x(ns);
         fit = x(0) * b + s;
-        if (isfinite(y(t)))
+        if (std::isfinite(y(t)))
             e = (y(t) - fitu(t)) / fit - 1;
         else if (a.has_nan())
             e = 0.0;
@@ -1005,7 +1006,7 @@ void ETSclass::components(){
         // Linear model
         for (uword t = 0; t < n + m->h; t++){
             fit = m->w * x + sum(fitu.col(t));
-            if (is_finite(m->comp(t, 1))){
+            if (std::isfinite(m->comp(t, 1))){
                 e = m->y.row(t) - fit;
                 x = m->F * x + m->g * e;
                 m->comp(t, 0) = e(0);
@@ -1034,7 +1035,7 @@ void ETSclass::components(){
                 if (m->model == "AMN" || m->model == "AMdN") {
                     b = pow(x(1), m->phi);
                     fit = x(0) * b + sum(fitu.col(t));
-                    if (is_finite(m->comp(t, 1))){
+                    if (std::isfinite(m->comp(t, 1))){
                         e = m->y(t) - fit;
                         m->comp(t, 0) = e;
                     } else {
@@ -1045,7 +1046,7 @@ void ETSclass::components(){
                 } else if (m->model == "ANM"){
                     s = x(ns);
                     fit = x(0);
-                    if (is_finite(m->comp(t, 1))){
+                    if (std::isfinite(m->comp(t, 1))){
                         e = m->y(t) - fit * s - sum(fitu.col(t));
                         m->comp(t, 0) = e;
                     } else
@@ -1058,7 +1059,7 @@ void ETSclass::components(){
                     b = pow(x(1), m->phi);
                     s = x(ns);
                     fit = x(0) * b;
-                    if (is_finite(m->comp(t, 1))){
+                    if (std::isfinite(m->comp(t, 1))){
                         e = m->y(t) - fit - s - sum(fitu.col(t));
                         m->comp(t, 0) = e;
                     } else
@@ -1071,7 +1072,7 @@ void ETSclass::components(){
                 } else if (m->model == "AAM" || m->model == "AAdM"){
                     s = x(ns);
                     fit = x(0) + m->phi * x(1);
-                    if (is_finite(m->comp(t, 1))){
+                    if (std::isfinite(m->comp(t, 1))){
                         e = m->y(t) - fit * s - sum(fitu.col(t));
                         m->comp(t, 0) = e;
                     } else
@@ -1085,7 +1086,7 @@ void ETSclass::components(){
                     s = x(ns);
                     b = pow(x(1), m->phi);
                     fit = x(0) * b;
-                    if (is_finite(m->comp(t, 1))){
+                    if (std::isfinite(m->comp(t, 1))){
                         e = m->y(t) - fit * s - sum(fitu.col(t));
                         m->comp(t, 0) = e;
                     } else
@@ -1110,7 +1111,7 @@ void ETSclass::components(){
             for (uword t = 0; t < n + m->h; t++){
                 if (m->model == "MNN"){
                     fit = x(0);
-                    if (is_finite(m->comp(t, 1))){
+                    if (std::isfinite(m->comp(t, 1))){
                         e = (m->y(t) - sum(fitu.col(t))) / fit - 1;
                         m->comp(t, 0) = e;
                     } else
@@ -1118,7 +1119,7 @@ void ETSclass::components(){
                     x(0) = x(0) * (1 + g(0) * e);
                 } else if (m->model == "MAN" || m->model == "MAdN"){
                     fit = x(0) + m->phi * x(1);
-                    if (is_finite(m->comp(t, 1))){
+                    if (std::isfinite(m->comp(t, 1))){
                         e = (m->y(t) - sum(fitu.col(t))) / fit - 1;
                         m->comp(t, 0) = e;
                     } else
@@ -1128,7 +1129,7 @@ void ETSclass::components(){
                 } else if (m->model == "MMN" || m->model == "MMdN"){
                     b = pow(x(1), m->phi);
                     fit = x(0) * b;
-                    if (is_finite(m->comp(t, 1))){
+                    if (std::isfinite(m->comp(t, 1))){
                         e = (m->y(t) - sum(fitu.col(t))) / fit - 1;
                         m->comp(t, 0) = e;
                     } else
@@ -1138,7 +1139,7 @@ void ETSclass::components(){
                 } else if (m->model == "MNA"){
                     s = x(ns);
                     fit = x(0) + s;
-                    if (is_finite(m->comp(t, 1))){
+                    if (std::isfinite(m->comp(t, 1))){
                         e = (m->y(t) - sum(fitu.col(t))) / fit - 1;
                         m->comp(t, 0) = e;
                     } else
@@ -1150,7 +1151,7 @@ void ETSclass::components(){
                     b = m->phi * x(1);
                     s = x(ns);
                     fit = x(0) + b + s;
-                    if (is_finite(m->comp(t, 1))){
+                    if (std::isfinite(m->comp(t, 1))){
                         e = (m->y(t) - sum(fitu.col(t))) / fit - 1;
                         m->comp(t, 0) = e;
                     } else
@@ -1162,7 +1163,7 @@ void ETSclass::components(){
                 } else if (m->model == "MNM"){
                     s = x(ns);
                     fit = x(0) * s;
-                    if (is_finite(m->comp(t, 1))){
+                    if (std::isfinite(m->comp(t, 1))){
                         e = (m->y(t) - sum(fitu.col(t))) / fit - 1;
                         m->comp(t, 0) = e;
                     } else
@@ -1174,7 +1175,7 @@ void ETSclass::components(){
                     b = m->phi * x(1);
                     s = x(ns);
                     fit = x(0) + b;
-                    if (is_finite(m->comp(t, 1))){
+                    if (std::isfinite(m->comp(t, 1))){
                         e = (m->y(t) - sum(fitu.col(t))) / (fit * s) - 1;
                         m->comp(t, 0) = e;
                     } else
@@ -1193,7 +1194,7 @@ void ETSclass::components(){
                     b = pow(x(1), m->phi);
                     s = x(ns);
                     fit = x(0) * b * s;
-                    if (is_finite(m->comp(t, 1))){
+                    if (std::isfinite(m->comp(t, 1))){
                         e = (m->y(t) - sum(fitu.col(t))) / fit - 1;
                         m->comp(t, 0) = e;
                     } else
@@ -1206,7 +1207,7 @@ void ETSclass::components(){
                     b = pow(x(1), m->phi);
                     s = x(ns);
                     fit = x(0) * b + s;
-                    if (is_finite(m->comp(t, 1))){
+                    if (std::isfinite(m->comp(t, 1))){
                         e = (m->y(t) - sum(fitu.col(t))) / fit - 1;
                         m->comp(t, 0) = e;
                     } else
@@ -1376,7 +1377,6 @@ ETSclass preProcess(vec y, mat u, string model, int s, int h,
     // arma:    ARMA(p, q) orders
     // armaIdent: identification of ARMA models on/off
     // lambda: Box-Cox transformation constant
-
     //Checking model and y
     bool negative = false;
     bool errorExit = false;
@@ -1423,6 +1423,7 @@ ETSclass preProcess(vec y, mat u, string model, int s, int h,
     input.initialModel = input.model;
     input.missing = find_nonfinite(y);
     input.userS = s;
+    input.s = s;
     input.h = h;
     input.negative = negative;
     input.identAll = identAll;
@@ -1454,7 +1455,6 @@ ETSclass preProcess(vec y, mat u, string model, int s, int h,
     }
     input.lambda = lambda;
     input.y = BoxCox(input.y, lambda);
-
     if (armaIdent || model[0] == '?' || model[1] == '?' || model[2] == '?' || model[model.length() - 1] == '?')
         input.arma.fill(0);
 //    if (sum(arma > 0))

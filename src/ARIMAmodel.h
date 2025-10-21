@@ -100,7 +100,7 @@ void ARIMA(vec, mat, vec, double, uword, int, bool, double, vec, bool, int, stri
 // preprocess inputs to ARIMA function
 ARIMAclass preProcess(vec, mat, vec, double, uword, int,
                       bool, double, vec, bool, int, string);
-// Hannan Rissanen estimation of ARMA models
+// Hannan Risannen estimation of ARMA models
 void HR(vec, mat, vec, uword, uword, uword, uword,
         uword, uword, double&, vec&, vec&, double&,
         uvec&, uvec&, string);
@@ -158,9 +158,24 @@ void ARIMA(vec y, mat u, vec orders, double cnst, uword s, int h,
         ARIMAclass m(input);
         m = preProcess(y, u, orders, cnst, s, h, verbose, lambda,
                        maxOrders, bootstrap, nSimul, criterion);
+        // bool IDENT = false;
+        // if (sum(orders) == 0 && !m.m.pureRegression && !m.m.tooFew)
+        //     IDENT = true;
+        // else
+        //     maxOrders = orders;  // estimate just ONE model
         if (m.m.errorExit)
             return;
+        // if (m.m.IDENT)
+        //     m.findDiff();
+        // else
+        //     maxOrders = orders;  // estimate just ONE model
+        // m.identGM();
         m.identGM();
+
+//        if (m.m.u.n_rows > 0){
+//            m.m.u.cols(0, 5).print("u 141");
+//        }
+
         m.validate();
         m.forecast();
 }
@@ -631,9 +646,10 @@ void ARIMAclass::identGM(){
         }
         // Examining 5 best models
         double tol = 0.05;
+        BICmat = BICmat.rows(find_finite(BICmat.col(0)));
         BICmat = BICmat.rows(sort_index(BICmat.col(0)));
         // BICmat.cols(0,8).print("BICmat580");
-        for (uword i = 1; i < 5; i++){
+        for (uword i = 1; i < BICmat.n_rows; i++){
             if (BICmat(0, 0) > BICmat(i, 0) - tol && BICmat(i, 4) > 0 && BICmat(0, 4) > BICmat(i, 4)){
                 ibest = i;
             }
@@ -1706,31 +1722,31 @@ mat vDiff(mat x, uword d, uword D, uword s){
 // Parameter names for output table
 void parNames(uword s, uword p, uword q, uword ps, uword qs,
               int nu, double cnst, vector<string>& names){
-    char str[20];
+    char str[12];
     names.clear();
     for (uword i = 1; i <= p; i++){
-        snprintf(str, 20, "AR(%d)", (int)i);
+        snprintf(str, 10, "AR(%d)", (int)i);
         names.push_back(str);
     }
     for (uword i = 1; i <= ps; i++){
-        snprintf(str, 20, "ARs(%d)", (int)i * (int)s);
+        snprintf(str, 10, "ARs(%d)", (int)i * (int)s);
         names.push_back(str);
     }
     for (uword i = 1; i <= q; i++){
-        snprintf(str, 20, "MA(%d)", (int)i);
+        snprintf(str, 10, "MA(%d)", (int)i);
         names.push_back(str);
     }
     for (uword i = 1; i <= qs; i++){
-        snprintf(str, 20, "MAs(%d)", (int)i * (int)s);
+        snprintf(str, 10, "MAs(%d)", (int)i * (int)s);
         names.push_back(str);
     }
     for (uword i = 0; i < nu - cnst; i++){
         int jj = 1;
-        snprintf(str, 20, "Beta(%d)", (int)i + jj);
+        snprintf(str, 10, "Beta(%d)", (int)i + jj);
         names.push_back(str);
     }
     if (abs(cnst) > 0.0){
-        snprintf(str, 20, "Cnst");
+        snprintf(str, 10, "Cnst");
         names.push_back(str);
     }
 }

@@ -128,14 +128,17 @@ ARIMAforecast = function(y, u = NULL, model = NULL, cnst = NULL, s = frequency(y
                        bootstrap, nSimul, fast)
         m = ARIMAestim(m)
         IC = m$IC
-        if (is.null(model) && !fast || !is.finite(IC)){
+        if (is.null(IC) || !is.finite(IC)){
+                IC = 1e10
+        }
+        if ((is.null(model) && !fast) || !is.finite(IC)){
                 if (s == 1 && sum(abs(m$model[1 : 3] - c(0, 1, 1))) != 0){
                         # Yearly data
                         model = c(0, 1, 1, 0, 0, 0)
                         m1 = ARIMAsetup(y, u, model, cnst, s, criterion, h, FALSE, lambda, maxOrders,
                                         bootstrap, nSimul, fast)
                         m1 = ARIMAestim(m1)
-                        if (is.finite(m1$IC) && m1$IC < IC){
+                        if (is.finite(m1$IC) && m1$IC < IC) {
                                 IC = m1$IC
                                 m = m1
                         }
@@ -182,7 +185,7 @@ ARIMAforecast = function(y, u = NULL, model = NULL, cnst = NULL, s = frequency(y
                 }
         }
         if (verbose)
-                print(m)
+                cat(m$table)
         return(m)
 }
 #' @title ARIMA
@@ -268,6 +271,6 @@ ARIMA = function(y, u = NULL, model = NULL, cnst = NULL, s = frequency(y),
                 }
         }
         if (verbose)
-                print(m)
+                cat(m$table)
         return(m)
 }

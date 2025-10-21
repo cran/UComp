@@ -280,6 +280,8 @@ UCforecast = function(y, u = NULL, model = "?/none/?/?", h = 24, lambda = 1, out
                 periods, verbose, stepwise, p0, arma,
                 TVP, trendOptions, seasonalOptions, irregularOptions)
     m = UCestim(m)
+    if (is.null(u))
+            m$u = u
     return(m)
 }
 #' @title UC
@@ -361,6 +363,8 @@ UC = function(y, u = NULL, model = "?/none/?/?", h = 24, lambda = 1, outlier = 9
                 periods, verbose, stepwise, p0, arma,
                 TVP, trendOptions, seasonalOptions, irregularOptions)
     m = UCcommand("all", m)
+    if (is.null(u))
+            m$u = u
     if (verbose)
         cat(m$table)
     # m = UCestim(m)

@@ -18,11 +18,10 @@
 #' @rdname print
 #' @export 
 print.ARIMA = function(x, ...){
-    if (length(x$table) == 0){
+    if (length(x$table) < 3) {
         x = ARIMAvalidate(x)
-    } else {
-        cat(x$table)
     }
+    cat(x$table)
 }
 #' @title summary.ARIMA
 #' @description Prints an ARIMA object on screen

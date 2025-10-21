@@ -9,7 +9,7 @@ plotSlide(py1, y, orig, step = 1, errorFun, collectFun = mean)
 \arguments{
 \item{py1}{output from slide function}
 
-\item{y}{a vector or matrix of time series (the same used in slide call)}
+\item{y}{a vector, matrix or list of time series (the same used in slide call)}
 
 \item{orig}{starting forecasting origin (the same used in slide call)}
 

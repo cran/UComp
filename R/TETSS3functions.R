@@ -19,11 +19,10 @@
 #' @rdname print
 #' @export 
 print.TETS = function(x, ...){
-    if (length(x$table) == 0){
+    if (length(x$table) < 3){
         x = TETSvalidate(x)
-    } else {
-        cat(x$table)
     }
+    cat(x$table)
 }
 #' @title summary.TETS
 #' @description Prints a TOBIT TETS object on screen

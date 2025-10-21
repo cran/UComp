@@ -1742,7 +1742,7 @@ void parNames(uword s, uword p, uword q, uword ps, uword qs,
     }
     for (uword i = 0; i < nu - cnst; i++){
         int jj = 1;
-        snprintf(str, 10, "Beta(%d)", (int)i + jj);
+        snprintf(str, sizeof(str), "Beta(%d)", (int)i + jj);
         names.push_back(str);
     }
     if (abs(cnst) > 0.0){

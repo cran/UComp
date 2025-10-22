@@ -63,7 +63,7 @@ SEXP UCompC(SEXP commands, SEXP ys, SEXP us, SEXP models, SEXP hs, SEXP lambdas,
         // End of pre-processing
         // if (command == "estimate"){
                 // Missing at beginning
-                inputsSS.y = y.rows(iniObs, y.n_elem - 1);
+        inputsSS.y = y.rows(iniObs, y.n_elem - 1);
         // } else {
         //         inputsSS.y = y;
         // }

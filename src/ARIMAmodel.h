@@ -1740,9 +1740,9 @@ void parNames(uword s, uword p, uword q, uword ps, uword qs,
         snprintf(str, 10, "MAs(%d)", (int)i * (int)s);
         names.push_back(str);
     }
-    for (uword i = 0; i < nu - cnst; i++){
+    for (uword i = 0; i < static_cast<uword>(nu - cnst); ++i) {
         int jj = 1;
-        snprintf(str, sizeof(str), "Beta(%d)", (int)i + jj);
+        snprintf(str, 10, "Beta(%u)", static_cast<unsigned>(i + jj));
         names.push_back(str);
     }
     if (abs(cnst) > 0.0){

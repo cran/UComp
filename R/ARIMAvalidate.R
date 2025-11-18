@@ -12,7 +12,7 @@
 #' @seealso \code{\link{ARIMA}}, \code{\link{ARIMAforecast}}, \code{\link{ARIMAvalidate}},
 #'          
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' m1 <- ARIMAforecast(log(gdp))
 #' m1 <- ARIMAvalidate(m1)
 #' }

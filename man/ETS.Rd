@@ -84,6 +84,25 @@ model for each component with one or two letters:
 }}
 }
 \value{
+An object of class \code{ETS}. It is a list with fields including all the inputs and
+        the fields listed below as outputs. All the functions in this package fill in
+        part of the fields of any \code{ETS} object as specified in what follows (function 
+        \code{ETS} fills in all of them at once):
+
+After running \code{ETSforecast}:
+\item{p}{Estimated parameters}
+\item{criteria}{Values for estimation criteria (LogLik, AIC, BIC, AICc)}
+\item{yFor}{Forecasted values of output}
+\item{yForV}{Variance of forecasted values of output}
+\item{ySimul}{Bootstrap simulations for forecasting distribution evaluation}
+
+After running \code{ETSvalidate}:
+\item{table}{Estimation and validation table}
+\item{comp}{Estimated components in matrix form}
+
+After running \code{ETScomponents}:
+\item{comp}{Estimated components in matrix form}
+
 An object of class \code{ETS}. See \code{ETSforecast}.
 }
 \description{
@@ -93,15 +112,15 @@ Runs all relevant functions for ETS modelling
 See help of \code{ETSforecast}.
 }
 \examples{
-\dontrun{
-y <- log(AirPAssengers)
+\donttest{
+y <- log(AirPassengers)
 m1 <- ETS(y)
 m1 <- ETS(y, model = "MAM")
 }
 }
 \seealso{
 \code{\link{ETSforecast}}, \code{\link{ETSvalidate}},
-         \code{\link{ETScomponents}}, \code{\link{ETSestim}}
+         \code{\link{ETScomponents}}
 }
 \author{
 Diego J. Pedregal

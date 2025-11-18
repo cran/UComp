@@ -16,7 +16,7 @@ Accuracy(py, y, s = frequency(y), collectFun = mean)
 \item{collectFun}{aggregation function (mean, median, etc.)}
 }
 \value{
-Table of results
+Table of accuracy results
 }
 \description{
 Accuracy for 1 time series y and several forecasting

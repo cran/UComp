@@ -15,11 +15,14 @@ Time series objects.
 \usage{
 sales
 }
+\value{
+No return value, called for side effects
+}
 \description{
 Sales index for food of large retailers in Spain
 }
 \examples{
-\dontrun{
+\donttest{
  sales
 }
 }

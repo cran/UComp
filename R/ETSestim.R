@@ -19,7 +19,7 @@
 #'          \code{\link{ETScomponents}}
 #'          
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' m1 <- ETSsetup(log(gdp))
 #' m1 <- ETSestim(m1)
 #' }

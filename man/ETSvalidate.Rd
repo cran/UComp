@@ -18,7 +18,7 @@ filled in, in particular:
 Shows a table of estimation and diagnostics results for ETS models
 }
 \examples{
-\dontrun{
+\donttest{
 m1 <- ETSforecast(log(gdp))
 m1 <- ETSvalidate(m1)
 }

@@ -36,7 +36,7 @@ slide(
 \item{parallel}{run forecasts in parallel}
 }
 \value{
-A matrix with all the dimensions
+An array of forecasts of dimensions (horizon x nOrigs x nModels x nSeries)
 }
 \description{
 Rolling forecasting of a matrix of time series

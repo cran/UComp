@@ -26,13 +26,25 @@
 #' 
 #' @author Diego J. Pedregal
 #' 
-#' @return An object of class \code{ARIMA}. See \code{ARIMAforecast}.
+#' @return An object of class \code{ARIMA}. It is a list with fields including all the inputs and
+#'         the fields listed below as outputs. All the functions in this package fill in
+#'         part of the fields of any \code{ARIMA} object as specified in what follows (function 
+#'         \code{ARIMA} fills in all of them at once):
+#' 
+#' After running \code{ARIMAforecast} or \code{ARIMA}:
+#' \item{p}{Estimated parameters}
+#' \item{yFor}{Forecasted values of output}
+#' \item{yForV}{Variance of forecasted values of output}
+#' \item{ySimul}{Bootstrap simulations for forecasting distribution evaluation}
+#' 
+#' After running \code{ARIMAvalidate}:
+#' \item{table}{Estimation and validation table}
 #' 
 #' @seealso \code{\link{ARIMA}}, \code{\link{ARIMAforecast}}, \code{\link{ARIMAvalidate}},
 #'          
 #' @examples
-#' \dontrun{
-#' y <- log(AirPAssengers)
+#' \donttest{
+#' y <- log(AirPassengers)
 #' m1 <- ARIMAsetup(y)
 #' m1 <- ARIMAsetup(y, lambda = NULL)
 #' }
@@ -44,7 +56,9 @@ ARIMAsetup = function(y, u = NULL, model = NULL, cnst = NULL, s = frequency(y),
                       fast = FALSE){
         y = as.ts(y)
         if (s > 24)
-                stop("Data with period greater than 24 are not allowed!!")
+                stop("Error: Data with period greater than 24 are not allowed!!")
+        if (length(y) < s + 2 || length(y) < 8)
+                stop("Error: Not enough data to estimate model!!")
         if (is.null(lambda))
                 lambda = 9999.9
         if (typeof(cnst) == "logical" && cnst){
@@ -92,7 +106,7 @@ ARIMAsetup = function(y, u = NULL, model = NULL, cnst = NULL, s = frequency(y),
 #' govern the way the rest of functions in the package will work. It also estimates 
 #' the model parameters by Maximum Likelihood and forecasts the data.
 #'
-#' @inheritParams ARIMAsetup
+#' @inheritParams ARIMA
 #' 
 #' @return An object of class \code{ARIMA}. It is a list with fields including all the inputs and
 #'         the fields listed below as outputs. All the functions in this package fill in
@@ -113,8 +127,8 @@ ARIMAsetup = function(y, u = NULL, model = NULL, cnst = NULL, s = frequency(y),
 #' @seealso \code{\link{ARIMA}}, \code{\link{ARIMAvalidate}},
 #'          
 #' @examples
-#' \dontrun{
-#' y <- log(AirPAssengers)
+#' \donttest{
+#' y <- log(AirPassengers)
 #' m1 <- ARIMAforecast(y)
 #' m1 <- ARIMAforecast(y, lambda = NULL)
 #' }
@@ -193,17 +207,48 @@ ARIMAforecast = function(y, u = NULL, model = NULL, cnst = NULL, s = frequency(y
 #'
 #' @details See help of \code{ARIMAforecast}.
 #'
-#' @inheritParams ARIMAsetup
+#' @param y a time series to forecast (it may be either a numerical vector or
+#' a time series object). This is the only input required. If a vector, the additional
+#' input \code{s} should be supplied compulsorily (see below).
+#' @param u a matrix of input time series. If 
+#' the output wanted to be forecast, matrix \code{u} should contain future values for inputs.
+#' @param model the model to estimate. A vector c(p,d,q,P,D,Q) containing the model orders
+#'               of an ARIMA(p,d,q)x(P,D,Q)_s model. A constant may be estimated with the
+#'               cnst input.
+#'               Use a NULL to automatically identify the ARIMA model.
+#' @param cnst flag to include a constant in the model (TRUE/FALSE/NULL). Use NULL to estimate
+#' @param s seasonal period of time series (1 for annual, 4 for quarterly, ...)
+#' @param h forecast horizon. If the model includes inputs h is not used, the lenght of u is used instead.
+#' @param criterion information criterion for identification stage ("aic", "bic", "aicc")
+#' @param verbose intermediate estimation output (TRUE / FALSE)
+#' @param lambda Box-Cox lambda parameter (NULL: estimate)
+#' @param maxOrders a vector c(p,d,q,P,D,Q) containing the maximum orders of model orders 
+#'                  to search for in the automatic identification
+#' @param bootstrap use bootstrap simulation for predictive distributions
+#' @param nSimul number of simulation runs for bootstrap simulation of predictive distributions
+#' @param fast fast identification (avoids post-identification checks)
 #' 
 #' @author Diego J. Pedregal
 #' 
-#' @return An object of class \code{ARIMA}. See \code{ARIMAforecast}.
+#' @return An object of class \code{ARIMA}. It is a list with fields including all the inputs and
+#'         the fields listed below as outputs. All the functions in this package fill in
+#'         part of the fields of any \code{ARIMA} object as specified in what follows (function 
+#'         \code{ARIMA} fills in all of them at once):
+#' 
+#' After running \code{ARIMAforecast} or \code{ARIMA}:
+#' \item{p}{Estimated parameters}
+#' \item{yFor}{Forecasted values of output}
+#' \item{yForV}{Variance of forecasted values of output}
+#' \item{ySimul}{Bootstrap simulations for forecasting distribution evaluation}
+#' 
+#' After running \code{ARIMAvalidate}:
+#' \item{table}{Estimation and validation table}
 #' 
 #' @seealso \code{\link{ARIMAforecast}}, \code{\link{ARIMAvalidate}},
 #'          
 #' @examples
-#' \dontrun{
-#' y <- log(AirPAssengers)
+#' \donttest{
+#' y <- log(AirPassengers)
 #' m1 <- ARIMA(y)
 #' m1 <- ARIMA(y, lambda = NULL)
 #' }

@@ -34,7 +34,7 @@ of autocorrelation statistic for several lags, the Jarque-Bera gaussianity test,
 standard ratio of variances test.
 }
 \examples{
-\dontrun{
+\donttest{
 m1 <- UC(log(gdp))
 m1 <- UCvalidate(m1)
 }

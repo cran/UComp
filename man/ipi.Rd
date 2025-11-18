@@ -15,11 +15,14 @@ Objeto time series.
 \usage{
 ipi
 }
+\value{
+No return value, called for side effects
+}
 \description{
 Spanish Industrial Production Index (ipi).
 }
 \examples{
-\dontrun{
+\donttest{
  ipi
 }
 }

@@ -13,6 +13,9 @@ arma2tsi(MApoly, ARpoly, n = 100)
 
 \item{n}{number of coefficients}
 }
+\value{
+Tsi (MA form) coefficients of equivalent ARMA model
+}
 \description{
 AR polynomial coefficients of ARMA model
 }

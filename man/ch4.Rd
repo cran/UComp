@@ -16,11 +16,14 @@ Time series objects.
 \usage{
 ch4
 }
+\value{
+No return value, called for side effects
+}
 \description{
 Methane concentration at Cape Grim in Australia (ch4).
 }
 \examples{
-\dontrun{
+\donttest{
  ch4
 }
 }

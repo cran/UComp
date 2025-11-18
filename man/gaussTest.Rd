@@ -11,6 +11,9 @@ gaussTest(y, runFromTests = FALSE)
 
 \item{runFromTests}{internal check}
 }
+\value{
+No return value, called for side effects
+}
 \description{
 Gaussianity tests
 }

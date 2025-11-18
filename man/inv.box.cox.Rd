@@ -11,11 +11,14 @@ inv.box.cox(x, lambda)
 
 \item{lambda}{Lambda parameter used for Box-Cox transform.}
 }
+\value{
+Inverse Box-Cox transformed time series
+}
 \description{
 Runs inverse of Box-Cox transform of a time series
 }
 \examples{
-\dontrun{
+\donttest{
 y <- inv.box.cox(box.cox(AirPassengers, 0.5), 0.5)
 plot(y)
 }

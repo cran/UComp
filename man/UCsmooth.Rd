@@ -25,7 +25,7 @@ Standard methods applicable to \code{UComp} objects are print, summary, plot,
 fitted, residuals, logLik, AIC, BIC, coef, predict, tsdiag.
 }
 \examples{
-\dontrun{
+\donttest{
 m1 <- UC(log(AirPassengers))
 m1 <- UCsmooth(m1)
 }

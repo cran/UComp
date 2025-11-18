@@ -13,17 +13,8 @@
 #' \item{yForV}{Variance of forecasted values of output}
 #' \item{ySimul}{Bootstrap simulations for forecasting distribution evaluation}
 #' 
-#' @author Diego J. Pedregal
-#' 
-#' @seealso \code{\link{ARIMA}}, \code{\link{ARIMAforecast}}, \code{\link{ARIMAvalidate}},
-#'          
-#' @examples
-#' \dontrun{
-#' m1 <- ARIMAsetup(log(gdp))
-#' m1 <- ARIMAestim(m1)
-#' }
-#' @rdname ARIMAestim
 #' @export
+#' 
 ARIMAestim = function(m){
     if (is.null(m$u))
         u = m$u

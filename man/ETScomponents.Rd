@@ -18,14 +18,13 @@ filled in, in particular:
 Estimates components of ETS models
 }
 \examples{
-\dontrun{
+\donttest{
 m1 <- ETS(log(gdp))
 m1 <- ETScomponents(m1)
 }
 }
 \seealso{
-\code{\link{ETS}}, \code{\link{ETSforecast}}, \code{\link{ETSvalidate}},
-         \code{\link{ETSestim}}
+\code{\link{ETS}}, \code{\link{ETSforecast}}, \code{\link{ETSvalidate}}
 }
 \author{
 Diego J. Pedregal

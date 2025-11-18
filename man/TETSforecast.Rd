@@ -89,7 +89,7 @@ An object of class \code{TETS}. It is a list with fields including all the input
         part of the fields of any \code{TETS} object as specified in what follows (function 
         \code{TETS} fills in all of them at once):
 
-After running \code{TETSforecast} or \code{TETSestim}:
+After running \code{TETSforecast}:
 \item{p}{Estimated parameters}
 \item{criteria}{Values for estimation criteria (LogLik, AIC, BIC, AICc)}
 \item{yFor}{Forecasted values of output}
@@ -114,15 +114,15 @@ govern the way the rest of functions in the package will work. It also estimates
 the model parameters by Maximum Likelihood and forecasts the data.
 }
 \examples{
-\dontrun{
-y <- log(AirPAssengers)
+\donttest{
+y <- log(AirPassengers)
 m1 <- TETSforecast(y)
 m1 <- TETSforecast(y, model = "A?A")
 }
 }
 \seealso{
 \code{\link{TETS}}, \code{\link{TETSvalidate}},
-         \code{\link{TETScomponents}}, \code{\link{TETSestim}}
+         \code{\link{TETScomponents}}
 }
 \author{
 Diego J. Pedregal

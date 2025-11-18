@@ -25,7 +25,7 @@ Estimates and forecasts ETS models
 an ETS model
 }
 \examples{
-\dontrun{
+\donttest{
 m1 <- ETSsetup(log(gdp))
 m1 <- ETSestim(m1)
 }

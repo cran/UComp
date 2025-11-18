@@ -9,11 +9,10 @@
 #' 
 #' @author Diego J. Pedregal
 #' 
-#' @seealso \code{\link{ETS}}, \code{\link{ETSforecast}}, \code{\link{ETSvalidate}},
-#'          \code{\link{ETSestim}}
+#' @seealso \code{\link{ETS}}, \code{\link{ETSforecast}}, \code{\link{ETSvalidate}}
 #'        
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' m1 <- ETS(log(gdp))
 #' m1 <- ETScomponents(m1)
 #' }

@@ -102,6 +102,7 @@ SEXP UCompC(SEXP commands, SEXP ys, SEXP us, SEXP models, SEXP hs, SEXP lambdas,
                 lambda = testBoxCox(y, periods);
         inputsBSM.lambda = lambda;
         inputsSS.y = BoxCox(inputsSS.y, inputsBSM.lambda);
+        y = BoxCox(y, inputsBSM.lambda);
         // Building model
         BSMclass sysBSM = BSMclass(inputsSS, inputsBSM);
         // Commands
@@ -113,8 +114,12 @@ SEXP UCompC(SEXP commands, SEXP ys, SEXP us, SEXP models, SEXP hs, SEXP lambdas,
         sysBSM.parLabels();
         // Missing at beginning
         if (iniObs > 0){
-                inputsSS.y = y;
-                inputsSS.u = u;
+            inputs = sysBSM.SSmodel::getInputs();
+            inputs2 = sysBSM.getInputs();
+            inputs.y = y;
+            inputs.u = u;
+            sysBSM.SSmodel::setInputs(inputs);
+            sysBSM.setInputs(inputs2);
         }
         inputs = sysBSM.SSmodel::getInputs();
         inputs2 = sysBSM.getInputs();
@@ -273,260 +278,6 @@ SEXP UCompC(SEXP commands, SEXP ys, SEXP us, SEXP models, SEXP hs, SEXP lambdas,
         // }
         return output;
 }
-// 
-// // [[Rcpp::export]]
-// SEXP UCompC(string command, vec y, mat u, string model, int h, double lambda, double outlier, bool tTest,
-//             string criterion, vec periods, vec rhos, bool verbose, bool stepwise, vec p0, bool arma, vec TVP,
-//             double seas, string trendOptions, string seasonalOptions, string irregularOptions){
-//         // Correcting dimensions of u (k x n)
-//         size_t k = u.n_rows;
-//         size_t n = u.n_cols;
-//         if (k > n){
-//                 u = u.t();
-//         }
-//         if (k == 1 && n == 2){
-//                 u.resize(0);
-//         }
-//         int iniObs = periods.n_elem * 2 + 2;
-//         // Setting inputs
-//         SSinputs inputsSS;
-//         BSMmodel inputsBSM;
-//         // Pre-processing
-//         bool errorExit = preProcess(y, u, model, h, outlier, criterion, periods, p0, iniObs,
-//                                     trendOptions, seasonalOptions, irregularOptions, TVP, lambda);
-//         if (errorExit)
-//                 return List::create(Named("model") = "error");
-//         if (sum(TVP) > 0)
-//                 outlier = 0;
-//         // End of pre-processing
-//         if (command == "estimate"){
-//                 inputsSS.y = y.rows(iniObs, y.n_elem - 1);
-//         } else {
-//                 inputsSS.y = y;
-//         }
-//         mat uIni;
-//         if (iniObs > 0 && u.n_rows > 0 && command == "estimate"){
-//                 inputsSS.u = u.cols(iniObs, u.n_cols - 1);
-//                 uIni = u.cols(0, iniObs - 1);
-//         } else {
-//                 inputsSS.u= u;
-//         }
-//         inputsBSM.model = model;
-//         inputsBSM.periods = periods;
-//         inputsBSM.rhos = rhos;
-//         inputsSS.h = h;
-//         inputsBSM.tTest = tTest;
-//         inputsBSM.criterion = criterion;
-//         //if (TVP(0) == -9999.99)
-//         //    TVP = {};
-//         inputsBSM.TVP = TVP;
-//         inputsBSM.MSOE = false;
-//         inputsBSM.PTSnames = false;
-//         inputsBSM.trendOptions = trendOptions;
-//         inputsBSM.seasonalOptions = seasonalOptions;
-//         inputsBSM.irregularOptions = irregularOptions;
-//         inputsSS.p0 = p0;
-//         inputsSS.outlier = outlier;
-//         inputsSS.verbose = verbose;
-//         inputsBSM.stepwise = stepwise;
-//         inputsBSM.arma = arma;
-//         inputsBSM.seas = seas;
-//         // BoxCox transformation
-//         if (lambda == 9999.9)
-//                 lambda = testBoxCox(y, periods);
-//         inputsBSM.lambda = lambda;
-//         inputsSS.y = BoxCox(inputsSS.y, inputsBSM.lambda);
-//         // Building model
-//         BSMclass sysBSM = BSMclass(inputsSS, inputsBSM);
-//         // Commands
-//         SSinputs inputs;
-//         BSMmodel inputs2;
-//         // if (command == "estimate"){
-//         sysBSM.estim(inputsSS.verbose);
-//         sysBSM.forecast();
-//         sysBSM.parLabels();
-//         inputs = sysBSM.SSmodel::getInputs();
-//         inputs2 = sysBSM.getInputs();
-//         if (inputs2.cycle[0] != 'n' && inputs2.cycle != "?"){
-//                 string model1 = inputs2.model, cycle = inputs2.cycle, cycle0 = inputs2.cycle0;
-//                 vec periods = inputs2.periods, rhos = inputs2.rhos;
-//                 modelCorrect(model, cycle, inputsBSM.cycle0, periods, rhos);
-//                 inputs2.model= model1, inputs2.cycle= cycle, inputs2.cycle0= cycle0;
-//                 inputs2.periods = periods, inputs2.rhos = rhos;
-//                 // sysBSM.setInputs(inputs2);
-//                 // Estimating period of cycles (lines 3101 BSMmodel)
-//                 // int nRhos = sum(inputs2.typePar == 1);
-//                 // uword pos = inputs2.nPar(0) + nRhos;
-//                 // uvec ind, ind1;
-//                 // vec pInd;
-//                 // int nPerEstim = sum(inputs2.typePar == 2);
-//                 // if (nPerEstim > 0){
-//                 //     ind = regspace<uvec>(pos, 1, pos + nPerEstim - 1);
-//                 //     pos += nPerEstim;
-//                 //     ind1 = find(inputs2.periods < 0);
-//                 //     pInd = inputs.p(ind);
-//                 //     constrain(pInd, inputs2.cycleLimits.rows(ind1));
-//                 //     periods(ind1) = pInd;
-//                 //     inputs2.periods = periods;
-//                 // }
-//                 sysBSM.setInputs(inputs2);
-//         }
-//         if (command == "forecast"){
-//                 // Values to return
-//                 inputs = sysBSM.SSmodel::getInputs();
-//                 inputs2 = sysBSM.getInputs();
-//                 // Converting back to R
-//                 return List::create(Named("model") = inputs2.model,
-//                                     Named("yFor") = inputs.yFor,
-//                                     Named("yForV") = inputs.FFor,
-//                                     Named("estimOk") = inputs.estimOk,
-//                                     Named("lambda") = inputs2.lambda,
-//                                     Named("periods") = inputs2.periods,
-//                                     Named("rhos") = inputs2.rhos,
-//                                     Named("p") = inputs.p,
-//                                     Named("parNames") = inputs2.parNames,
-//                                     Named("ns") = sum(inputs2.ns),
-//                                     Named("criteria") = inputs.criteria);
-//         } else if (command == "validate"){
-//                 sysBSM.validate(false);
-//                 // Values to return
-//                 inputs = sysBSM.SSmodel::getInputs();
-//                 inputs2 = sysBSM.getInputs();
-//                 // Converting back to R
-//                 return List::create(Named("model") = inputs2.model,
-//                                     Named("yFor") = inputs.yFor,
-//                                     Named("yForV") = inputs.FFor,
-//                                     Named("estimOk") = inputs.estimOk,
-//                                     Named("lambda") = inputs2.lambda,
-//                                     Named("periods") = inputs2.periods,
-//                                     Named("rhos") = inputs2.rhos,
-//                                     Named("p") = inputs.p,
-//                                     Named("parNames") = inputs2.parNames,
-//                                     Named("criteria") = inputs.criteria,
-//                                     Named("table") = inputs.table,
-//                                     Named("v") = inputs.v,
-//                                     Named("ns") = sum(inputs2.ns),
-//                                     Named("covp") = inputs.covp,
-//                                     Named("coef") = inputs.coef,
-//                                     Named("parNames") = inputs2.parNames);
-//         } else if (command == "filter" || command == "smooth" || command == "disturb"){
-//                 sysBSM.setSystemMatrices();
-//                 if (command == "filter"){
-//                         sysBSM.filter();
-//                 } else if (command == "smooth") {
-//                         sysBSM.smooth(false);
-//                 } else {
-//                         sysBSM.disturb();
-//                 }
-//                 inputs = sysBSM.SSmodel::getInputs();
-//                 inputs2 = sysBSM.getInputs();
-//                 string statesN = stateNames(inputs2);
-//                 if (command == "disturb"){
-//                         uvec missing = find_nonfinite(inputs.y);
-//                         inputs.eta.cols(missing).fill(datum::nan);
-//                         inputs2.eps(missing).fill(datum::nan);
-//                 }
-//                 // Nans at very beginning
-//                 if (iniObs > 0 && command != "disturb"){
-//                         uvec missing = find_nonfinite(inputs.y.rows(0, iniObs));
-//                         mat P = inputs.P.cols(0, iniObs);
-//                         sysBSM.interpolate(iniObs);
-//                         if (command == "filter"){
-//                                 sysBSM.filter();
-//                         } else if (command == "smooth"){
-//                                 sysBSM.smooth(false);
-//                         }
-//                         inputs = sysBSM.SSmodel::getInputs();
-//                         inputs.P.cols(0, iniObs) = P;
-//                         inputs.v(missing).fill(datum::nan);
-//                 }
-//                 return List::create(Named("model") = inputs2.model,
-//                                     Named("yFor") = inputs.yFor,
-//                                     Named("yForV") = inputs.FFor,
-//                                     Named("estimOk") = inputs.estimOk,
-//                                     Named("lambda") = inputs2.lambda,
-//                                     Named("periods") = inputs2.periods,
-//                                     Named("rhos") = inputs2.rhos,
-//                                     Named("p") = inputs.p,
-//                                     Named("parNames") = inputs2.parNames,
-//                                     Named("criteria") = inputs.criteria,
-//                                     Named("table") = inputs.table,
-//                                     Named("a") = inputs.a,
-//                                     Named("P") = inputs.P,
-//                                     Named("v") = inputs.v,
-//                                     Named("ns") = sum(inputs2.ns),
-//                                     Named("yFitV") = inputs.F,
-//                                     Named("yFit") = inputs.yFit,
-//                                     Named("eps") = inputs2.eps,
-//                                     Named("eta") = inputs.eta,
-//                                     Named("stateNames") = statesN);
-//         } else if (command == "components"){
-//                 sysBSM.setSystemMatrices();
-//                 sysBSM.components();
-//                 inputs2 = sysBSM.getInputs();
-//                 string compNames = inputs2.compNames;
-//                 // Nans at very beginning
-//                 if (iniObs > 0){
-//                         inputs = sysBSM.SSmodel::getInputs();
-//                         uvec missing = find_nonfinite(inputs.y.rows(0, iniObs));
-//                         //vec ytrun = inputs.y.rows(0, iniObs);
-//                         mat P = inputs2.compV.cols(0, iniObs);
-//                         sysBSM.interpolate(iniObs);
-//                         sysBSM.components();
-//                         inputs2 = sysBSM.getInputs();
-//                         inputs2.compV.cols(0, iniObs) = P;
-//                         // Setting irregular to nan
-//                         uvec rowI(1); rowI(0) = 0;
-//                         if (compNames.find("Level") != string::npos)
-//                                 rowI++;
-//                         if (compNames.find("Slope") != string::npos)
-//                                 rowI++;
-//                         if (compNames.find("Seasonal") != string::npos)
-//                                 rowI++;
-//                         if (compNames.find("Irr") != string::npos ||
-//                             compNames.find("ARMA") != string::npos)
-//                                 inputs2.comp.submat(rowI, missing).fill(datum::nan);
-//                 }
-//                 // Values to return
-//                 //inputs2 = sysBSM.getInputs();
-//                 // Converting back to R
-//                 return List::create(Named("model") = inputs2.model,
-//                                     Named("yFor") = inputs.yFor,
-//                                     Named("yForV") = inputs.FFor,
-//                                     Named("estimOk") = inputs.estimOk,
-//                                     Named("lambda") = inputs2.lambda,
-//                                     Named("periods") = inputs2.periods,
-//                                     Named("rhos") = inputs2.rhos,
-//                                     Named("p") = inputs.p,
-//                                     Named("parNames") = inputs2.parNames,
-//                                     Named("criteria") = inputs.criteria,
-//                                     Named("ns") = sum(inputs2.ns),
-//                                     Named("table") = inputs.table,
-//                                     Named("comp") = inputs2.comp,
-//                                     Named("compV") = inputs2.compV,
-//                                     Named("m") = inputs2.comp.n_rows,
-//                                     Named("compNames") = compNames);
-//         } else if (command == "createSystem"){
-//                 // Values to return
-//                 inputs2 = sysBSM.getInputs();
-//                 // Converting back to R
-//                 return List::create(Named("model") = inputs2.model,
-//                                     Named("yFor") = inputs.yFor,
-//                                     Named("yForV") = inputs.FFor,
-//                                     Named("estimOk") = inputs.estimOk,
-//                                     Named("lambda") = inputs2.lambda,
-//                                     Named("periods") = inputs2.periods,
-//                                     Named("rhos") = inputs2.rhos,
-//                                     Named("p") = inputs.p,
-//                                     Named("parNames") = inputs2.parNames,
-//                                     Named("criteria") = inputs.criteria,
-//                                     Named("ns") = sum(inputs2.ns),
-//                                     Named("table") = inputs.table,
-//                                     Named("p0Return") = inputs2.p0Return,
-//                                     Named("parNames") = inputs2.parNames);
-//         }
-//         return List::create(Named("void") = datum::nan);
-// }
 
 // [[Rcpp::export]]
 SEXP ETSc(SEXP commands, SEXP ys, SEXP us, SEXP models, SEXP ss, SEXP hs,
@@ -691,13 +442,12 @@ SEXP ARIMAc(SEXP commands, SEXP ys, SEXP us, SEXP orderss, SEXP cnsts, SEXP ss,
         //                maxOrders, bootstrap, nSimul, identDiff, identMethod);
         m = preProcess(y, u, orders, cnst, s, h, verbose, lambda,
                        maxOrders, bootstrap, nSimul, criterion);
-        
         if (m.m.errorExit)
                 return List::create(Named("void") = datum::nan);
         // Commands
         if (command == "estimate"){
                 m.identGM();
-                m.estim(false);
+            m.estim(false);
         }
         if (command== "validate"){
                 m.identGM();

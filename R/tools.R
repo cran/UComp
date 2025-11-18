@@ -51,7 +51,7 @@ plus_one = function(y){
 #' @param col column to be ordered
 #' @param accordingTo column to take as the pattern
 #'
-#' @return data frame reordered
+#' @return Data frame reordered accoring to a given column data
 #'
 #' @author Diego J. Pedregal
 #'
@@ -74,7 +74,7 @@ extract = function(x, col, accordingTo = 1){
 #' @param na.rm boolean indicating whether to remove nans
 #' @param ... rest of inputs
 #'
-#' @return A vector with all the medians
+#' @return A vector with all the medians in columns
 #'
 #' @author Diego J. Pedregal
 #'
@@ -106,7 +106,7 @@ colMedians = function(x, na.rm = TRUE, ...){
 #' @param na.rm boolean indicating whether to remove nans
 #' @param ... rest of inputs
 #'
-#' @return A vector with all the medians
+#' @return A vector with all the medians in rows
 #'
 #' @author Diego J. Pedregal
 #'
@@ -159,6 +159,8 @@ removeNaNs = function(x){
 #' @param avoid number of observations to avoid at beginning of sample to
 #' eliminate initial effects
 #'
+#' @return Table with all test results
+#' 
 #' @author Diego J. Pedregal
 #'
 #' @seealso \code{\link{colMedians}}, \code{\link{rowMedians}},
@@ -186,23 +188,52 @@ tests = function(y,
       x = as.ts(y)
   }
   #x = removeNaNs(x)
-  cat("\014")
-  cat("Summary statistics:\n")
-  cat("==================\n")
-  print(sumStats(x))
-  cat("Autocorrelation tests:\n")
-  cat("=====================\n")
+  sumS = capture.output(sumStats(x))
   nCoef = max(floor(nCoef), 1)
   LB = ident(x, nCoef, nPar, TRUE)
-  print(LB)
+  LBs = capture.output(LB)
   pLB = plotAcfPacf(LB$SACF, LB$SPACF, s, length(x), TRUE)
-  cat("Gaussianity tests:\n")
-  cat("=================\n")
   pGAUSS = gaussTest(x, TRUE)
-  cat("Ratio of variance tests:\n")
-  cat("=======================\n")
-  print(varTest(x, parts))
+  pGs = capture.output(pGAUSS[[3]])
   pCUSUM = cusum(x, TRUE)
+  pVar = varTest(x, parts)
+  pVars = capture.output(pVar)
+  out = c("Summary statistics:\n",
+              "==================\n",
+              sumS,
+              "\n",
+              "Autocorrelation tests:\n",
+              "=====================\n",
+              LBs,
+              "\n",
+              "Gaussianity tests:\n",
+              "=================\n",
+              pGs,
+              "\n",
+              "Ratio of variance tests:\n",
+              "=======================\n",
+              pVars)
+  for (i in 1 : length(out)){
+      if (substring(out[i], nchar(out[i])) != "\n"){
+          out[i] = paste0(out[i], "\n")
+      }
+  }
+  # cat("Summary statistics:\n")
+  # cat("==================\n")
+  # print(sumStats(x))
+  # cat("Autocorrelation tests:\n")
+  # cat("=====================\n")
+  # nCoef = max(floor(nCoef), 1)
+  # LB = ident(x, nCoef, nPar, TRUE)
+  # print(LB)
+  # pLB = plotAcfPacf(LB$SACF, LB$SPACF, s, length(x), TRUE)
+  # cat("Gaussianity tests:\n")
+  # cat("=================\n")
+  # pGAUSS = gaussTest(x, TRUE)
+  # cat("Ratio of variance tests:\n")
+  # cat("=======================\n")
+  # print(varTest(x, parts))
+  # pCUSUM = cusum(x, TRUE)
   # Plotting
   p1 = autoplot(x)
   grid.arrange(
@@ -215,6 +246,7 @@ tests = function(y,
                           c(4, 5),
                           c(6, 7))
   )
+  return(out)
 }
 #' @title tsDisplay
 #' @description Displays time series plot with autocorrelation functions
@@ -224,6 +256,8 @@ tests = function(y,
 #' @param nPar number of parameters in a model if y is a residual
 #' @param s seasonal period, number of observations per year
 #'
+#' @return No return value, called for side effects
+#' 
 #' @author Diego J. Pedregal
 #'
 #' @seealso \code{\link{colMedians}}, \code{\link{rowMedians}}, \code{\link{tests}},
@@ -264,7 +298,7 @@ tsDisplay = function(y, nCoef = 25, nPar = 0, s = NA){
 #' @param y a vector, matrix of time series
 #' @param decimals number of decimals for table
 #'
-#' @return Table of values
+#' @return Table of values in string matrix
 #'
 #' @author Diego J. Pedregal
 #'
@@ -340,6 +374,8 @@ sumStats = function(y, decimals = 5){
 #' @param y a vector, ts or tsibble object
 #' @param runFromTests internal check
 #'
+#' @return No return value, called for side effects
+#' 
 #' @author Diego J. Pedregal
 #'
 #' @seealso \code{\link{colMedians}}, \code{\link{rowMedians}}, \code{\link{tests}},
@@ -371,9 +407,9 @@ gaussTest = function(y, runFromTests = FALSE){
           stat_function(fun = dnorm, args = list(mean = mean(df$x), sd = sd(df$x)))
   # QQplot
   p2 = ggplot(df, aes(sample = x)) + stat_qq() + stat_qq_line(color = "darkred", linewidth = 1)
-  print(shapiro.test(x))
+  shap = shapiro.test(x)
   if (runFromTests){
-    return(list(p1, p2))
+    return(list(p1, p2, shap))
   } else {
     grid.arrange(p1, p2, nrow = 2)
   }
@@ -386,7 +422,7 @@ gaussTest = function(y, runFromTests = FALSE){
 #' @param nPar number of parameters in a model if y is a residual
 #' @param runFromTests internal check
 #'
-#' @return A vector with all the dimensions
+#' @return A vector with output table including ACF, etc.
 #'
 #' @author Diego J. Pedregal
 #'
@@ -504,6 +540,8 @@ plotBar = function(ACF, s = 1, n = NA, label = "ACF"){
 #' @param n number of coefficients
 #' @param runFromTest internal check variable
 #'
+#' @return No return value, called for side effects
+#' 
 #' @author Diego J. Pedregal
 #'
 #' @rdname plotAcfPacf
@@ -524,6 +562,8 @@ plotAcfPacf = function(ACF, PACF, s = 1, n = NA, runFromTest = FALSE){
 #' @param y a vector, ts or tsibble object
 #' @param runFromTest internal check variable
 #'
+#' @return No return value, called for side effects
+#' 
 #' @author Diego J. Pedregal
 #'
 #' @seealso \code{\link{colMedians}}, \code{\link{rowMedians}}, \code{\link{tests}},
@@ -803,6 +843,8 @@ roots = function(x){
 #' @param MApoly coefficients of numerator polynomial in descending order
 #' @param ARpoly coefficients of denominator polynomial in descending order
 #'
+#' @return No return value, called for side effects
+#' 
 #' @author Diego J. Pedregal
 #'
 #' @seealso \code{\link{colMedians}}, \code{\link{rowMedians}}, \code{\link{tests}},
@@ -886,6 +928,8 @@ zplane = function(MApoly = 1, ARpoly = 1){
 #' @param ARpoly coefficients of denominator polynomial in descending order
 #' @param n number of coefficients
 #'
+#' @return Tsi (MA form) coefficients of equivalent ARMA model
+#' 
 #' @author Diego J. Pedregal
 #'
 #' @rdname arma2tsi
@@ -922,15 +966,15 @@ acft = function(MApoly = 1, ARpoly = 1, ncoef = 38, s = 1){
   # Theoretical ACF and PACF from ARMA model
   correct = TRUE
   if (length(ARpoly) > 1 && any(abs(roots(ARpoly)) >= 1)){
-    print('Non-stationary model')
+    warning('Non-stationary model')
     correct = FALSE
   }
   if (length(MApoly) > 1 && any(abs(roots(MApoly)) >= 1)){
-    print('Non-invertible model')
+    warning('Non-invertible model')
     correct = FALSE
   }
   if (!correct){
-    print('SACF and SPACF do not exist for this model!!!')
+    stop('SACF and SPACF do not exist for this model!!!')
     return()
   }
   p = size(ARpoly) - 1
@@ -987,7 +1031,7 @@ acft = function(MApoly = 1, ARpoly = 1, ncoef = 38, s = 1){
 #' @param window fixed window width in number of observations (NA for non fixed)
 #' @param parallel run forecasts in parallel
 #'
-#' @return A matrix with all the dimensions
+#' @return An array of forecasts of dimensions (horizon x nOrigs x nModels x nSeries)
 #'
 #' @author Diego J. Pedregal
 #'
@@ -1003,77 +1047,64 @@ acft = function(MApoly = 1, ARpoly = 1, ncoef = 38, s = 1){
 #' \dontrun{slide(AirPassengers, 100, forecFun)}
 #' @rdname slide
 #' @export
-slide = function(y,
-                 orig,
-                 forecFun,
-                 ...,
-                 h = 12,
-                 step = 1,
-                 output = TRUE,
-                 window = NA,
-                 parallel = FALSE){
-        # Rolling for nSeries
-        # out = [h, nOrigs, nModels, nSeries]
-        #functionInputs = list(...)
-        if (parallel){
-                if (substr(.Platform$OS.type, 1, 1) == "w"){
-                        if ("parallelsugar" %in% (.packages()) == FALSE){
-                                stop(paste0("Packages parallel and parallelsugar should ",
-                                            "be installed and loaded for parallel processing!! \n",
-                                            "  Run: \n  library(parallel) \n  library(parallelsugar)"))
-                        }
-                        if ("parallel" %in% (.packages()) == FALSE){
-                                stop(paste0("Package parallel should ",
-                                            "be installed and loaded for parallel processing!! \n",
-                                            "  Run: \n  library(parallel) \n "))
-                        }
-                }
-        }
-        # Generating list of lists
-        yisList = is.list(y)
-        yisListList = FALSE
-        if (yisList)
-                yisListList = is.list(y[[1]])
-        if (!yisList) {
-                if (!is.ts(y))
-                        y = as.ts(y)
-                if (length(size(y)) == 1){
-                        # y = ts(matrix(y, length(y), 1), start = start(y), frequency = frequency(y))
-                        nSeries = 1
-                        y = list(list(y))
-                } else {
-                        nSeries = ncol(y)
-                        aux = frequency(y)
-                        auxs = start(y)
-                        y = split(y, col(y))
-                        y = lapply(y, ts, start = auxs, frequency = aux)
-                        y = lapply(y, function(x) list(x))
-                }
-        } else if (!yisListList) {
-                nSeries = length(y)
-                y = lapply(y, function(x) list(x))
-        } else {
-                nSeries = length(y)
-        }
-        if (!parallel || (nSeries == 1)){
-                listOut = lapply(y, slideAux, orig, forecFun, h, step, output, FALSE, window, FALSE, ...)
-        } else {
-                if (nSeries > 1){
-                        # if (substr(.Platform$OS.type, 1, 1) == "w"){
-                        #         listOut = parallelsugar::mclapply(y, slideAux, orig, forecFun, h, step, output, FALSE, window, FALSE, ..., mc.cores = detectCores())
-                        # } else {
-                        #         listOut = parallel::mclapply(y, slideAux, orig, forecFun, h, step, output, FALSE, window, FALSE, ..., mc.cores = detectCores())
-                        # }
-                        listOut = mclapply(y, slideAux, orig, forecFun, h, step, output, FALSE, window, FALSE, ..., mc.cores = detectCores())
-                }
-        }
-        out = array(NA, c(dim(listOut[[1]]), nSeries))
-        # nMethods = dim(outi)[2]
-        for (i in 1 : nSeries){
-                out[, , , i] = listOut[[i]]
-        }
-        dimnames(out)[[3]] = dimnames(listOut[[1]])[[3]]
-        return(out)
+slide <- function(y,
+                  orig,
+                  forecFun,
+                  ...,
+                  h = 12,
+                  step = 1,
+                  output = TRUE,
+                  window = NA,
+                  parallel = FALSE) {
+  # suppressWarnings()
+  # Preparación de datos
+  yisList <- is.list(y)
+  yisListList <- if (yisList) is.list(y[[1]]) else FALSE
+  if (!yisList) {
+    if (!is.ts(y)) y <- as.ts(y)
+    if (length(size(y)) == 1) {
+      nSeries <- 1
+      y <- list(list(y))
+    } else {
+      nSeries <- ncol(y)
+      aux <- frequency(y)
+      auxs <- start(y)
+      y <- split(y, col(y))
+      y <- lapply(y, ts, start = auxs, frequency = aux)
+      y <- lapply(y, function(x) list(x))
+    }
+  } else if (!yisListList) {
+    nSeries <- length(y)
+    y <- lapply(y, function(x) list(x))
+  } else {
+    nSeries <- length(y)
+  }
+  # Detección de tipo de entrada para forecFun
+  test1 <- !is.null(tryCatch(forecFun(y[[1]], h, ...), error = function(e) NULL))
+  test2 <- !is.null(tryCatch(forecFun(y[[1]][[1]], h, ...), error = function(e) NULL))
+  isList <- if (test1 && !test2) TRUE else if (!test1 && test2) FALSE else yisList
+  # Ejecución
+  if (nSeries == 1) {
+    listOut <- lapply(y, slideAux, orig, forecFun, h, step, output, FALSE, window, parallel, isList, ...)
+  } else {
+    if (parallel) {
+      cores <- max(1, parallel::detectCores() - 1)
+      cl <- parallel::makeCluster(cores)
+      on.exit(parallel::stopCluster(cl))
+      parallel::clusterExport(cl, varlist = c("slideAux", "orig", "forecFun", "h", "step", "output", "window", "isList"), envir = environment())
+      listOut <- parallel::parLapply(cl, y, function(x) slideAux(x, orig, forecFun, h, step, output, FALSE, window, FALSE, isList, ...))
+    } else {
+      listOut <- lapply(y, slideAux, orig, forecFun, h, step, output, FALSE, window, FALSE, isList, ...)
+    }
+  }
+  # Construcción del array de salida
+  out <- array(NA, c(dim(listOut[[1]]), nSeries))
+  for (i in 1:nSeries) {
+    out[, , , i] <- listOut[[i]]
+  }
+  dimnames(out)[[3]] <- dimnames(listOut[[1]])[[3]]
+  # options(warn = 0)
+  return(out)
 }
 #' @title slideAux
 #' @description Auxiliary function run from slide
@@ -1087,10 +1118,11 @@ slide = function(y,
 #' @param graph fraphical output TRUE/FALSE
 #' @param window fixed window width in number of observations (NA for non fixed)
 #' @param parallel run forecasts in parallel
+#' @param isList whether the input data y is a list or a matrix
 #' @param ... rest of inputs to forecFun function
 #'
-#' @return Next time stamp
-#'
+#' @return Auxiliary output of slide function for just one time series
+#' 
 #' @author Diego J. Pedregal
 #'
 #' @rdname slideAux
@@ -1104,66 +1136,80 @@ slideAux = function(y,
                     graph = TRUE,
                     window = NA,
                     parallel = FALSE,
+                    isList = FALSE,
                     ...){
-        # Rolling for 1 series
-        # out = [h, nOrigs, nModels]
-        n = length(y[[1]])
-        origs = seq(orig, n - h, step)
-        nOr = length(origs)
-        isList = TRUE
-        # Checking kind of input to function forecFun
-        outi = tryCatch({
-                forecFun(y, h, ...)  # llamada a la función
-        }, error = function(e) {
-                return(NULL)  # puedes devolver un valor por defecto si lo deseas
-        })
-        isList = TRUE
-        if (is.null(outi)) {
-                outi = forecFun(y[[1]], h, ...)
-                isList = FALSE
-        }
-        outi = as.matrix(outi)
-        nMethods = dim(outi)[2]
-        out = array(NA, c(h, length(origs), nMethods))
-        out[, 1, ] = outi
-        dimnames(out)[[3]] = colnames(outi)
-        dataList = vector(mode = "list", length = nOr - 1)
-        if (nOr > 1){
-                for (j in 1 : (nOr - 1)){
-                        if (isList) {
-                                dataList[[j]] = y
-                                if (is.na(window)){
-                                        dataList[[j]][[1]] = subset(y[[1]], end = orig + j)
-                                } else {
-                                        dataList[[j]][[1]] = subset(y[[1]], start = orig - window + step, end = orig + j)
-                                }
-                        } else {
-                                if (is.na(window)){
-                                        dataList[[j]] = subset(y[[1]], end = orig + j)
-                                } else {
-                                        dataList[[j]] = subset(y[[1]], start = orig - window + step, end = orig + j)
-                                }
-                        }
-                }
-                
-        }
-        if (parallel){
-                listOut = mclapply(dataList, forecFun, h, ..., mc.cores = detectCores())
-                # if (substr(.Platform$OS.type, 1, 1) == "w"){
-                #     listOut = parallelsugar::mclapply(dataList, forecFun, h, ..., mc.cores = detectCores())
-                # } else {
-                #     listOut = parallel::mclapply(dataList, forecFun, h, ..., mc.cores = detectCores())
-                # }
-                
+  # Rolling for 1 series
+  # out = [h, nOrigs, nModels]
+  n = length(y[[1]])
+  origs = seq(orig, n - h, step)
+  nOr = length(origs)
+  # # Detecting whether forecFun accepts list as input
+  # isList = FALSE
+  # x = names(formals(forecFun))[1]
+  # code <- deparse(body(forecFun))
+  # firstTest = any(grepl(paste0(x, "\\$"), code))
+  # secondTest = any(grepl(paste0(x, "\\[\\["), code))
+  # if (firstTest || secondTest){
+  #     isList = TRUE
+  # }
+  # Checking kind of input to function forecFun
+  # outi = tryCatch({
+  #     forecFun(y, h, ...)  # llamada a la función
+  # }, error = function(e) {
+  #     return(NULL)  # puedes devolver un valor por defecto si lo deseas
+  # })
+  # isList = TRUE
+  # if (is.null(outi)) {
+  #     outi = forecFun(y[[1]], h, ...)
+  #     isList = FALSE
+  # }
+  if (isList) {
+    outi = forecFun(y, h, ...)
+  } else {
+    outi = forecFun(y[[1]], h, ...)
+  }
+  outi = as.matrix(outi)
+  nMethods = dim(outi)[2]
+  out = array(NA, c(h, length(origs), nMethods))
+  out[, 1, ] = outi
+  dimnames(out)[[3]] = colnames(outi)
+  dataList = vector(mode = "list", length = nOr - 1)
+  if (nOr > 1){
+    for (j in 1 : (nOr - 1)){
+      if (isList) {
+        dataList[[j]] = y
+        if (is.na(window)){
+          dataList[[j]][[1]] = subset(y[[1]], end = orig + j)
         } else {
-                listOut = lapply(dataList, forecFun, h, ...)
+          dataList[[j]][[1]] = subset(y[[1]], start = orig - window + step, end = orig + j)
         }
-        if (nOr > 1){
-                for (i in 2 : nOr){
-                        out[, i, ] = as.matrix(listOut[[i - 1]])
-                }
+      } else {
+        if (is.na(window)){
+          dataList[[j]] = subset(y[[1]], end = orig + j)
+        } else {
+          dataList[[j]] = subset(y[[1]], start = orig - window + step, end = orig + j)
         }
-        return(out)
+      }
+    }
+    
+  }
+  # if (parallel){
+  #         listOut = mclapply(dataList, forecFun, h, ..., mc.cores = detectCores())
+  #         # if (substr(.Platform$OS.type, 1, 1) == "w"){
+  #         #     listOut = parallelsugar::mclapply(dataList, forecFun, h, ..., mc.cores = detectCores())
+  #         # } else {
+  #         #     listOut = parallel::mclapply(dataList, forecFun, h, ..., mc.cores = detectCores())
+  #         # }
+  #         
+  # } else {
+  listOut = lapply(dataList, forecFun, h, ...)
+  # }
+  if (nOr > 1){
+    for (i in 2 : nOr){
+      out[, i, ] = as.matrix(listOut[[i - 1]])
+    }
+  }
+  return(out)
 }
 #' @title plotSlide
 #' @description Plot summarised results from slide
@@ -1175,7 +1221,7 @@ slideAux = function(y,
 #' @param errorFun user function to calculate error measures
 #' @param collectFun aggregation function (mean, median, etc.)
 #'
-#' @return Results
+#' @return An array of forecasting errors of dimensions (horizon x nOrigs x nModels x nSeries)
 #'
 #' @author Diego J. Pedregal
 #'
@@ -1194,68 +1240,68 @@ slideAux = function(y,
 plotSlide = function(py1, y, orig, step = 1,
                      errorFun,
                      collectFun = mean){
-    # py1 = [h, nOrigs, nModels, nSeries]
-    h = dim(py1)[1]
-    nOrigs = dim(py1)[2]
-    nMethods = dim(py1)[3]
-    nSeries = dim(py1)[4]
-    if (is.na(nSeries)){
-        nSeries = 1
-        py = array(NA, c(dim(py1), 1))
-        dimnames(py) = dimnames(py1)
-        py[, , , 1] = py1
-    } else {
-        py = py1
-    }
-    metrics = matrix(NA, h, nMethods)
-    colnames(metrics) = dimnames(py)[[3]]
-    outj = array(NA, c(h, nOrigs, nMethods, nSeries))
-    # Converting list of list to just a list of time series
-    yisList = is.list(y)
-    yisListList = FALSE
-    if (yisList)
-        yisListList = is.list(y[[1]])
-    if (yisListList) {
-        y = lapply(y, function(x) x[[1]])
-    }
-    # End of converting list of lists
-    for (i in 1 : nOrigs){
-        if (yisList) {
-            actuali = lapply(y, function(serie) {
-                subset(serie, end = orig + (i - 1) * step + h)
-            })
+        # py1 = [h, nOrigs, nModels, nSeries]
+        h = dim(py1)[1]
+        nOrigs = dim(py1)[2]
+        nMethods = dim(py1)[3]
+        nSeries = dim(py1)[4]
+        if (is.na(nSeries)){
+                nSeries = 1
+                py = array(NA, c(dim(py1), 1))
+                dimnames(py) = dimnames(py1)
+                py[, , , 1] = py1
         } else {
-            actuali = subset(y, end = orig + (i - 1) * step + h)
+                py = py1
         }
-        aux = array(NA, c(h, nMethods, nSeries))
-        aux[, , ] = py[, i, , ]
-        colnames(aux) = dimnames(py)[[3]]
-        if (nSeries == 1){
-            for (j in 1 : nMethods){
-                outj[, i, j, 1] = errorFun(aux[, j, 1], actuali)
-            }
-        } else {
-            for (k in 1 : nSeries){
-                for (j in 1 : nMethods){
-                    if (yisList) {
-                        auxx = as.vector(actuali[[k]])
-                    } else {
-                        auxx = as.vector(actuali[, k])
-                    }
-                    outj[, i, j, k] = errorFun(aux[, j, k], auxx)
+        metrics = matrix(NA, h, nMethods)
+        colnames(metrics) = dimnames(py)[[3]]
+        outj = array(NA, c(h, nOrigs, nMethods, nSeries))
+        # Converting list of lists to just a list of time series
+        yisList = is.list(y)
+        yisListList = FALSE
+        if (yisList)
+                yisListList = is.list(y[[1]])
+        if (yisListList) {
+                y = lapply(y, function(x) x[[1]])
+        }
+        # End of converting list of lists
+        for (i in 1 : nOrigs){
+                if (yisList) {
+                        actuali = lapply(y, function(serie) {
+                                subset(serie, end = orig + (i - 1) * step + h)
+                        })
+                } else {
+                        actuali = subset(y, end = orig + (i - 1) * step + h)
                 }
-            }
+                aux = array(NA, c(h, nMethods, nSeries))
+                aux[, , ] = py[, i, , ]
+                colnames(aux) = dimnames(py)[[3]]
+                if (nSeries == 1){
+                        for (j in 1 : nMethods){
+                                outj[, i, j, 1] = errorFun(aux[, j, 1], actuali)
+                        }
+                } else {
+                        for (k in 1 : nSeries){
+                                for (j in 1 : nMethods){
+                                        if (yisList) {
+                                                auxx = as.vector(actuali[[k]])
+                                        } else {
+                                                auxx = as.vector(actuali[, k])
+                                        }
+                                        outj[, i, j, k] = errorFun(aux[, j, k], auxx)
+                                }
+                        }
+                }
+                # outj[, i, , ] = AccuracyAll(aux, actuali, collectFun = collectFun, one = FALSE, )[, , criteriaColumn]
         }
-        # outj[, i, , ] = AccuracyAll(aux, actuali, collectFun = collectFun, one = FALSE, )[, , criteriaColumn]
-    }
-    for (m in 1 : nMethods){
-        for (j in 1 : h){
-            metrics[j, m] = collectFun(outj[j, , m, ], na.rm = TRUE)
+        for (m in 1 : nMethods){
+                for (j in 1 : h){
+                        metrics[j, m] = collectFun(outj[j, , m, ], na.rm = TRUE)
+                }
         }
-    }
-    plotH = autoplot(ts(metrics, frequency = 1, start = 1), ylab = "")
-    print(plotH)
-    return(outj)
+        plotH = autoplot(ts(metrics, frequency = 1, start = 1), ylab = "")
+        print(plotH)
+        return(outj)
 }
 #' @title Accuracy
 #' @description Accuracy for 1 time series y and several forecasting
@@ -1266,7 +1312,7 @@ plotSlide = function(py1, y, orig, step = 1,
 #' @param s seasonal period, number of observations per year
 #' @param collectFun aggregation function (mean, median, etc.)
 #'
-#' @return Table of results
+#' @return Table of accuracy results
 #'
 #' @author Diego J. Pedregal
 #'
@@ -1368,13 +1414,15 @@ Accuracy = function(py, y, s = frequency(y), collectFun = mean){
 #' @param x Time series object.
 #' @param lambda Lambda parameter for Box-Cox transform.
 #' 
+#' @return Box-Cox transformed time series
+#' 
 #' @author Diego J. Pedregal
 #' 
 #' @seealso \code{\link{inv.box.cox}}, \code{\link{UC}}, \code{\link{UCforecast}}, \code{\link{UCvalidate}}, \code{\link{UCfilter}}, \code{\link{UCsmooth}}, 
 #'          \code{\link{UCdisturb}}, \code{\link{UCcomponents}}
 #'          
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' y <- box.cox(AirPassengers, 0.5)
 #' plot(y)
 #' }
@@ -1395,13 +1443,15 @@ box.cox <- function(x, lambda){
 #' @param x Transformed time series object.
 #' @param lambda Lambda parameter used for Box-Cox transform.
 #' 
+#' @return Inverse Box-Cox transformed time series
+#' 
 #' @author Diego J. Pedregal
 #' 
 #' @seealso \code{\link{box.cox}}, \code{\link{UC}}, \code{\link{UCforecast}}, \code{\link{UCvalidate}}, \code{\link{UCfilter}}, \code{\link{UCsmooth}}, 
 #'          \code{\link{UCdisturb}}, \code{\link{UCcomponents}}
 #'          
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' y <- inv.box.cox(box.cox(AirPassengers, 0.5), 0.5)
 #' plot(y)
 #' }

@@ -11,6 +11,9 @@ auxInvBoxCox(y, lambda)
 
 \item{lambda}{lambda parameter of Box-Cox transformation}
 }
+\value{
+Inverse of Box-Cox heteroskedasticity transformation
+}
 \description{
 Inverse of Box-Cox transformation
 }

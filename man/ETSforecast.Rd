@@ -89,7 +89,7 @@ An object of class \code{ETS}. It is a list with fields including all the inputs
         part of the fields of any \code{ETS} object as specified in what follows (function 
         \code{ETS} fills in all of them at once):
 
-After running \code{ETSforecast} or \code{ETSestim}:
+After running \code{ETSforecast}:
 \item{p}{Estimated parameters}
 \item{criteria}{Values for estimation criteria (LogLik, AIC, BIC, AICc)}
 \item{yFor}{Forecasted values of output}
@@ -114,15 +114,15 @@ govern the way the rest of functions in the package will work. It also estimates
 the model parameters by Maximum Likelihood and forecasts the data.
 }
 \examples{
-\dontrun{
-y <- log(AirPAssengers)
+\donttest{
+y <- log(AirPassengers)
 m1 <- ETSforecast(y)
 m1 <- ETSforecast(y, model = "A?A")
 }
 }
 \seealso{
 \code{\link{ETS}}, \code{\link{ETSvalidate}},
-         \code{\link{ETScomponents}}, \code{\link{ETSestim}}
+         \code{\link{ETScomponents}}
 }
 \author{
 Diego J. Pedregal

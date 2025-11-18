@@ -24,15 +24,3 @@ Estimates and forecasts ARIMA models
 \code{ARIMAestim} estimates and forecasts a time series using 
 an ARIMA model
 }
-\examples{
-\dontrun{
-m1 <- ARIMAsetup(log(gdp))
-m1 <- ARIMAestim(m1)
-}
-}
-\seealso{
-\code{\link{ARIMA}}, \code{\link{ARIMAforecast}}, \code{\link{ARIMAvalidate}},
-}
-\author{
-Diego J. Pedregal
-}

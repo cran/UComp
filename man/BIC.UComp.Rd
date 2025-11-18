@@ -11,6 +11,9 @@
 
 \item{...}{Additional inputs to function.}
 }
+\value{
+BIC value of a UC model
+}
 \description{
 Extract BIC (or SBC) value of UComp object
 }
@@ -25,7 +28,7 @@ does not divide by \eqn{n}. This makes that BIC(m) and BIC(logLik(m))
 give different results, being m an UComp object.
 }
 \examples{
-\dontrun{
+\donttest{
 y <- log(AirPassengers)
 m1 <- UCforecast(y, model = "llt/equal/arma(0,0)")
 BIC(m1)

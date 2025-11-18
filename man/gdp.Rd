@@ -15,11 +15,14 @@ Time series objects.
 \usage{
 gdp
 }
+\value{
+No return value, called for side effects
+}
 \description{
 Quarterly real Spanish Gross Domestic Product (gdp)
 }
 \examples{
-\dontrun{
+\donttest{
  gdp
 }
 }

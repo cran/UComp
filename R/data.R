@@ -9,8 +9,10 @@
 #'   https://portal.mineco.gob.es/es-es/economiayempresa/EconomiaInformesMacro/Paginas/bdsice.aspx
 #' }
 #'         
+#' @return No return value, called for side effects
+#' 
 #' @examples
-#' \dontrun{
+#' \donttest{
 #'  sales
 #' }
 "sales"
@@ -26,8 +28,10 @@
 #'
 #' @source \href{https://www.nber.org/}{USgdp}
 #'         
+#' @return No return value, called for side effects
+#' 
 #' @examples
-#' \dontrun{
+#' \donttest{
 #'  USgdp
 #' }
 "USgdp"
@@ -43,8 +47,10 @@
 #'   https://portal.mineco.gob.es/es-es/economiayempresa/EconomiaInformesMacro/Paginas/bdsice.aspx
 #' }
 #'
+#' @return No return value, called for side effects
+#' 
 #' @examples
-#' \dontrun{
+#' \donttest{
 #'  OECDgdp
 #' }
 "OECDgdp"
@@ -60,8 +66,10 @@
 #'
 #' @source \href{https://www.csiro.au/en/research/natural-environment/atmosphere/Latest-greenhouse-gas-data}{CH4 data}
 #'         
+#' @return No return value, called for side effects
+#' 
 #' @examples
-#' \dontrun{
+#' \donttest{
 #'  ch4
 #' }
 "ch4"
@@ -77,8 +85,10 @@
 #'   https://portal.mineco.gob.es/es-es/economiayempresa/EconomiaInformesMacro/Paginas/bdsice.aspx
 #' }
 #' 
+#' @return No return value, called for side effects
+#' 
 #' @examples
-#' \dontrun{
+#' \donttest{
 #'  airpas
 #' }
 "airpas"
@@ -94,8 +104,10 @@
 #'   https://portal.mineco.gob.es/es-es/economiayempresa/EconomiaInformesMacro/Paginas/bdsice.aspx
 #' }
 #'
+#' @return No return value, called for side effects
+#' 
 #' @examples
-#' \dontrun{
+#' \donttest{
 #'  gdp
 #' }
 "gdp"
@@ -112,8 +124,10 @@
 #'   https://portal.mineco.gob.es/es-es/economiayempresa/EconomiaInformesMacro/Paginas/bdsice.aspx
 #' }
 #'
+#' @return No return value, called for side effects
+#' 
 #' @examples
-#' \dontrun{
+#' \donttest{
 #'  ipi
 #' }
 "ipi"

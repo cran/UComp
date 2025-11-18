@@ -89,7 +89,7 @@ An object of class \code{UComp}. It is a list with fields including all the inpu
         part of the fields of any \code{UComp} object as specified in what follows (function 
         \code{UC} fills in all of them at once):
 
-After running \code{UCforecast} or \code{UCestim}:
+After running \code{UCforecast}:
 \itemize{
 \item p:        Estimated parameters
 \item v:        Estimated innovations (white noise in correctly specified models)
@@ -141,7 +141,7 @@ Standard methods applicable to UComp objects are print, summary, plot,
 fitted, residuals, logLik, AIC, BIC, coef, predict, tsdiag.
 }
 \examples{
-\dontrun{
+\donttest{
 y <- log(AirPassengers)
 m1 <- UCforecast(y)
 m1 <- UCforecast(y, model = "llt/equal/arma(0,0)")

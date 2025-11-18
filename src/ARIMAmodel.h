@@ -1528,7 +1528,7 @@ void interpol(vec& y, uword s){
     vec a, AR, dy, yi, dPoly = {1, -1};
     uword maxAR = 6, ds = 0, bestAR = 1;
     if (s > 1){
-        maxAR = 2 * s + 1;
+        maxAR = s; //2 * s + 1;
         ds = 1;
         dPoly = zeros(s + 2);
         dPoly(0) = 1;
@@ -1720,35 +1720,64 @@ mat vDiff(mat x, uword d, uword D, uword s){
     return dx;
 }
 // Parameter names for output table
+// void parNames(uword s, uword p, uword q, uword ps, uword qs,
+//               int nu, double cnst, vector<string>& names){
+//     char str[12];
+//     names.clear();
+//     for (uword i = 1; i <= p; i++){
+//         snprintf(str, 10, "AR(%d)", (int)i);
+//         names.push_back(str);
+//     }
+//     for (uword i = 1; i <= ps; i++){
+//         snprintf(str, 10, "ARs(%d)", (int)i * (int)s);
+//         names.push_back(str);
+//     }
+//     for (uword i = 1; i <= q; i++){
+//         snprintf(str, 10, "MA(%d)", (int)i);
+//         names.push_back(str);
+//     }
+//     for (uword i = 1; i <= qs; i++){
+//         snprintf(str, 10, "MAs(%d)", (int)i * (int)s);
+//         names.push_back(str);
+//     }
+//     for (uword i = 0; i < static_cast<uword>(nu - cnst); ++i) {
+//         int jj = 1;
+//         snprintf(str, 10, "Beta(%u)", static_cast<unsigned>(i + jj));
+//         names.push_back(str);
+//     }
+//     if (abs(cnst) > 0.0){
+//         snprintf(str, 10, "Cnst");
+//         names.push_back(str);
+//     }
+// }
 void parNames(uword s, uword p, uword q, uword ps, uword qs,
-              int nu, double cnst, vector<string>& names){
-    char str[12];
-    names.clear();
-    for (uword i = 1; i <= p; i++){
-        snprintf(str, 10, "AR(%d)", (int)i);
-        names.push_back(str);
-    }
-    for (uword i = 1; i <= ps; i++){
-        snprintf(str, 10, "ARs(%d)", (int)i * (int)s);
-        names.push_back(str);
-    }
-    for (uword i = 1; i <= q; i++){
-        snprintf(str, 10, "MA(%d)", (int)i);
-        names.push_back(str);
-    }
-    for (uword i = 1; i <= qs; i++){
-        snprintf(str, 10, "MAs(%d)", (int)i * (int)s);
-        names.push_back(str);
-    }
-    for (uword i = 0; i < static_cast<uword>(nu - cnst); ++i) {
-        int jj = 1;
-        snprintf(str, 10, "Beta(%u)", static_cast<unsigned>(i + jj));
-        names.push_back(str);
-    }
-    if (abs(cnst) > 0.0){
-        snprintf(str, 10, "Cnst");
-        names.push_back(str);
-    }
+              int nu, double cnst, vector<string>& names) {
+        names.clear();
+        
+        for (uword i = 1; i <= p; ++i) {
+                names.push_back("AR(" + to_string(i) + ")");
+        }
+        
+        for (uword i = 1; i <= ps; ++i) {
+                names.push_back("ARs(" + to_string(i * s) + ")");
+        }
+        
+        for (uword i = 1; i <= q; ++i) {
+                names.push_back("MA(" + to_string(i) + ")");
+        }
+        
+        for (uword i = 1; i <= qs; ++i) {
+                names.push_back("MAs(" + to_string(i * s) + ")");
+        }
+        
+        for (uword i = 0; i < static_cast<uword>(nu - cnst); ++i) {
+                int jj = 1;
+                names.push_back("Beta(" + to_string(i + jj) + ")");
+        }
+        
+        if (std::abs(cnst) > 0.0) {
+                names.push_back("Cnst");
+        }
 }
 // Testing for stationarity and invertibility
 // void testSI(vec& pout, uword p, uword ps, uword q, uword qs){

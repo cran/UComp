@@ -27,6 +27,9 @@ tests(
 \item{avoid}{number of observations to avoid at beginning of sample to
 eliminate initial effects}
 }
+\value{
+Table with all test results
+}
 \description{
 Tests on a time series
 }

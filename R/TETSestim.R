@@ -19,7 +19,7 @@
 #'          \code{\link{TETScomponents}}
 #'          
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' m1 <- TETSsetup(log(gdp))
 #' m1 <- TETSestim(m1)
 #' }

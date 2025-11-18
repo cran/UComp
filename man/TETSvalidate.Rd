@@ -18,7 +18,7 @@ filled in, in particular:
 Shows a table of estimation and diagnostics results for TOBIT TETS models
 }
 \examples{
-\dontrun{
+\donttest{
 m1 <- TETSforecast(log(gdp))
 m1 <- TETSvalidate(m1)
 }

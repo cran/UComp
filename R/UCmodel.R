@@ -52,7 +52,7 @@
 #'         part of the fields of any \code{UComp} object as specified in what follows (function 
 #'         \code{UC} fills in all of them at once):
 #' 
-#' After running \code{UCforecast} or \code{UCestim}:
+#' After running \code{UCforecast}:
 #' \itemize{
 #' \item p:        Estimated parameters
 #' \item v:        Estimated innovations (white noise in correctly specified models)
@@ -99,7 +99,7 @@
 #'          \code{\link{UChp}}
 #'          
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' y <- log(AirPassengers)
 #' m1 <- UCsetup(y)
 #' m1 <- UCsetup(y, outlier = 4)
@@ -139,6 +139,8 @@ UCsetup = function(y, u = NULL, model = "?/none/?/?", h = 24, lambda = 1, outlie
         stop("Input \"periods\" should be supplied!!")
     }
     rhos = rep(1, length(periods))
+    if (length(y) < seas + 2 || length(y) < 8)
+        stop("Error: Not enough data to estimate model!!")
     out = list(y = y,
                u = u,
                model = model,
@@ -213,14 +215,14 @@ UCsetup = function(y, u = NULL, model = "?/none/?/?", h = 24, lambda = 1, outlie
 #' Standard methods applicable to UComp objects are print, summary, plot,
 #' fitted, residuals, logLik, AIC, BIC, coef, predict, tsdiag.
 #'
-#' @inheritParams UCsetup
+#' @inheritParams UC
 #' 
 #' @return An object of class \code{UComp}. It is a list with fields including all the inputs and
 #'         the fields listed below as outputs. All the functions in this package fill in
 #'         part of the fields of any \code{UComp} object as specified in what follows (function 
 #'         \code{UC} fills in all of them at once):
 #' 
-#' After running \code{UCforecast} or \code{UCestim}:
+#' After running \code{UCforecast}:
 #' \itemize{
 #' \item p:        Estimated parameters
 #' \item v:        Estimated innovations (white noise in correctly specified models)
@@ -266,7 +268,7 @@ UCsetup = function(y, u = NULL, model = "?/none/?/?", h = 24, lambda = 1, outlie
 #'          \code{\link{UChp}}
 #'          
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' y <- log(AirPassengers)
 #' m1 <- UCforecast(y)
 #' m1 <- UCforecast(y, model = "llt/equal/arma(0,0)")
@@ -296,7 +298,47 @@ UCforecast = function(y, u = NULL, model = "?/none/?/?", h = 24, lambda = 1, out
 #' Standard methods applicable to UComp objects are print, summary, plot,
 #' fitted, residuals, logLik, AIC, BIC, coef, predict, tsdiag.
 #'
-#' @inheritParams UCsetup
+#' @param y a time series to forecast (it may be either a numerical vector or
+#' a time series object). This is the only input required. If a vector, the additional
+#' input \code{periods} should be supplied compulsorily (see below).
+#' @param u a matrix of external regressors included only in the observation equation. 
+#' (it may be either a numerical vector or a time series object). If the output wanted 
+#' to be forecast, matrix \code{u} should contain future values for inputs.
+#' @param model the model to estimate. It is a single string indicating the type of 
+#' model for each component. It allows two formats "trend/seasonal/irregular" or 
+#' "trend/cycle/seasonal/irregular". The possibilities available for each component are:
+#' \itemize{
+#' \item Trend: ? / none / rw / irw / llt / dt / td; 
+#' 
+#' \item Seasonal: ? / none / equal / different;
+#' 
+#' \item Irregular: ? / none / arma(0, 0) / arma(p, q) - with p and q integer positive orders;
+#'     
+#' \item Cycles: ? / none / combination of positive or negative numbers. Positive numbers fix
+#' the period of the cycle while negative values estimate the period taking as initial
+#' condition the absolute value of the period supplied. Several cycles with positive or negative values are possible
+#' and if a question mark is included, the model test for the existence of the cycles
+#' specified. The following are valid examples with different meanings: 48, 48?, -48, -48?,
+#' 48+60, -48+60, -48-60, 48-60, 48+60?, -48+60?, -48-60?, 48-60?.
+#' }
+#' @param outlier critical level of outlier tests. If NA it does not carry out any 
+#' outlier detection (default). A positive value indicates the critical minimum
+#' t test for outlier detection in any model during identification. Three types of outliers are
+#' identified, namely Additive Outliers (AO), Level Shifts (LS) and Slope Change (SC).
+#' @param stepwise stepwise identification procedure (TRUE / FALSE).
+#' @param tTest augmented Dickey Fuller test for unit roots used in stepwise algorithm (TRUE / FALSE). 
+#' The number of models to search for is reduced, depending on the result of this test.
+#' @param p0 initial parameter vector for optimisation search.
+#' @param h forecast horizon. If the model includes inputs h is not used, the lenght of u is used instead.
+#' @param lambda Box-Cox transformation lambda, NULL for automatic estimation
+#' @param criterion information criterion for identification ("aic", "bic" or "aicc").
+#' @param periods vector of fundamental period and harmonics required.
+#' @param verbose intermediate results shown about progress of estimation (TRUE / FALSE).
+#' @param arma check for arma models for irregular components (TRUE / FALSE).
+#' @param TVP vector of zeros and ones to indicate TVP parameters.
+#' @param trendOptions trend models to select amongst (e.g., "rw/llt").
+#' @param seasonalOptions seasonal models to select amongst (e.g., "none/differentt").
+#' @param irregularOptions irregular models to select amongst (e.g., "none/arma(0,1)").
 #' 
 #' @author Diego J. Pedregal
 #' 
@@ -349,7 +391,7 @@ UCforecast = function(y, u = NULL, model = "?/none/?/?", h = 24, lambda = 1, out
 #'          \code{\link{UChp}}
 #'          
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' y <- log(AirPassengers)
 #' m1 <- UC(y)
 #' m1 <- UC(y, model = "llt/different/arma(0,0)")

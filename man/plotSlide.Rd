@@ -20,7 +20,7 @@ plotSlide(py1, y, orig, step = 1, errorFun, collectFun = mean)
 \item{collectFun}{aggregation function (mean, median, etc.)}
 }
 \value{
-Results
+An array of forecasting errors of dimensions (horizon x nOrigs x nModels x nSeries)
 }
 \description{
 Plot summarised results from slide

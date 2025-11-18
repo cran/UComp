@@ -13,14 +13,14 @@
 #'          \code{\link{TETScomponents}}
 #'          
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' m1 <- TETSforecast(log(gdp))
 #' m1 <- TETSvalidate(m1)
 #' }
 #' @rdname TETSvalidate
 #' @export
 TETSvalidate = function(m){
-    options(warn = -1)
+    # suppressWarnings()
     if (is.null(m$u))
         u = m$u
     else {

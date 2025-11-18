@@ -14,7 +14,7 @@ extract(x, col, accordingTo = 1)
 \item{accordingTo}{column to take as the pattern}
 }
 \value{
-data frame reordered
+Data frame reordered accoring to a given column data
 }
 \description{
 Reorder data frame returning column col reordered

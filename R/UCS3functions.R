@@ -6,13 +6,15 @@
 #' @param x Object of class \dQuote{UComp}.
 #' @param ... Additional inputs to handle the way to print output.
 #' 
+#' @return No return value, called for side effects
+#' 
 #' @author Diego J. Pedregal
 #' 
 #' @seealso \code{\link{UC}}, \code{\link{UCforecast}}, \code{\link{UCvalidate}}, \code{\link{UCfilter}}, \code{\link{UCsmooth}}, 
 #'          \code{\link{UCdisturb}}, \code{\link{UCcomponents}}
 #'          
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' y <- log(AirPassengers)
 #' m1 <- UCforecast(y, model = "llt/equal/arma(0,0)")
 #' print(m1)
@@ -23,7 +25,7 @@ print.UComp = function(x, ...){
     if (x$model != "error") {
         x = UCvalidate(x, TRUE)
     } else {
-        cat("ERROR: Model is not valid!!")
+        stop("ERROR: Model is not valid!!")
         return()
     }
 }
@@ -35,13 +37,15 @@ print.UComp = function(x, ...){
 #' 
 #' @details See help of \code{UC}.
 #'
+#' @return No return value, called for side effects
+#' 
 #' @author Diego J. Pedregal
 #' 
 #' @seealso \code{\link{UC}}, \code{\link{UCforecast}}, \code{\link{UCvalidate}}, \code{\link{UCfilter}}, \code{\link{UCsmooth}}, 
 #'          \code{\link{UCdisturb}}, \code{\link{UCcomponents}}
 #'          
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' y <- log(AirPassengers)
 #' m1 <- UCforecast(y, model = "llt/equal/arma(0,0)")
 #' summary(m1)
@@ -59,13 +63,15 @@ summary.UComp = function(object, ...){
 #' @param x Object of class \dQuote{UComp}.
 #' @param ... Additional inputs to function.
 #' 
+#' @return No return value, called for side effects
+#' 
 #' @author Diego J. Pedregal
 #' 
 #' @seealso \code{\link{UC}}, \code{\link{UCforecast}}, \code{\link{UCvalidate}}, \code{\link{UCfilter}}, \code{\link{UCsmooth}}, 
 #'          \code{\link{UCdisturb}}, \code{\link{UCcomponents}}
 #'          
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' y <- log(AirPassengers)
 #' m1 <- UCforecast(y, model = "llt/equal/arma(0,0)")
 #' plot(m1)
@@ -74,7 +80,7 @@ summary.UComp = function(object, ...){
 #' @export 
 plot.UComp = function(x, ...){
     if (x$model == "error") {
-        cat("ERROR: Model is not valid!!")
+        stop("ERROR: Model is not valid!!")
         return()
     }
     if (length(x$comp) < 2){
@@ -98,13 +104,15 @@ plot.UComp = function(x, ...){
 #' @param object Object of class \dQuote{UComp}.
 #' @param ... Additional inputs to function.
 #' 
+#' @return Fitted values of a UC model
+#' 
 #' @author Diego J. Pedregal
 #' 
 #' @seealso \code{\link{UC}}, \code{\link{UCforecast}}, \code{\link{UCvalidate}}, \code{\link{UCfilter}}, \code{\link{UCsmooth}}, 
 #'          \code{\link{UCdisturb}}, \code{\link{UCcomponents}}
 #'          
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' y <- log(AirPassengers)
 #' m1 <- UCforecast(y, model = "llt/equal/arma(0,0)")
 #' fitted(m1)
@@ -113,8 +121,8 @@ plot.UComp = function(x, ...){
 #' @export 
 fitted.UComp = function(object, ...){
        if (object$model == "error") {
-                cat("ERROR: Model is not valid!!")
-                return()
+           stop("ERROR: Model is not valid!!")
+           return()
         }
         if (length(object$yFit) < 2){
                 VERBOSE = x$verbose
@@ -132,13 +140,15 @@ fitted.UComp = function(object, ...){
 #' @param object Object of class \dQuote{UComp}.
 #' @param ... Additional inputs to function.
 #' 
+#' @return Residuals of a UC model
+#' 
 #' @author Diego J. Pedregal
 #' 
 #' @seealso \code{\link{UC}}, \code{\link{UCforecast}}, \code{\link{UCvalidate}}, \code{\link{UCfilter}}, \code{\link{UCsmooth}}, 
 #'          \code{\link{UCdisturb}}, \code{\link{UCcomponents}}
 #'          
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' y <- log(AirPassengers)
 #' m1 <- UCforecast(y, model = "llt/equal/arma(0,0)")
 #' residuals(m1)
@@ -147,7 +157,7 @@ fitted.UComp = function(object, ...){
 #' @export 
 residuals.UComp = function(object, ...){
     if (object$model == "error") {
-        cat("ERROR: Model is not valid!!")
+        stop("ERROR: Model is not valid!!")
         return()
     }
     if (length(object$yFit) < 2){
@@ -166,13 +176,15 @@ residuals.UComp = function(object, ...){
 #' @param object Object of class \dQuote{UComp}.
 #' @param ... Additional inputs to function.
 #' 
+#' @return Log-Likelihood value of a UC model
+#' 
 #' @author Diego J. Pedregal
 #' 
 #' @seealso \code{\link{UC}}, \code{\link{UCforecast}}, \code{\link{UCvalidate}}, \code{\link{UCfilter}}, \code{\link{UCsmooth}}, 
 #'          \code{\link{UCdisturb}}, \code{\link{UCcomponents}}
 #'          
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' y <- log(AirPassengers)
 #' m1 <- UCforecast(y, model = "llt/equal/arma(0,0)")
 #' logLik(m1)
@@ -181,7 +193,7 @@ residuals.UComp = function(object, ...){
 #' @export 
 logLik.UComp = function(object, ...){
     if (object$model == "error") {
-        cat("ERROR: Model is not valid!!")
+        stop("ERROR: Model is not valid!!")
         return()
     }
     out = object$criteria[1]
@@ -206,13 +218,15 @@ logLik.UComp = function(object, ...){
 #' @param ... Additional inputs to function.
 #' @param k The penalty per parameter to be used.
 #' 
+#' @return AIC value of a UC model
+#' 
 #' @author Diego J. Pedregal
 #' 
 #' @seealso \code{\link{UC}}, \code{\link{UCforecast}}, \code{\link{UCvalidate}}, \code{\link{UCfilter}}, \code{\link{UCsmooth}}, 
 #'          \code{\link{UCdisturb}}, \code{\link{UCcomponents}}
 #'          
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' y <- log(AirPassengers)
 #' m1 <- UCforecast(y, model = "llt/equal/arma(0,0)")
 #' AIC(m1)
@@ -220,7 +234,7 @@ logLik.UComp = function(object, ...){
 #' @export 
 AIC.UComp = function(object, ..., k = 2){
      if (object$model == "error") {
-        cat("ERROR: Model is not valid!!")
+         stop("ERROR: Model is not valid!!")
         return()
      }
      return(object$criteria[2])
@@ -240,13 +254,15 @@ AIC.UComp = function(object, ..., k = 2){
 #' @param object Object of class \dQuote{UComp}.
 #' @param ... Additional inputs to function.
 #' 
+#' @return BIC value of a UC model
+#' 
 #' @author Diego J. Pedregal
 #' 
 #' @seealso \code{\link{UC}}, \code{\link{UCforecast}}, \code{\link{UCvalidate}}, \code{\link{UCfilter}}, \code{\link{UCsmooth}}, 
 #'          \code{\link{UCdisturb}}, \code{\link{UCcomponents}}
 #'          
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' y <- log(AirPassengers)
 #' m1 <- UCforecast(y, model = "llt/equal/arma(0,0)")
 #' BIC(m1)
@@ -254,7 +270,7 @@ AIC.UComp = function(object, ..., k = 2){
 #' @export 
 BIC.UComp = function(object, ...){
     if (object$model == "error") {
-        cat("ERROR: Model is not valid!!")
+        stop("ERROR: Model is not valid!!")
         return()
     }
     return(object$criteria[3])
@@ -267,13 +283,15 @@ BIC.UComp = function(object, ...){
 #' @param object Object of class \dQuote{UComp}.
 #' @param ... Ignored.
 #' 
+#' @return Estimated coefficients of a UC model
+#' 
 #' @author Diego J. Pedregal
 #' 
 #' @seealso \code{\link{UC}}, \code{\link{UCforecast}}, \code{\link{UCvalidate}}, \code{\link{UCfilter}}, \code{\link{UCsmooth}}, 
 #'          \code{\link{UCdisturb}}, \code{\link{UCcomponents}}
 #'          
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' y <- log(AirPassengers)
 #' m1 <- UCforecast(y, model = "llt/equal/arma(0,0)")
 #' coef(m1)
@@ -282,7 +300,7 @@ BIC.UComp = function(object, ...){
 #' @export 
 coef.UComp = function(object, ...){
     if (object$model == "error") {
-        cat("ERROR: Model is not valid!!")
+        stop("ERROR: Model is not valid!!")
         return()
     }
     if (length(object$table) < 2){
@@ -305,6 +323,8 @@ coef.UComp = function(object, ...){
 #' @param level Confidence level for prediction intervals.
 #' @param ... Ignored.
 #' 
+#' @return Forecasts of a UC model
+#' 
 #' @author Diego J. Pedregal
 #' 
 #' @return A matrix with the mean forecasts and lower and upper prediction intervals
@@ -313,7 +333,7 @@ coef.UComp = function(object, ...){
 #'          \code{\link{UCdisturb}}, \code{\link{UCcomponents}}
 #'          
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' y <- log(AirPassengers)
 #' m1 <- UCforecast(y, model = "llt/eq/arma(0,0)")
 #' f1 <- predict(m1)
@@ -321,7 +341,7 @@ coef.UComp = function(object, ...){
 #' @export 
 predict.UComp = function(object, newdata = NULL, n.ahead = NULL, level = 0.95, ...){
     if (object$model == "error") {
-        cat("ERROR: Model is not valid!!")
+        stop("ERROR: Model is not valid!!")
         return()
     }
     cnst = qt(level + (1 - level) / 2, length(object$y) - length(object$p))
@@ -357,13 +377,15 @@ predict.UComp = function(object, newdata = NULL, n.ahead = NULL, level = 0.95, .
 #' @param gof.lag Maximum number of lags for pormanteau Ljung-Box test
 #' @param ... Additional inputs to function.
 #' 
+#' @return Diagnostics of a UC model
+#' 
 #' @author Diego J. Pedregal
 #' 
 #' @seealso \code{\link{UC}}, \code{\link{UCforecast}}, \code{\link{UCvalidate}}, \code{\link{UCfilter}}, \code{\link{UCsmooth}}, 
 #'          \code{\link{UCdisturb}}, \code{\link{UCcomponents}}
 #'          
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' y <- log(AirPassengers)
 #' m1 <- UCforecast(y, model = "llt/eq/arma(0,0)")
 #' tsdiag(m1)
@@ -372,7 +394,7 @@ predict.UComp = function(object, newdata = NULL, n.ahead = NULL, level = 0.95, .
 #' @export 
 tsdiag.UComp = function(object, gof.lag = NULL, ...){
     if (object$model == "error") {
-        cat("ERROR: Model is not valid!!")
+        stop("ERROR: Model is not valid!!")
         return()
     }
     if (length(object$v) < 2){
@@ -413,7 +435,7 @@ tsdiag.UComp = function(object, gof.lag = NULL, ...){
 #' @author Diego J. Pedregal
 #' 
 #' @return A set of parameters p0 of an object of class \code{UComp}
-#' to use as input to \code{\link{UC}}, \code{\link{UCforecast}} or \code{\link{UCsetup}}.
+#' to use as input to \code{\link{UC}}, \code{\link{UCforecast}}.
 #' 
 #' @seealso \code{\link{UC}}, \code{\link{UCvalidate}}, \code{\link{UCfilter}}, \code{\link{UCsmooth}}, 
 #'          \code{\link{UCdisturb}}, \code{\link{UCcomponents}},
@@ -429,7 +451,7 @@ tsdiag.UComp = function(object, gof.lag = NULL, ...){
 #' @export
 getp0 = function(y, model = "llt/equal/arma(0,0)", periods = NA){
     if (model == "error") {
-        cat("ERROR: Model is not valid!!")
+        stop("ERROR: Model is not valid!!")
         return()
     }
     if (any(utf8ToInt(model) == utf8ToInt("?"))){
@@ -442,20 +464,5 @@ getp0 = function(y, model = "llt/equal/arma(0,0)", periods = NA){
     names(p0) = names(p1)
     
     return(p0)
-}
-#' @title size
-#' @description size of vectors or matrices
-#'
-#' @param y matrix, array or vector
-#' 
-#' @author Diego J. Pedregal
-#' 
-#' @rdname size
-#' @export
-size = function(y){
-    out = dim(y)
-    if (is.null(out))
-        out = length(y)
-    return(out)
 }
 

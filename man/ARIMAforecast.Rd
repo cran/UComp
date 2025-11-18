@@ -80,8 +80,8 @@ govern the way the rest of functions in the package will work. It also estimates
 the model parameters by Maximum Likelihood and forecasts the data.
 }
 \examples{
-\dontrun{
-y <- log(AirPAssengers)
+\donttest{
+y <- log(AirPassengers)
 m1 <- ARIMAforecast(y)
 m1 <- ARIMAforecast(y, lambda = NULL)
 }

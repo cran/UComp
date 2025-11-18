@@ -84,7 +84,24 @@ model for each component with one or two letters:
 }}
 }
 \value{
-An object of class \code{TETS}. See \code{TETSforecast}.
+An object of class \code{TETS}. It is a list with fields including all the inputs and
+        the fields listed below as outputs. All the functions in this package fill in
+        part of the fields of any \code{TETS} object as specified in what follows (function 
+        \code{TETS} fills in all of them at once):
+
+After running \code{TETSforecast}:
+\item{p}{Estimated parameters}
+\item{criteria}{Values for estimation criteria (LogLik, AIC, BIC, AICc)}
+\item{yFor}{Forecasted values of output}
+\item{yForV}{Variance of forecasted values of output}
+\item{ySimul}{Bootstrap simulations for forecasting distribution evaluation}
+
+After running \code{TETSvalidate}:
+\item{table}{Estimation and validation table}
+\item{comp}{Estimated components in matrix form}
+
+After running \code{TETScomponents}:
+\item{comp}{Estimated components in matrix form}
 }
 \description{
 Sets up TOBIT TETS general univariate models
@@ -93,8 +110,8 @@ Sets up TOBIT TETS general univariate models
 See help of \code{TETSforecast}.
 }
 \examples{
-\dontrun{
-y <- log(AirPAssengers)
+\donttest{
+y <- log(AirPassengers)
 m1 <- TETSsetup(y)
 m1 <- TETSsetup(y,  model = "???")
 m1 <- TETSsetup(y,  model = "?AA")
@@ -102,7 +119,7 @@ m1 <- TETSsetup(y,  model = "?AA")
 }
 \seealso{
 \code{\link{TETS}}, \code{\link{TETSforecast}}, \code{\link{TETSvalidate}},
-         \code{\link{TETScomponents}}, \code{\link{TETSestim}}
+         \code{\link{TETScomponents}}
 }
 \author{
 Diego J. Pedregal

@@ -13,14 +13,14 @@
 #'          \code{\link{ETScomponents}}
 #'          
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' m1 <- ETSforecast(log(gdp))
 #' m1 <- ETSvalidate(m1)
 #' }
 #' @rdname ETSvalidate
 #' @export
 ETSvalidate = function(m){
-    options(warn = -1)
+    # suppressWarnings()
     if (is.null(m$u))
         u = m$u
     else {

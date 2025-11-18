@@ -15,6 +15,9 @@ tsDisplay(y, nCoef = 25, nPar = 0, s = NA)
 
 \item{s}{seasonal period, number of observations per year}
 }
+\value{
+No return value, called for side effects
+}
 \description{
 Displays time series plot with autocorrelation functions
 }

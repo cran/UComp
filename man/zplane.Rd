@@ -11,6 +11,9 @@ zplane(MApoly = 1, ARpoly = 1)
 
 \item{ARpoly}{coefficients of denominator polynomial in descending order}
 }
+\value{
+No return value, called for side effects
+}
 \description{
 Real-imaginary plane to show roots of digital filters (ARMA)
 }

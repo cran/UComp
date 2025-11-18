@@ -16,11 +16,14 @@ Time series objects.
 \usage{
 USgdp
 }
+\value{
+No return value, called for side effects
+}
 \description{
 Seasonally adjusted quarterly US real gross domestic product (USgdp).
 }
 \examples{
-\dontrun{
+\donttest{
  USgdp
 }
 }

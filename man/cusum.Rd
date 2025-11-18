@@ -11,6 +11,9 @@ cusum(y, runFromTest = FALSE)
 
 \item{runFromTest}{internal check variable}
 }
+\value{
+No return value, called for side effects
+}
 \description{
 Cusum and cusumsq tests
 }

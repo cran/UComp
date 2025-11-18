@@ -17,6 +17,9 @@ plotAcfPacf(ACF, PACF, s = 1, n = NA, runFromTest = FALSE)
 
 \item{runFromTest}{internal check variable}
 }
+\value{
+No return value, called for side effects
+}
 \description{
 Plot of ACF and PACF
 }

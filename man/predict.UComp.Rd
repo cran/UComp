@@ -19,6 +19,8 @@ including their predictions.}
 \item{...}{Ignored.}
 }
 \value{
+Forecasts of a UC model
+
 A matrix with the mean forecasts and lower and upper prediction intervals
 }
 \description{
@@ -28,7 +30,7 @@ Forecasting using structural Unobseved Components models with prediction interva
 See help of \code{UC}.
 }
 \examples{
-\dontrun{
+\donttest{
 y <- log(AirPassengers)
 m1 <- UCforecast(y, model = "llt/eq/arma(0,0)")
 f1 <- predict(m1)

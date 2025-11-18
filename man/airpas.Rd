@@ -15,11 +15,14 @@ Time series objects.
 \usage{
 airpas
 }
+\value{
+No return value, called for side effects
+}
 \description{
 Foreign arrivals by air in Spain in thousands of passengers (airpas).
 }
 \examples{
-\dontrun{
+\donttest{
  airpas
 }
 }

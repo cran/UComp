@@ -15,7 +15,7 @@ getp0(y, model = "llt/equal/arma(0,0)", periods = NA)
 }
 \value{
 A set of parameters p0 of an object of class \code{UComp}
-to use as input to \code{\link{UC}}, \code{\link{UCforecast}} or \code{\link{UCsetup}}.
+to use as input to \code{\link{UC}}, \code{\link{UCforecast}}.
 }
 \description{
 Get initial conditions for parameters of \code{UComp} object

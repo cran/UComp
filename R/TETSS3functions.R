@@ -6,17 +6,20 @@
 #' @param x Object of class \dQuote{TETS}.
 #' @param ... Additional inputs to handle the way to print output.
 #' 
+#' @return No return value, called for side effects
+#' 
 #' @author Diego J. Pedregal
 #' 
 #' @seealso \code{\link{TETS}}, \code{\link{TETSforecast}}, \code{\link{TETSvalidate}},
 #'          \code{\link{TETScomponents}}, \code{\link{TETSestim}}
 #'          
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' m1 <- TETSforecast(log(gdp))
 #' print(m1)
 #' }
 #' @rdname print
+#' @noRd
 #' @export 
 print.TETS = function(x, ...){
     if (length(x$table) < 3){
@@ -32,17 +35,20 @@ print.TETS = function(x, ...){
 #' 
 #' @details See help of \code{TETS}.
 #'
+#' @return No return value, called for side effects
+#' 
 #' @author Diego J. Pedregal
 #' 
 #' @seealso \code{\link{TETS}}, \code{\link{TETSforecast}}, \code{\link{TETSvalidate}},
 #'          \code{\link{TETScomponents}}, \code{\link{TETSestim}}
 #'          
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' m1 <- TETSforecast(log(gdp))
 #' summary(m1)
 #' }
 #' @rdname summary.TETS
+#' @noRd
 #' @export 
 summary.TETS = function(object, ...){
     print(object)
@@ -55,17 +61,20 @@ summary.TETS = function(object, ...){
 #' @param x Object of class \dQuote{TETS}.
 #' @param ... Additional inputs to function.
 #' 
+#' @return No return value, called for side effects
+#' 
 #' @author Diego J. Pedregal
 #' 
 #' @seealso \code{\link{TETS}}, \code{\link{TETSforecast}}, \code{\link{TETSvalidate}},
 #'          \code{\link{TETScomponents}}, \code{\link{TETSestim}}
 #'          
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' m1 <- TETSforecast(log(gdp))
 #' plot(m1)
 #' }
 #' @rdname plot
+#' @noRd
 #' @export 
 plot.TETS = function(x, ...){
     if (length(x$comp) < 2){
@@ -86,17 +95,20 @@ plot.TETS = function(x, ...){
 #' @param object Object of class \dQuote{TETS}.
 #' @param ... Additional inputs to function.
 #' 
+#' @return Fitted values of TETS model
+#' 
 #' @author Diego J. Pedregal
 #' 
 #' @seealso \code{\link{TETS}}, \code{\link{TETSforecast}}, \code{\link{TETSvalidate}},
 #'          \code{\link{TETScomponents}}, \code{\link{TETSestim}}
 #'          
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' m1 <- TETSforecast(log(gdp))
 #' fitted(m1)
 #' }
 #' @rdname fitted
+#' @noRd
 #' @export 
 fitted.TETS = function(object, ...){
     if (length(object$comp) < 2){
@@ -112,17 +124,20 @@ fitted.TETS = function(object, ...){
 #' @param object Object of class \dQuote{TETS}.
 #' @param ... Additional inputs to function.
 #' 
+#' @return Residuals of TETS model
+#' 
 #' @author Diego J. Pedregal
 #' 
 #' @seealso \code{\link{TETS}}, \code{\link{TETSforecast}}, \code{\link{TETSvalidate}},
 #'          \code{\link{TETScomponents}}, \code{\link{TETSestim}}
 #'          
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' m1 <- TETSforecast(log(gdp))
 #' residuals(m1)
 #' }
 #' @rdname residuals
+#' @noRd
 #' @export 
 residuals.TETS = function(object, ...){
     if (length(object$comp) < 2){

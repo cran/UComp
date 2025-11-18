@@ -12,7 +12,7 @@ sumStats(y, decimals = 5)
 \item{decimals}{number of decimals for table}
 }
 \value{
-Table of values
+Table of values in string matrix
 }
 \description{
 Summary statistics of a matrix of variables

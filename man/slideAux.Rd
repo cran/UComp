@@ -14,6 +14,7 @@ slideAux(
   graph = TRUE,
   window = NA,
   parallel = FALSE,
+  isList = FALSE,
   ...
 )
 }
@@ -36,10 +37,12 @@ slideAux(
 
 \item{parallel}{run forecasts in parallel}
 
+\item{isList}{whether the input data y is a list or a matrix}
+
 \item{...}{rest of inputs to forecFun function}
 }
 \value{
-Next time stamp
+Auxiliary output of slide function for just one time series
 }
 \description{
 Auxiliary function run from slide

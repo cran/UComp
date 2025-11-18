@@ -55,7 +55,19 @@ to search for in the automatic identification}
 \item{fast}{fast identification (avoids post-identification checks)}
 }
 \value{
-An object of class \code{ARIMA}. See \code{ARIMAforecast}.
+An object of class \code{ARIMA}. It is a list with fields including all the inputs and
+        the fields listed below as outputs. All the functions in this package fill in
+        part of the fields of any \code{ARIMA} object as specified in what follows (function 
+        \code{ARIMA} fills in all of them at once):
+
+After running \code{ARIMAforecast} or \code{ARIMA}:
+\item{p}{Estimated parameters}
+\item{yFor}{Forecasted values of output}
+\item{yForV}{Variance of forecasted values of output}
+\item{ySimul}{Bootstrap simulations for forecasting distribution evaluation}
+
+After running \code{ARIMAvalidate}:
+\item{table}{Estimation and validation table}
 }
 \description{
 Runs all relevant functions for ARIMA modelling
@@ -64,8 +76,8 @@ Runs all relevant functions for ARIMA modelling
 See help of \code{ARIMAforecast}.
 }
 \examples{
-\dontrun{
-y <- log(AirPAssengers)
+\donttest{
+y <- log(AirPassengers)
 m1 <- ARIMA(y)
 m1 <- ARIMA(y, lambda = NULL)
 }

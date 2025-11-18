@@ -14,7 +14,7 @@ rowMedians(x, na.rm = TRUE, ...)
 \item{...}{rest of inputs}
 }
 \value{
-A vector with all the medians
+A vector with all the medians in rows
 }
 \description{
 Medians of matrix by rows

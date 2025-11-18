@@ -15,6 +15,9 @@ invBoxCox(y, yVar, lambda, const = 2)
 
 \item{const}{number of standard error for confidence band}
 }
+\value{
+Inverse of Box-Cox heteroskedasticity transformation with confidence bands
+}
 \description{
 Calculates inverse of Box-Cox transformation 
 with confidence bands, calculated as const time the standard error

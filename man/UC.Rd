@@ -142,7 +142,7 @@ Standard methods applicable to UComp objects are print, summary, plot,
 fitted, residuals, logLik, AIC, BIC, coef, predict, tsdiag.
 }
 \examples{
-\dontrun{
+\donttest{
 y <- log(AirPassengers)
 m1 <- UC(y)
 m1 <- UC(y, model = "llt/different/arma(0,0)")

@@ -16,7 +16,7 @@ ident(y, nCoef = min(37, floor(length(y)/4)), nPar = 0, runFromTests = FALSE)
 \item{runFromTests}{internal check}
 }
 \value{
-A vector with all the dimensions
+A vector with output table including ACF, etc.
 }
 \description{
 Autocorrelation functions of a time series

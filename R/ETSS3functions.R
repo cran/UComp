@@ -6,17 +6,20 @@
 #' @param x Object of class \dQuote{ETS}.
 #' @param ... Additional inputs to handle the way to print output.
 #' 
+#' @return No return value, called for side effects
+#' 
 #' @author Diego J. Pedregal
 #' 
 #' @seealso \code{\link{ETS}}, \code{\link{ETSforecast}}, \code{\link{ETSvalidate}},
 #'          \code{\link{ETScomponents}}, \code{\link{ETSestim}}
 #'          
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' m1 <- ETSforecast(log(gdp))
 #' print(m1)
 #' }
 #' @rdname print
+#' @noRd
 #' @export 
 print.ETS = function(x, ...){
     if (length(x$table) < 3){
@@ -32,17 +35,20 @@ print.ETS = function(x, ...){
 #' 
 #' @details See help of \code{ETS}.
 #'
+#' @return No return value, called for side effects
+#' 
 #' @author Diego J. Pedregal
 #' 
 #' @seealso \code{\link{ETS}}, \code{\link{ETSforecast}}, \code{\link{ETSvalidate}},
 #'          \code{\link{ETScomponents}}, \code{\link{ETSestim}}
 #'          
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' m1 <- ETSforecast(log(gdp))
 #' summary(m1)
 #' }
 #' @rdname summary.ETS
+#' @noRd
 #' @export 
 summary.ETS = function(object, ...){
     print(object)
@@ -55,17 +61,20 @@ summary.ETS = function(object, ...){
 #' @param x Object of class \dQuote{ETS}.
 #' @param ... Additional inputs to function.
 #' 
+#' @return No return value, called for side effects
+#' 
 #' @author Diego J. Pedregal
 #' 
 #' @seealso \code{\link{ETS}}, \code{\link{ETSforecast}}, \code{\link{ETSvalidate}},
 #'          \code{\link{ETScomponents}}, \code{\link{ETSestim}}
 #'          
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' m1 <- ETSforecast(log(gdp))
 #' plot(m1)
 #' }
 #' @rdname plot
+#' @noRd
 #' @export 
 plot.ETS = function(x, ...){
     if (length(x$comp) < 2){
@@ -86,17 +95,20 @@ plot.ETS = function(x, ...){
 #' @param object Object of class \dQuote{ETS}.
 #' @param ... Additional inputs to function.
 #' 
+#' @return Fitted values from ETS model
+#' 
 #' @author Diego J. Pedregal
 #' 
 #' @seealso \code{\link{ETS}}, \code{\link{ETSforecast}}, \code{\link{ETSvalidate}},
 #'          \code{\link{ETScomponents}}, \code{\link{ETSestim}}
 #'          
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' m1 <- ETSforecast(log(gdp))
 #' fitted(m1)
 #' }
 #' @rdname fitted
+#' @noRd
 #' @export 
 fitted.ETS = function(object, ...){
     if (length(object$comp) < 2){
@@ -112,17 +124,20 @@ fitted.ETS = function(object, ...){
 #' @param object Object of class \dQuote{ETS}.
 #' @param ... Additional inputs to function.
 #' 
+#' @return Residuals of ETS model
+#' 
 #' @author Diego J. Pedregal
 #' 
 #' @seealso \code{\link{ETS}}, \code{\link{ETSforecast}}, \code{\link{ETSvalidate}},
 #'          \code{\link{ETScomponents}}, \code{\link{ETSestim}}
 #'          
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' m1 <- ETSforecast(log(gdp))
 #' residuals(m1)
 #' }
 #' @rdname residuals
+#' @noRd
 #' @export 
 residuals.ETS = function(object, ...){
     if (length(object$comp) < 2){
@@ -135,6 +150,8 @@ residuals.ETS = function(object, ...){
 #'
 #' @param y matrix, array or vector
 #' @param lambda lambda parameter of Box-Cox transformation
+#' 
+#' @return Inverse of Box-Cox heteroskedasticity transformation
 #' 
 #' @author Diego J. Pedregal
 #' 
@@ -158,6 +175,8 @@ auxInvBoxCox = function(y, lambda){
 #' @param yVar matrix, array or vector of variances of y
 #' @param lambda lambda parameter of Box-Cox transformation
 #' @param const number of standard error for confidence band
+#' 
+#' @return Inverse of Box-Cox heteroskedasticity transformation with confidence bands
 #' 
 #' @author Diego J. Pedregal
 #' 

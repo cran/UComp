@@ -15,11 +15,14 @@ Time series objects.
 \usage{
 OECDgdp
 }
+\value{
+No return value, called for side effects
+}
 \description{
 Seasonally adjusted quarterly OECD real gross domestic product (OECDgdp).
 }
 \examples{
-\dontrun{
+\donttest{
  OECDgdp
 }
 }

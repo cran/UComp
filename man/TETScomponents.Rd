@@ -18,14 +18,13 @@ filled in, in particular:
 Estimates components of TOBIT TETS models
 }
 \examples{
-\dontrun{
+\donttest{
 m1 <- TETS(log(gdp))
 m1 <- TETScomponents(m1)
 }
 }
 \seealso{
-\code{\link{TETS}}, \code{\link{TETSforecast}}, \code{\link{TETSvalidate}},
-         \code{\link{TETSestim}}
+\code{\link{TETS}}, \code{\link{TETSforecast}}, \code{\link{TETSvalidate}}
 }
 \author{
 Diego J. Pedregal

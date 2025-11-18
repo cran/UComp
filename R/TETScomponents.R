@@ -9,11 +9,10 @@
 #' 
 #' @author Diego J. Pedregal
 #' 
-#' @seealso \code{\link{TETS}}, \code{\link{TETSforecast}}, \code{\link{TETSvalidate}},
-#'          \code{\link{TETSestim}}
+#' @seealso \code{\link{TETS}}, \code{\link{TETSforecast}}, \code{\link{TETSvalidate}}
 #'        
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' m1 <- TETS(log(gdp))
 #' m1 <- TETScomponents(m1)
 #' }

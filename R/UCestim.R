@@ -1,3 +1,24 @@
+#' @title UCcommand
+#' @description Auxiliar function for UC modeling
+#'
+#' @param command Command to execute: "forecast", "validate", "filter", "smooth", "disturb", "components", "all"
+#' 
+#' @param sys A \code{UComp} object created with \code{UC}
+#' 
+#' @return The input \code{UComp} object with the appropriate fields filled in
+#' 
+#' @author Diego J. Pedregal
+#' 
+#' @seealso \code{\link{UC}}, \code{\link{UCforecast}}, \code{\link{UCvalidate}}, \code{\link{UCfilter}}, 
+#'          \code{\link{UCsmooth}}, \code{\link{UCcomponents}}, \code{\link{UCdisturb}}
+#'          
+#' @examples
+#' \donttest{
+#' cycle <- UChp(USgdp)
+#' plot(cycle)
+#' }
+#' @rdname UCcommand
+#' @export
 UCcommand = function(command, sys) {
     isnullu = FALSE
     if (is.null(sys$u)) {
@@ -5,7 +26,7 @@ UCcommand = function(command, sys) {
         sys$u = matrix(0, 1, 2)
     }
     if (sys$model == "error") {
-        cat("ERROR: Model not specified or estimation failed!!\n")
+        stop("ERROR: Model not specified or estimation failed!!\n")
         return(sys)
     }
     if (is.ts(sys$y)){
@@ -253,7 +274,7 @@ UCcommand = function(command, sys) {
 #'          \code{\link{UChp}}
 #'          
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' m1 <- UCsetup(log(AirPassengers))
 #' m1 <- UCestim(m1)
 #' }
@@ -295,7 +316,7 @@ UCestim = function(sys){
 #'          \code{\link{UChp}}
 #'          
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' m1 <- UC(log(gdp))
 #' m1 <- UCvalidate(m1)
 #' }
@@ -327,7 +348,7 @@ UCvalidate = function(sys, printScreen = TRUE){
 #'          \code{\link{UCsmooth}}, \code{\link{UCcomponents}}, \code{\link{UCdisturb}}
 #'          
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' cycle <- UChp(USgdp)
 #' plot(cycle)
 #' }
@@ -361,7 +382,7 @@ UChp = function(y, lambda = 1600){
 #'          \code{\link{UChp}}
 #'          
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' m1 <- UC(log(AirPassengers))
 #' m1 <- UCcomponents(m1)
 #' }
@@ -398,7 +419,7 @@ UCcomponents= function(sys){
 #'          \code{\link{UChp}}
 #'          
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' m1 <- UC(log(AirPassengers))
 #' m1 <- UCfilter(m1)
 #' }
@@ -435,7 +456,7 @@ UCfilter = function(sys){
 #'          \code{\link{UChp}}
 #'          
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' m1 <- UC(log(AirPassengers))
 #' m1 <- UCsmooth(m1)
 #' }
@@ -474,7 +495,7 @@ UCsmooth = function(sys){
 #'          \code{\link{UChp}}
 #'          
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' m1 <- UC(log(AirPassengers))
 #' m1 <- UCdisturb(m1)
 #' }

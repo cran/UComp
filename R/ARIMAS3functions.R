@@ -6,16 +6,19 @@
 #' @param x Object of class \dQuote{ARIMA}.
 #' @param ... Additional inputs to handle the way to print output.
 #' 
+#' @return No return value, called for side effects
+#' 
 #' @author Diego J. Pedregal
 #' 
 #' @seealso \code{\link{ARIMA}}, \code{\link{ARIMAforecast}}, \code{\link{ARIMAvalidate}},
 #'          
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' m1 <- ARIMAforecast(log(gdp))
 #' print(m1)
 #' }
 #' @rdname print
+#' @noRd
 #' @export 
 print.ARIMA = function(x, ...){
     if (length(x$table) < 3) {
@@ -31,16 +34,19 @@ print.ARIMA = function(x, ...){
 #' 
 #' @details See help of \code{ARIMA}.
 #'
+#' @return No return value, called for side effects
+#' 
 #' @author Diego J. Pedregal
 #' 
 #' @seealso \code{\link{ARIMA}}, \code{\link{ARIMAforecast}}, \code{\link{ARIMAvalidate}},
 #'          
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' m1 <- ARIMAforecast(log(gdp))
 #' summary(m1)
 #' }
 #' @rdname summary.ARIMA
+#' @noRd
 #' @export 
 summary.ARIMA = function(object, ...){
     print(object)
@@ -53,12 +59,14 @@ summary.ARIMA = function(object, ...){
 #' @param object Object of class \dQuote{ARIMA}.
 #' @param ... Additional inputs to function.
 #' 
+#' @return Error from ARIMA model
+#' 
 #' @author Diego J. Pedregal
 #' 
 #' @seealso \code{\link{ARIMA}}, \code{\link{ARIMAforecast}}, \code{\link{ARIMAvalidate}},
 #'          
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' y <- log(AirPassengers)
 #' m1 <- ARIMA(y)
 #' residuals(m1)
@@ -76,16 +84,19 @@ residuals.ARIMA = function(object, ...){
 #' @param x Object of class \dQuote{ARIMA}.
 #' @param ... Additional inputs to function.
 #' 
+#' @return No return value, called for side effects
+#' 
 #' @author Diego J. Pedregal
 #' 
 #' @seealso \code{\link{ARIMA}}, \code{\link{ARIMAforecast}}, \code{\link{ARIMAvalidate}},
 #'          
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' m1 <- ARIMAforecast(log(gdp))
 #' plot(m1)
 #' }
 #' @rdname plot.ARIMA
+#' @noRd
 #' @export 
 plot.ARIMA = function(x, ...){
    if (is.null(x$p)){

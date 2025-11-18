@@ -11,11 +11,14 @@ box.cox(x, lambda)
 
 \item{lambda}{Lambda parameter for Box-Cox transform.}
 }
+\value{
+Box-Cox transformed time series
+}
 \description{
 Runs Box-Cox transform of a time series
 }
 \examples{
-\dontrun{
+\donttest{
 y <- box.cox(AirPassengers, 0.5)
 plot(y)
 }

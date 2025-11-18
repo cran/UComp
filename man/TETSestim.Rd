@@ -25,7 +25,7 @@ Estimates and forecasts TOBIT TETS models
 a TOBIT TETS model
 }
 \examples{
-\dontrun{
+\donttest{
 m1 <- TETSsetup(log(gdp))
 m1 <- TETSestim(m1)
 }

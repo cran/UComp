@@ -18,7 +18,7 @@ filled in, in particular:
 Shows a table of estimation and diagnostics results for ARIMA models
 }
 \examples{
-\dontrun{
+\donttest{
 m1 <- ARIMAforecast(log(gdp))
 m1 <- ARIMAvalidate(m1)
 }

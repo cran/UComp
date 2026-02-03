@@ -279,13 +279,13 @@ void SSmodel::forecast(){
     for (int i = 0; i < inputs.h; i++){
       if (TVP)
           Z = inputs.system.Z.row(t + i);
-      inputs.yFor(span(i)) = Z * at;
+      inputs.yFor.row(i) = Z * at;
       if (k == 0){
-          inputs.yFor(span(i)) += inputs.system.D;
+          inputs.yFor.row(i) += inputs.system.D;
       } else if (!TVP) {
-          inputs.yFor(span(i)) += inputs.system.D * SSmodel::inputs.u.col(n + i);
+          inputs.yFor.row(i) += inputs.system.D * SSmodel::inputs.u.col(n + i);
       }
-      inputs.FFor(span(i)) = Z * Pt * Z.t() + CHCt;
+      inputs.FFor.row(i) = Z * Pt * Z.t() + CHCt;
       KFprediction(false, true, inputs.system.T, RQRt, at, Pt, P0);
     }
     // if (abs(inputs.innVariance - 1) < 1e-4){
@@ -649,7 +649,7 @@ double llik(vec& p, void* opt_data){
   data->objFunValue = llikValue(0, 0);
   // System colapsed
   if ((uword)data->d_t < n){
-      data->v(span(0, data->d_t)).fill(datum::nan);
+      data->v.rows(0, data->d_t).fill(datum::nan);
   }
   return llikValue(0, 0);
 }
@@ -876,19 +876,19 @@ vec gradLlik(vec& p, void* opt_data, double llikValue, int& nFuns){
       Nt = data->system.T.t() * Nt * data->system.T;
     }
     // Derivatives of RQRt and CHCt
-    sysmatQ(span(0, cQ - 1), span(0, cQ - 1)) = data->system.Q;
-    sysmatQ(span(cQ), span(cQ)) = data->system.H;
-    sysmatR(span(0, ns - 1), span(0, cQ - 1)) = data->system.R;
-    sysmatR(span(ns), span(cQ)) = data->system.C;
-    Gamma(span(0, ns - 1), span(0, ns - 1)) = GammaQ;
-    Gamma(span(ns), span(ns)) = GammaD;
+    sysmatQ.submat(0, 0, cQ - 1, cQ - 1) = data->system.Q;
+    sysmatQ.submat(cQ, cQ, cQ, cQ) = data->system.H;
+    sysmatR.submat(0, 0, ns - 1, cQ - 1) = data->system.R;
+    sysmatR.submat(ns, cQ, ns, cQ) = data->system.C;
+    Gamma.submat(0, 0, ns - 1, ns - 1) = GammaQ;
+    Gamma.submat(ns, ns, ns, ns) = GammaD;
     int nn = n - nMiss - data->d_t - 1;
     for (int i = 0; i < nPar; i++){
       p0 = p;
       p0.row(i) += inc(i);
       data->userModel(p0, &data->system, data->userInputs);
-      Qt(span(0, cQ - 1), span(0, cQ - 1)) = data->system.Q;
-      Qt(span(cQ), span(cQ)) = data->system.H;
+      Qt.submat(0, 0, cQ - 1, cQ - 1) = data->system.Q;
+      Qt.submat(cQ, cQ, cQ, cQ) = data->system.H;
       dQt= (Qt - sysmatQ) / inc(i);
       dRQRt = sysmatR * dQt * sysmatR.t();
       grad.row(i) = -trace(Gamma * dRQRt) / nn;
@@ -1212,9 +1212,9 @@ void auxFilter(unsigned int smooth, SSinputs& data){
   data.FFor *= innVar; // * scale;
   // Cleaning innovations
   if ((uword)data.d_t < n - 10){
-    data.v(span(0, data.d_t)).fill(datum::nan);
+    data.v.rows(0, data.d_t).fill(datum::nan);
   } else {
-    data.v(span(0, sum(ns) + 1)).fill(datum::nan);
+    data.v.rows(0, sum(ns) + 1).fill(datum::nan);
   }
   uvec ind = find_finite(data.v);
   if (ind.n_elem < 5){

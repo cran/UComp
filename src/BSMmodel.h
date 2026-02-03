@@ -2043,17 +2043,17 @@ vec BSMclass::parameterValues(vec p){
                 int pos;
                 aux = regspace<uvec>(nparCum(0), nparCum(1) - 1);
                 vec pCycle = SSmodel::inputs.p(aux);
-                vec pp = pCycle(span(0, nCycles - 1));
+                vec pp = pCycle.rows(0, nCycles - 1);
                 constrain(pp, regspace<vec>(0, 1)); //exp(p(0)) / (1+ exp(p(0)));
                 pos = nparCum(0) + nCycles;
-                parValues(span(nparCum(0), pos - 1)) = pp;
+                parValues.rows(nparCum(0), pos - 1) = pp;
                 // Periods
                 int nn = sum(inputs.periods < 0);
                 if (nn > 0){
                         aux = find(inputs.periods < 0);
-                        pp = pCycle(span(nCycles, nCycles - 1 + nn));
+                        pp = pCycle.rows(nCycles, nCycles - 1 + nn);
                         constrain(pp, inputs.cycleLimits.rows(aux)); //exp(p(0)) / (1+ exp(p(0)));
-                        parValues(span(pos, pos - 1 + nn)) = pp;
+                        parValues.rows(pos, pos - 1 + nn) = pp;
                         pos = pos + nn;
                 }
                 // Variances
@@ -2063,7 +2063,7 @@ vec BSMclass::parameterValues(vec p){
         if (inputs.ar >0 || inputs.ma > 0) {  // ARMA model
                 uvec ind;
                 vec polyAux;
-                isVar(span(nparCum(2) + 1, isVar.n_elem - 1)).fill(0);
+                isVar.rows(nparCum(2) + 1, isVar.n_elem - 1).fill(0);
                 if (inputs.ar > 0){
                         ind = regspace<uvec>(nparCum(2) + 1, nparCum(2) + inputs.ar);
                         polyAux = p(ind);
@@ -2386,9 +2386,9 @@ void BSMclass::disturb(){
                 Q.fill(0);
                 Z.fill(0);
                 nsAll -= 2;
-                T(span(0, nsAll), span(0, nsAll)) = copiaSS.system.T;
+                T.submat(0, 0, nsAll, nsAll) = copiaSS.system.T;
                 //R(span(0, nsAll), span(0, nsAll)) = copiaSS.system.R;
-                R(span(0, nsAll), span(0, nsAll + 1)) = copiaSS.system.R;
+                R.submat(0, 0, nsAll, nsAll + 1) = copiaSS.system.R;
                 R(nsAll + 1, nsAll + 1) = 1;
                 Q = copiaSS.system.Q;
                 Q(nsAll + 1, nsAll + 1) = copiaSS.system.H(0, 0);
@@ -2397,7 +2397,7 @@ void BSMclass::disturb(){
                         Z.cols(0, nsAll) = copiaSS.system.Z;
                         Z.col(nsAll + 1).fill(copiaSS.system.C(0, 0));
                 } else {
-                        Z(0, span(0, nsAll)) = copiaSS.system.Z;
+                        Z.submat(0, 0, 0, nsAll) = copiaSS.system.Z;
                         Z(0, nsAll + 1) = copiaSS.system.C(0, 0);
                 }
                 // copying into copiaSS
@@ -2413,13 +2413,13 @@ void BSMclass::disturb(){
                 // Saving in system the disturbances (just trend and irregular)
                 copiaSS = copia.getInputs();
                 inputs.eps = copiaSS.eta.row(copiaSS.eta.n_rows - 1).t();
-                SSmodel::inputs.eta = copiaSS.eta.rows(span(0, inputs.ns(0) - 1));
+                SSmodel::inputs.eta = copiaSS.eta.rows(0, inputs.ns(0) - 1);
         } else {
                 // No need of system modification, just run disturb()
                 SSmodel::disturb();
                 if (inputs.nPar(2) > 1)
                         inputs.eps = SSmodel::inputs.eta.row(SSmodel::inputs.eta.n_rows - 1).t();
-                SSmodel::inputs.eta = SSmodel::inputs.eta.rows(span(0, inputs.ns(0) - 1));
+                SSmodel::inputs.eta = SSmodel::inputs.eta.rows(0, inputs.ns(0) - 1);
         }
 }
 // Gauss-Newton Minimum searcher
@@ -2785,7 +2785,7 @@ void BSMclass::initMatricesBsm(vec periods, vec rhos, string trend, string cycle
         // Initializing system matrices
         int nsAll = sum(inputs.ns);
         SSmodel::inputs.system.T.eye(nsAll, nsAll);
-        nsCol = sum(inputs.ns(span(0, 2))) + 1;
+        nsCol = sum(inputs.ns.rows(0, 2)) + 1;
         nsColTVP = nsCol + inputs.ns(6);
         //SSmodel::inputs.system.R.eye(nsAll, nsCol);
         SSmodel::inputs.system.R.resize(nsAll, nsColTVP);
@@ -2821,8 +2821,8 @@ void BSMclass::initMatricesBsm(vec periods, vec rhos, string trend, string cycle
                         uword i1 = inputs.ns(0) + inputs.ns(1), i2 = i1 + inputs.ns(2) - 1;
                         SSmodel::inputs.system.Z(i1 + inputs.ns(2) - 1) = 1.0;
                         //SSmodel::inputs.system.Z(SSmodel::inputs.system.Z.n_elem - 1) = 1.0;
-                        SSmodel::inputs.system.T(span(i1 + 1, i2), span(i1, i2)) = eye(inputs.seas - 2, inputs.seas - 1);
-                        SSmodel::inputs.system.T(span(i1, i1), span(i1, i2)).fill(-1.0);
+                        SSmodel::inputs.system.T.submat(i1 + 1, i1, i2, i2) = eye(inputs.seas - 2, inputs.seas - 1);
+                        SSmodel::inputs.system.T.submat(i1, i1, i1, i2).fill(-1.0);
                         //SSmodel::inputs.system.T(i1, i2) = 1.0;
                         //SSmodel::inputs.system.T(i1, i1) = 0.0;
                 }
@@ -2906,7 +2906,7 @@ void BSMclass::initParBsm(){
         //double BIC, AIC, AICc;
         // Estimating initial conditions for ARMA from innovations
         if (inputs.nPar(3) > 1){
-                uword ini = sum(inputs.nPar(span(0, 2))) + 1;
+                uword ini = sum(inputs.nPar.rows(0, 2)) + 1;
                 aux = regspace<uvec>(ini, 1, sum(inputs.nPar.rows(0, 3)) - 1);
                 inputs.typePar(aux).fill(3);
                 orders(0) = inputs.ar;
@@ -2927,7 +2927,7 @@ void BSMclass::initParBsm(){
                         if (inputs.ar > 0){
                                 // AR model
                                 // Checking for non-stationary polynomial
-                                beta0aux = inputs.beta0ARMA(span(0, inputs.ar - 1));
+                                beta0aux = inputs.beta0ARMA.rows(0, inputs.ar - 1);
                                 beta0aux1 = -beta0aux;
                                 absRoots = abs(roots(join_vert(uno, -beta0aux1)));
                                 if (any(absRoots >= 1)){
@@ -2937,7 +2937,7 @@ void BSMclass::initParBsm(){
                         if (inputs.ma > 0){
                                 // MA model
                                 // Checking for non-invertible polynomial
-                                beta0aux = inputs.beta0ARMA(span(inputs.ar, inputs.ar + inputs.ma - 1));
+                                beta0aux = inputs.beta0ARMA.rows(inputs.ar, inputs.ar + inputs.ma - 1);
                                 // Bringing MA polynomial to invertibility
                                 absRoots = abs(roots(join_vert(uno, beta0aux)));
                                 if (any(absRoots >= 1)){
@@ -2948,7 +2948,7 @@ void BSMclass::initParBsm(){
                 // Converting to estimation space
                 // AR pars
                 if (inputs.ar > 0){
-                        beta0aux = inputs.beta0ARMA(span(0, inputs.ar - 1));
+                        beta0aux = inputs.beta0ARMA.rows(0, inputs.ar - 1);
                         beta0aux1 = -beta0aux;
                         // Correction for non-stationary polynomial
                         arToPacf(beta0aux1);
@@ -2965,10 +2965,10 @@ void BSMclass::initParBsm(){
                 }
                 // MA pars
                 if (inputs.ma > 0){
-                        beta0aux = inputs.beta0ARMA(span(inputs.ar, inputs.ar + inputs.ma - 1));
+                        beta0aux = inputs.beta0ARMA.rows(inputs.ar, inputs.ar + inputs.ma - 1);
                         // Bringing MA polynomial to invertibility
                         maInvert(beta0aux);
-                        inputs.beta0ARMA(span(inputs.ar, inputs.ar + inputs.ma - 1)) = beta0aux;
+                        inputs.beta0ARMA.rows(inputs.ar, inputs.ar + inputs.ma - 1) = beta0aux;
                         // Parameterising polynomial to be invertible
                         invPolyStationary(beta0aux);
                         aux = regspace<uvec>(ini + inputs.ar, 1, ini + inputs.ar + inputs.ma - 1);
@@ -3138,7 +3138,7 @@ void BSMclass::initParBsm(){
                  rhos = pInd;
                  // Cycle periods
                  int nPerEstim = sum(inp->typePar == 2);
-                 periods = inp->periods(span(0, nRhos - 1));
+                 periods = inp->periods.rows(0, nRhos - 1);
                  if (nPerEstim > 0){
                          ind = regspace<uvec>(pos, 1, pos + nPerEstim - 1);
                          pos += nPerEstim;
@@ -3154,7 +3154,7 @@ void BSMclass::initParBsm(){
                  bsm2ss(inp->ns(0), inp->ns(1), abs(periods), rhos, &model->T, &model->Z);
                  ind = regspace<uvec>(nsCum(0), 1, nsCum(1) - 1);
                  aux = vectorise(repmat(variances.t(), 2, 1));
-                 aux1 = aux(span(0, inp->ns(1) - 1));
+                 aux1 = aux.rows(0, inp->ns(1) - 1);
                  model->Q(ind, ind) = diagmat(aux1);
          }
          // Seasonal
@@ -3169,7 +3169,7 @@ void BSMclass::initParBsm(){
                  } else {                                        // Different variances
                          ind1 = regspace<uvec>(nparCum(1), 1, nparCum(2) - 1);
                          aux = vectorise(repmat(exp(2 * p(ind1)).t(), 2, 1));
-                         aux1 = aux(span(0, inp->ns(2) - 1));
+                         aux1 = aux.rows(0, inp->ns(2) - 1);
                          model->Q(ind, ind) = diagmat(aux1);
                  }
          }
@@ -3248,7 +3248,7 @@ void bsmMatricesTrue(vec p, SSmatrix* model, void* userInputs){
                 rhos = pInd;
                 // Cycle periods
                 int nPerEstim = sum(inp->typePar == 2);
-                periods = inp->periods(span(0, nRhos - 1));
+                periods = inp->periods.rows(0, nRhos - 1);
                 if (nPerEstim > 0){
                         ind = regspace<uvec>(pos, 1, pos + nPerEstim - 1);
                         pos += nPerEstim;
@@ -3264,7 +3264,7 @@ void bsmMatricesTrue(vec p, SSmatrix* model, void* userInputs){
                 bsm2ss(inp->ns(0), inp->ns(1), abs(periods), rhos, &model->T, &model->Z);
                 ind = regspace<uvec>(nsCum(0), 1, nsCum(1) - 1);
                 aux = vectorise(repmat(variances.t(), 2, 1));
-                aux1 = aux(span(0, inp->ns(1) - 1));
+                aux1 = aux.rows(0, inp->ns(1) - 1);
                 model->Q(ind, ind) = diagmat(aux1);
         }
         // Seasonal
@@ -3279,7 +3279,7 @@ void bsmMatricesTrue(vec p, SSmatrix* model, void* userInputs){
                 } else {                                        // Different variances
                         ind1 = regspace<uvec>(nparCum(1), 1, nparCum(2) - 1);
                         aux = vectorise(repmat(p(ind1).t(), 2, 1));
-                        aux1 = aux(span(0, inp->ns(2) - 1));
+                        aux1 = aux.rows(0, inp->ns(2) - 1);
                         model->Q(ind, ind) = diagmat(aux1);
                 }
         }
@@ -3460,7 +3460,7 @@ void calculateLimits(int n, vec periods, vec rhos, mat& cycleLimits, double s){
         vec pCycles;
         int nCycles = sum(rhos < 0);
         cycleLimits.resize(nCycles, 2);
-        pCycles = periods(span(0, nCycles - 1));
+        pCycles = periods.rows(0, nCycles - 1);
         //double s = max(periods(span(nCycles, periods.n_elem - 1)));
         // Sorting intermediate limits
         if (any(abs(pCycles) < 1.5 * s) || any(abs(pCycles) <= 2)){

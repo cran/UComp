@@ -72,7 +72,7 @@ void acf(vec& y, int ncoef, vec& acfCoef){
   vec prod;
   acfCoef.zeros(ncoef);
   for (int i = 0; i < ncoef; i++){
-    prod = yn(span(i + 1, n - 1)) % yn(span(0, n - i - 2));
+    prod = yn.rows(i + 1, n - 1) % yn.rows(0, n - i - 2);
     nNo = n - 2 * nNan - i - 1;
     acfCoef(i) = sum(prod(find_finite(prod))) / nNo;
   }
@@ -120,12 +120,12 @@ double adfTest(vec& y, vec lags, double& BIC, double& AIC, double& AICc){
   int aux;
   y = y - mean(removeNans(y, aux));
   // Creating lagged matrix
-  mat X = join_rows(join_rows(y(span(maxLag + 1, n - 1)), y(span(maxLag, n - 2))), 
-                    lag(y(span(1, n - 1)) - y(span(0, n - 2)), lags));
+  mat X = join_rows(join_rows(y.rows(maxLag + 1, n - 1), y.rows(maxLag, n - 2)), 
+                    lag(y.rows(1, n - 1) - y.rows(0, n - 2), lags));
   // Regression with constant and no trend
   vec beta, stdBeta, e;
   mat covBeta;
-  regress(X.col(0), X.cols(span(1, maxLag + 1)), beta, stdBeta, e, BIC, AIC, AICc);
+  regress(X.col(0), X.cols(1, maxLag + 1), beta, stdBeta, e, BIC, AIC, AICc);
 //  stdBeta = sqrt(covBeta.diag());
   return (beta(0) - 1) / stdBeta(0);
 }
@@ -184,9 +184,9 @@ void harmonicRegress(vec& y, mat& u, vec period, uword trendPow, vec& beta, vec&
     mat X(n, nHarm * 2 - minus + 1 + trendPow + k);
     if (seasonal){
         // Setting cos/sin regressors
-        X.cols(span(0, nHarm - 1)) = kron(w, t);
-        X.cols(span(nHarm, 2 * nHarm - 1 - minus)) = sin(X.cols(span(0, nHarm - 1 - minus)));
-        X.cols(span(0, nHarm - 1)) = cos(X.cols(span(0, nHarm - 1)));
+        X.cols(0, nHarm - 1) = kron(w, t);
+        X.cols(nHarm, 2 * nHarm - 1 - minus) = sin(X.cols(0, nHarm - 1 - minus));
+        X.cols(0, nHarm - 1) = cos(X.cols(0, nHarm - 1));
     }
     pos = 2 * nHarm - minus;
     // Adding trend
@@ -196,7 +196,7 @@ void harmonicRegress(vec& y, mat& u, vec period, uword trendPow, vec& beta, vec&
     pos += trendPow + 1;
     // Exogenous inputs
     if (k > 0){
-        X.cols(span(pos, pos + k - 1)) = u.submat(0, 0, k - 1, n - 1).t();
+        X.cols(pos, pos + k - 1) = u.submat(0, 0, k - 1, n - 1).t();
     }
     // Regression
     double BIC, AIC, AICc;
@@ -226,7 +226,7 @@ void selectHarmonics(vec& y, mat& u, vec period, uvec& harmonics, vec& beta, str
   uvec aux1 = regspace<uvec>(2 * nHarm - 1, t.n_elem - 1);
   t(aux1).fill(0.0);
   uvec ind = (t > 1.6449);   // 10% confidence interval
-  uvec aux = (ind(span(0, nHarm - 1)) + ind(span(nHarm, 2 * nHarm - 1)) > 0);
+  uvec aux = (ind.rows(0, nHarm - 1) + ind.rows(nHarm, 2 * nHarm - 1) > 0);
   uvec harm = regspace<uvec>(1, 1, nHarm);
   harmonics = harm(find(aux)) - 1;
   isSeasonal = "dubious";
@@ -254,7 +254,7 @@ void selectAR(vec& y, double maxAR, string criterion, vec& arOrder, vec& eBest, 
       eBest = e = X.col(0);
       AIC = BIC = AICc = log(as_scalar(eBest.t() * eBest) / eBest.n_elem);
     } else {      // AR(1)...
-      regress(X.col(0), X.cols(span(1, i)), beta, stdBeta, e, BIC, AIC, AICc);
+      regress(X.col(0), X.cols(1, i), beta, stdBeta, e, BIC, AIC, AICc);
 //      stdBeta = sqrt(covBeta.diag());
     }
     if (criterion == "aic"){
@@ -301,11 +301,15 @@ void selectARMA(vec y, double period, double maxAR, string criterion, vec& order
   do {
     if (orders(0) < maxOrders(0)){
       if (orders(1) == 0){     // Pure AR(p+1)
-        regress(X(span(ind(0), ind(1)), 0), X(span(ind(0), ind(1)), span(1, orders(0) + 1)), 
-                  beta1, stdBeta, e, BIC, AIC, AICc);
+        // regress(X(span(ind(0), ind(1)), 0), X(span(ind(0), ind(1)), span(1, orders(0) + 1)), 
+        //         beta1, stdBeta, e, BIC, AIC, AICc);
+        regress(X.submat(ind(0), 0, ind(1), 0), X.submat(ind(0), 1, ind(1), orders(0) + 1), 
+                beta1, stdBeta, e, BIC, AIC, AICc);
       } else {                // ARMA(p+1, q)
-        regress(X(span(ind(0), ind(1)), 0), join_rows(X(span(ind(0), ind(1)), span(1, orders(0) + 1)), 
-                  eData.cols(span(0, orders(1) - 1))), beta1, stdBeta, e, BIC, AIC, AICc);
+        // regress(X(span(ind(0), ind(1)), 0), join_rows(X(span(ind(0), ind(1)), span(1, orders(0) + 1)), 
+        //           eData.cols(span(0, orders(1) - 1))), beta1, stdBeta, e, BIC, AIC, AICc);
+        regress(X.submat(ind(0), 0, ind(1), 0), join_rows(X.submat(ind(0), 1, ind(1), orders(0) + 1), 
+                  eData.cols(0, orders(1) - 1)), beta1, stdBeta, e, BIC, AIC, AICc);
       }
       if (criterion == "aic"){
         curCrit1 = AIC;
@@ -318,10 +322,13 @@ void selectARMA(vec y, double period, double maxAR, string criterion, vec& order
     }
     if (orders(1) < maxOrders(1)){    
       if (orders(0) == 0){           // Pure MA(q+1)
-        regress(X(span(ind(0), ind(1)), 0), eData.cols(span(0, orders(1))), beta2, stdBeta, e, BIC, AIC, AICc);
+        // regress(X(span(ind(0), ind(1)), 0), eData.cols(span(0, orders(1))), beta2, stdBeta, e, BIC, AIC, AICc);
+        regress(X.submat(ind(0), 0, ind(1), 0), eData.cols(0, orders(1)), beta2, stdBeta, e, BIC, AIC, AICc);
       } else {                      // ARMA(p, q+1)
-        regress(X(span(ind(0), ind(1)), 0), join_rows(X(span(ind(0), ind(1)), span(1, orders(0))), 
-                  eData.cols(span(0, orders(1)))), beta2, stdBeta, e, BIC, AIC, AICc);
+        // regress(X(span(ind(0), ind(1)), 0), join_rows(X(span(ind(0), ind(1)), span(1, orders(0))), 
+        //           eData.cols(span(0, orders(1)))), beta2, stdBeta, e, BIC, AIC, AICc);
+        regress(X.submat(ind(0), 0, ind(1), 0), join_rows(X.submat(ind(0), 1, ind(1), orders(0)), 
+                  eData.cols(0, orders(1))), beta2, stdBeta, e, BIC, AIC, AICc);
       }
       if (criterion == "aic"){
         curCrit2 = AIC;
@@ -352,7 +359,7 @@ void selectARMA(vec y, double period, double maxAR, string criterion, vec& order
   //   betaOpt = -arBeta;
   // }
   if (orders(0))
-    betaOpt(span(0, orders(0) - 1)) = -betaOpt(span(0, orders(0) - 1));
+    betaOpt.rows(0, orders(0) - 1) = -betaOpt.rows(0, orders(0) - 1);
 }
 // Estimation of ARMA model by Least Squares (Hannan-Rissanen)
 void linearARMA(vec& y, vec orders, vec& beta, vec& stdBeta){
@@ -377,18 +384,24 @@ void linearARMA(vec& y, vec orders, vec& beta, vec& stdBeta){
   aux(1) = eData.n_rows;
   dim = min(aux);
   if (orders(0) == 0){           // pure MA
-    regress(X(span(aux(0) - dim, aux(0) - 1), span(0)),
-            eData(span(aux(1) - dim, aux(1) - 1), span(0, orders(1) - 1)), beta, stdBeta, e, BIC, AIC, AICc);
+    // regress(X(span(aux(0) - dim, aux(0) - 1), span(0)),
+    //         eData(span(aux(1) - dim, aux(1) - 1), span(0, orders(1) - 1)), beta, stdBeta, e, BIC, AIC, AICc);
+    regress(X.submat(aux(0) - dim, 0, aux(0) - 1, 0),
+            eData.submat(aux(1) - dim, 0, aux(1) - 1, orders(1) - 1), beta, stdBeta, e, BIC, AIC, AICc);
   } else if (orders(1) == 0){   // pure AR
-    regress(X(span(aux(0) - dim, aux(0) - 1), span(0)), X(span(aux(0) - dim, aux(0) - 1), span(1, orders(0))), 
+    // regress(X(span(aux(0) - dim, aux(0) - 1), span(0)), X(span(aux(0) - dim, aux(0) - 1), span(1, orders(0))), 
+    //         beta, stdBeta, e, BIC, AIC, AICc);
+    regress(X.submat(aux(0) - dim, 0, aux(0) - 1, 0), X.submat(aux(0) - dim, 1, aux(0) - 1, orders(0)), 
             beta, stdBeta, e, BIC, AIC, AICc);
   } else {                      // mixed ARMA
-    regress(X(span(aux(0) - dim, aux(0) - 1), span(0)), join_rows(X(span(aux(0) - dim, aux(0) - 1), span(1, orders(0))), 
-              eData(span(aux(1) - dim, aux(1) - 1), span(0, orders(1) - 1))), beta, stdBeta, e, BIC, AIC, AICc);
+    // regress(X(span(aux(0) - dim, aux(0) - 1), span(0)), join_rows(X(span(aux(0) - dim, aux(0) - 1), span(1, orders(0))), 
+    //           eData(span(aux(1) - dim, aux(1) - 1), span(0, orders(1) - 1))), beta, stdBeta, e, BIC, AIC, AICc);
+    regress(X.submat(aux(0) - dim, 0, aux(0) - 1, 0), join_rows(X.submat(aux(0) - dim, 1, aux(0) - 1, orders(0)), 
+              eData.submat(aux(1) - dim, 0, aux(1) - 1, orders(1) - 1)), beta, stdBeta, e, BIC, AIC, AICc);
   }
 //  stdBeta = sqrt(covBeta.diag());
   if (orders(0) > 0)
-    beta(span(0, orders(0) - 1)) = -beta(span(0, orders(0) - 1));
+    beta.rows(0, orders(0) - 1) = -beta.rows(0, orders(0) - 1);
 }
 // Information criteria
 void infoCriteria(double llik, int k, int n, double& AIC, double& BIC, double&AICc){
@@ -423,8 +436,8 @@ void heterosk(vec& y, double& F, double& pF, int& df){
     i2 -= 1;
   }
   df = i1 + 1;
-  double cov1 = var(yn(span(0, i1)));
-  double cov2 = var(yn(span(i2, n - 1)));
+  double cov1 = var(yn.rows(0, i1));
+  double cov2 = var(yn.rows(i2, n - 1));
   if (cov1 > cov2){
     F = cov2 / cov1;
   } else {

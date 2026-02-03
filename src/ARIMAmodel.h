@@ -16,21 +16,21 @@
 struct ARIMAmodel{
     // INPUTS:
     vec y,                // output data
-        par,              // parameter estimates
-        par0,             // initial estimates for parameters
-        par0Std,          // standard deviation of par0
-        orders;           // model orders (p,d,q)x(P,D,Q)_s
+    par,              // parameter estimates
+    par0,             // initial estimates for parameters
+    par0Std,          // standard deviation of par0
+    orders;           // model orders (p,d,q)x(P,D,Q)_s
     mat u,                // input data
-        ySimul;           // bootstrap simulations
+    ySimul;           // bootstrap simulations
     uword maxP = 3,       // max order regular AR
-          maxQ = 3,       // max order regular MA
-          maxPs = 1,      // max order seasonal AR
-          maxQs = 1,      // max order seasonal MA
-          maxD = 2,       // max regular diffs
-          maxDs = 1,      // max seasonal diffs
-          s = 12;         // seasonal period
+        maxQ = 3,       // max order regular MA
+        maxPs = 1,      // max order seasonal AR
+        maxQs = 1,      // max order seasonal MA
+        maxD = 2,       // max regular diffs
+        maxDs = 1,      // max seasonal diffs
+        s = 12;         // seasonal period
     double lambda = 1.0,  // Box-Cox lambda parameter
-           cnst = 9999.9; // constant on/off or identified (1/0/9999.9)
+        cnst = 9999.9; // constant on/off or identified (1/0/9999.9)
     bool verbose = false, // intermediate results on/off
         bootstrap = false, // forecasting intervals bootstrap
         // identFAST = true,    // Identification by ML or GM (fast is GM)
@@ -40,22 +40,22 @@ struct ARIMAmodel{
     string criterion = "bic";
     // OUTPUTS:
     double BIC = 1e10,   // BIC of estimated model
-           AIC = 1e10,
-           AICc = 1e10,
-           IC = 1e10;
+        AIC = 1e10,
+        AICc = 1e10,
+        IC = 1e10;
     uword p = 0,         // identified regular AR order
-          q = 0,         // identified regular MA order
-          ps = 0,        // identified seasonal AR order
-          qs = 0,        // identified seasonal MA order
-          d = 0,         // identified regular diffs
-          ds = 0;        // identified seasonal diffs
+        q = 0,         // identified regular MA order
+        ps = 0,        // identified seasonal AR order
+        qs = 0,        // identified seasonal MA order
+        d = 0,         // identified regular diffs
+        ds = 0;        // identified seasonal diffs
     vec yFor, FFor,      // forecasts and variance
-        yh,              // interpolated y in ind missing data
-        v,               // innovations
-        a,               // noise from longAR
-        xn,              // end state vector for forecasting and simulations
-        betaAug,         // regression parameters
-        betaAugVar;      // varaince of regression parameters
+    yh,              // interpolated y in ind missing data
+    v,               // innovations
+    a,               // noise from longAR
+    xn,              // end state vector for forecasting and simulations
+    betaAug,         // regression parameters
+    betaAugVar;      // varaince of regression parameters
     uvec ind;            // missing value indices
     vector<string> table;           // output table from evaluate()
     bool errorExit = false, // errors in user inputs
@@ -65,35 +65,35 @@ struct ARIMAmodel{
         IDENTd = true;   // identification of differences on/off
     REGmodel mr;         // regression model
     mat covBeta,         // covariance matrix of beta in regression
-        models;          // identified models (BIC, p, d, q, ps, ds, qs)
+    models;          // identified models (BIC, p, d, q, ps, ds, qs)
 };
 
 /**************************
  * Model CLASS ARIMA
  ***************************/
 class ARIMAclass{
-    public:
-        ARIMAmodel m;
-        ARIMASS mSS;
-        SSinputs inputsSS;
-        // ARIMAclass(ARIMAmodel);
-        ARIMAclass(ARIMAmodel m){
-            this->m = m;
-        }
-        void print();
-        // void interpolate();
-        void findDiff();
-        void identGM();
-        // void identIS();
-        void estim(bool);
-        void filter();
-        void forecast();
-        void validate();
+public:
+    ARIMAmodel m;
+    ARIMASS mSS;
+    SSinputs inputsSS;
+    // ARIMAclass(ARIMAmodel);
+    ARIMAclass(ARIMAmodel m){
+        this->m = m;
+    }
+    void print();
+    // void interpolate();
+    void findDiff();
+    void identGM();
+    // void identIS();
+    void estim(bool);
+    void filter();
+    void forecast();
+    void validate();
 };
 
 /****************************************************
-// ARIMA functions declarations
-****************************************************/
+ // ARIMA functions declarations
+ ****************************************************/
 // ARIMA main function
 void ARIMA(vec, mat, vec, double, uword, int, bool, double, vec, bool, int, string);
 // void ARIMA(vec, mat, uword, vec, vec, double, bool, int);
@@ -138,46 +138,46 @@ double varNaN(vec, float);
 // Join six uword values in a rowvec
 void join(mat&, uword&, double, uword, uword, uword, uword, uword, uword);
 /****************************************************
-// ARIMA functions implementations
-****************************************************/
+ // ARIMA functions implementations
+ ****************************************************/
 // ARIMA main function
 void ARIMA(vec y, mat u, vec orders, double cnst, uword s, int h,
            bool verbose, double lambda, vec maxOrders, bool bootstrap,
            int nSimul, string criterion){
-        // y:       otuput data (one time series)
-        // u:       input data (excluding constant)
-        // orders:  (p, d, q, P, D, Q)
-        // cnst:    constant included or not (as a drift if model with differences)
-        // s:       seasonal period
-        // h:       forecasting horizon (if inputs it is recalculated as the length differences
-        //          between u and y
-        // verbose: shows intermediate results
-        // lambda:  lambda for Box-Cox transformation (9999.9 for estimation)
-        // maxOrders: maximum ARIMA orders for model identification (as orders)
-        ARIMAmodel input;
-        ARIMAclass m(input);
-        m = preProcess(y, u, orders, cnst, s, h, verbose, lambda,
-                       maxOrders, bootstrap, nSimul, criterion);
-        // bool IDENT = false;
-        // if (sum(orders) == 0 && !m.m.pureRegression && !m.m.tooFew)
-        //     IDENT = true;
-        // else
-        //     maxOrders = orders;  // estimate just ONE model
-        if (m.m.errorExit)
-            return;
-        // if (m.m.IDENT)
-        //     m.findDiff();
-        // else
-        //     maxOrders = orders;  // estimate just ONE model
-        // m.identGM();
-        m.identGM();
-
-//        if (m.m.u.n_rows > 0){
-//            m.m.u.cols(0, 5).print("u 141");
-//        }
-
-        m.validate();
-        m.forecast();
+    // y:       otuput data (one time series)
+    // u:       input data (excluding constant)
+    // orders:  (p, d, q, P, D, Q)
+    // cnst:    constant included or not (as a drift if model with differences)
+    // s:       seasonal period
+    // h:       forecasting horizon (if inputs it is recalculated as the length differences
+    //          between u and y
+    // verbose: shows intermediate results
+    // lambda:  lambda for Box-Cox transformation (9999.9 for estimation)
+    // maxOrders: maximum ARIMA orders for model identification (as orders)
+    ARIMAmodel input;
+    ARIMAclass m(input);
+    m = preProcess(y, u, orders, cnst, s, h, verbose, lambda,
+                   maxOrders, bootstrap, nSimul, criterion);
+    // bool IDENT = false;
+    // if (sum(orders) == 0 && !m.m.pureRegression && !m.m.tooFew)
+    //     IDENT = true;
+    // else
+    //     maxOrders = orders;  // estimate just ONE model
+    if (m.m.errorExit)
+        return;
+    // if (m.m.IDENT)
+    //     m.findDiff();
+    // else
+    //     maxOrders = orders;  // estimate just ONE model
+    // m.identGM();
+    m.identGM();
+    
+    //        if (m.m.u.n_rows > 0){
+    //            m.m.u.cols(0, 5).print("u 141");
+    //        }
+    
+    m.validate();
+    m.forecast();
 }
 // Constructor
 // ARIMAclass::ARIMAclass(ARIMAmodel m){
@@ -224,16 +224,16 @@ void ARIMAclass::findDiff(){
         // Remove constant variables from inputs
         if (m.cnst == 1)
             u.shed_row(u.n_rows - 1);
-    // } else {
-    //     u.reset();
-    // }
+        // } else {
+        //     u.reset();
+        // }
         vec beta, stdBeta, ahat;
         double AIC, BIC, AICc;
-    // if (m.cnst != 0 || u.n_rows > 0){
+        // if (m.cnst != 0 || u.n_rows > 0){
         // Removing u effects, except constant
         mat X(u.n_cols, u.n_rows + (m.cnst > 0), fill::ones);
         // if (u.n_rows > 0)
-            X.cols(0, u.n_rows - 1) = u.t();
+        X.cols(0, u.n_rows - 1) = u.t();
         //        REGmodel mr;
         // vec stdBeta;
         regress(y, X, beta, stdBeta, ahat, BIC, AIC, AICc);
@@ -568,8 +568,8 @@ void ARIMAclass::identGM(){
                         BICmat(ind, 5) = cnst;
                         BICmat(ind, 6) = par0.n_elem;
                         if (par0.n_elem > 0){
-                            BICmat(ind, span(7, 7 + par0.n_elem - 1)) = par0.t();
-                            BICmat(ind, span(7 + par0.n_elem, 7 + 2 * par0.n_elem - 1)) = par0Std.t();
+                            BICmat.submat(ind, 7, ind, 7 + par0.n_elem - 1) = par0.t();
+                            BICmat.submat(ind, 7 + par0.n_elem, ind, 7 + 2 * par0.n_elem - 1) = par0Std.t();
                         }
                     }
                 }
@@ -577,9 +577,9 @@ void ARIMAclass::identGM(){
         }
         // Selecting regular order for best seasonal in previous
         //        BICmat.cols(0,8).print("BICmat");
-
+        
         // a.t().print("a656");
-
+        
         for (iP = 0; iP <= mmaxP; iP++){
             mmaxQ = m.maxQ;
             for (iQ = 0; iQ <= mmaxQ; iQ++){
@@ -602,8 +602,8 @@ void ARIMAclass::identGM(){
                     BICmat(ind, 5) = cnst;
                     BICmat(ind, 6) = par0.n_elem;
                     if (par0.n_elem > 0){
-                        BICmat(ind, span(7, 7 + par0.n_elem - 1)) = par0.t();
-                        BICmat(ind, span(7 + par0.n_elem, 7 + 2 * par0.n_elem - 1)) = par0Std.t();
+                        BICmat.submat(ind, 7, ind, 7 + par0.n_elem - 1) = par0.t();
+                        BICmat.submat(ind, 7 + par0.n_elem, ind, 7 + 2 * par0.n_elem - 1) = par0Std.t();
                     }
                 }
             }
@@ -636,8 +636,8 @@ void ARIMAclass::identGM(){
                             BICmat(ind, 5) = cnst;
                             BICmat(ind, 6) = par0.n_elem;
                             if (par0.n_elem > 0){
-                                BICmat(ind, span(7, 7 + par0.n_elem - 1)) = par0.t();
-                                BICmat(ind, span(7 + par0.n_elem, 7 + 2 * par0.n_elem - 1)) = par0Std.t();
+                                BICmat.submat(ind, 7, ind, 7 + par0.n_elem - 1) = par0.t();
+                                BICmat.submat(ind, 7 + par0.n_elem, ind, 7 + 2 * par0.n_elem - 1) = par0Std.t();
                             }
                         }
                     }
@@ -662,8 +662,8 @@ void ARIMAclass::identGM(){
         m.cnst = BICmat(ibest, 5);
         uword npar = BICmat(ibest, 6);
         if (npar > 0){
-            m.par0 = BICmat(ibest, span(7, 7 + npar - 1)).t();
-            m.par0Std = BICmat(ibest, span(7 + npar, 7 + 2 * npar - 1)).t();
+            m.par0 = BICmat.submat(ibest, 7, ibest, 7 + npar - 1).t();
+            m.par0Std = BICmat.submat(ibest, 7 + npar, ibest, 7 + 2 * npar - 1).t();
         }
     } else {      // initial conditions for just one model
         HR(y, u, a, m.p, m.q, m.ps, m.qs, m.s, maxPQ, BIC, par0, par0Std, cnst, lagP0, lagQ0, m.criterion);
@@ -853,7 +853,7 @@ void ARIMAclass::estim(bool validation){
             u = m.u.cols(0, m.y.n_rows - 1);
             u = vDiff(u, m.d, m.ds, m.s);
         }
-//        vector<string> table;
+        //        vector<string> table;
         REGmodel mr;
         regression(y, u.t(), mr);
         m.mr = mr;
@@ -869,7 +869,7 @@ void ARIMAclass::estim(bool validation){
         return ;
     }
     // Initialising system
-//    SSinputs inputsSS;
+    //    SSinputs inputsSS;
     unsigned int nPar = m.p + m.ps + m.q + m.qs; // + m.cnst;
     adjustVector(m.par0, nPar, 0);
     // Inputs to class SSpace
@@ -1203,7 +1203,7 @@ void ARIMAclass::validate(){
         if (m.pureRegression){
             vec p = inputsSS.betaAug; //.rows(ind1, inputsSS.betaAug.n_rows - 1);
             vec stdP = sqrt(inputsSS.betaAugVar);  //.rows(ind1, inputsSS.betaAug.n_rows - 1));
-//            vec fil(inputsSS.u.n_rows, fill::value(-999));
+            //            vec fil(inputsSS.u.n_rows, fill::value(-999));
             vec tt = abs(p / stdP), grad(p.n_rows); grad.fill(-100); // = join_vert(abs(inputsSS.grad.rows(0, inputsSS.p.n_rows - 1)), fil);
             tp = join_rows(p, stdP, tt, grad);
         } else {
@@ -1420,8 +1420,8 @@ ARIMAclass preProcess(vec y, mat u, vec orders, double cnst, uword s, int h,
     input.ind = ind;
     input.yh = y.rows(ind);
     ARIMAclass m(input);
-//    if (m.missing.n_elem > 0)
-//        m.interpolate();
+    //    if (m.missing.n_elem > 0)
+    //        m.interpolate();
     return m;
 }
 // Hannan Risannen estimation of ARMA models
@@ -1435,12 +1435,12 @@ void HR(vec y, mat u, vec a, uword p, uword q, uword ps, uword qs,
     // p: AR order
     // q: MA order
     // if (a.n_elem < maxPQ + 10){
-        // Correction for small samples
+    // Correction for small samples
     // if (maxPQ == 1)
-        maxPQ = max(p + ps * s, q + qs * s);
+    maxPQ = max(p + ps * s, q + qs * s);
     // }
     vec ahat, aux(3), auxP(p + 1, fill::ones),
-        auxQ(q + 1, fill::ones), seas(s + 1, fill::zeros);
+    auxQ(q + 1, fill::ones), seas(s + 1, fill::zeros);
     uword N;
     // lagP y lagQ
     bool convolutionalLags = false;
@@ -1614,7 +1614,7 @@ void longAR(vec y, uword s, uword maxP, uword maxQ, vec& a, vec& phi, uword& bes
     // if (s == 1){
     //     BICbest = log(sigma2) + log(n) / n;
     // } else {
-        BICbest = 1e10;
+    BICbest = 1e10;
     // }
     uword j = 1;
     bestAR = 1;
@@ -1752,32 +1752,32 @@ mat vDiff(mat x, uword d, uword D, uword s){
 // }
 void parNames(uword s, uword p, uword q, uword ps, uword qs,
               int nu, double cnst, vector<string>& names) {
-        names.clear();
-        
-        for (uword i = 1; i <= p; ++i) {
-                names.push_back("AR(" + to_string(i) + ")");
-        }
-        
-        for (uword i = 1; i <= ps; ++i) {
-                names.push_back("ARs(" + to_string(i * s) + ")");
-        }
-        
-        for (uword i = 1; i <= q; ++i) {
-                names.push_back("MA(" + to_string(i) + ")");
-        }
-        
-        for (uword i = 1; i <= qs; ++i) {
-                names.push_back("MAs(" + to_string(i * s) + ")");
-        }
-        
-        for (uword i = 0; i < static_cast<uword>(nu - cnst); ++i) {
-                int jj = 1;
-                names.push_back("Beta(" + to_string(i + jj) + ")");
-        }
-        
-        if (std::abs(cnst) > 0.0) {
-                names.push_back("Cnst");
-        }
+    names.clear();
+    
+    for (uword i = 1; i <= p; ++i) {
+        names.push_back("AR(" + to_string(i) + ")");
+    }
+    
+    for (uword i = 1; i <= ps; ++i) {
+        names.push_back("ARs(" + to_string(i * s) + ")");
+    }
+    
+    for (uword i = 1; i <= q; ++i) {
+        names.push_back("MA(" + to_string(i) + ")");
+    }
+    
+    for (uword i = 1; i <= qs; ++i) {
+        names.push_back("MAs(" + to_string(i * s) + ")");
+    }
+    
+    for (uword i = 0; i < static_cast<uword>(nu - cnst); ++i) {
+        int jj = 1;
+        names.push_back("Beta(" + to_string(i + jj) + ")");
+    }
+    
+    if (std::abs(cnst) > 0.0) {
+        names.push_back("Cnst");
+    }
 }
 // Testing for stationarity and invertibility
 // void testSI(vec& pout, uword p, uword ps, uword q, uword qs){

@@ -2446,7 +2446,7 @@ void initEtsMatrices(ETSmodel& m){
         }
         if (m.modelType < 2 && m.seasonal != "N"){
             m.w(ns - 1) = 1.0;
-            m.F(span(m.ns(0) + 1, nsTS - 1), span(m.ns(0), nsTS - 1)) = eye(m.s - 1, m.s);
+            m.F.submat(m.ns(0) + 1, m.ns(0), nsTS - 1, nsTS - 1) = eye(m.s - 1, m.s);
             m.F(m.ns(0), nsTS - 1) = 1.0;
         }
     }

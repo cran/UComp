@@ -107,7 +107,7 @@ mat lag(vec y, T lags){
 
   for (int i = 0; i < m; i++){
     ii = as_scalar(lags.row(i));
-    lagY.col(i) = y(span(maxLag - ii, n - ii - 1));
+    lagY.col(i) = y.rows(maxLag - ii, n - ii - 1);
   }
   return lagY;
 }

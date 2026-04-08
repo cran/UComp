@@ -139,13 +139,8 @@ uvec findChunk(uvec x, bool last){
 // Issuing errors
 void myError(const char* msg){
     vec p(1);
-    //if (R){
-      //Rf_error(msg);
-      //Rcerr << msg << endl;
-    //} else {
         Rprintf("%s", msg);
         p = p(2) * 2;
-    //}
 }
 // Adjust vectors
 void adjustVector(vec& x, unsigned int n, double value){

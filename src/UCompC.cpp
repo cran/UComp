@@ -71,8 +71,8 @@ SEXP UCompC(SEXP commands, SEXP ys, SEXP us, SEXP models, SEXP hs, SEXP lambdas,
         // if (iniObs > 0 && u.n_rows > 0 && command == "estimate"){
         if (u.n_rows > 0) {
                 // Missing at beginning
-                // inputsSS.u = u.cols(iniObs, u.n_cols - 1);
-                inputsSS.u = u.cols(iniObs, y.n_elem - 1);
+                inputsSS.u = u.cols(iniObs, u.n_cols - 1);
+                // inputsSS.u = u.cols(iniObs, y.n_elem - 1);
                 // uIni = u.cols(0, iniObs - 1);
         } else {
                 inputsSS.u= u;

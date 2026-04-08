@@ -1,5 +1,5 @@
-b4be0ba67d0d50699135c1ae79ad46b7 *ChangeLog
-1337eb56391a03a87b45a278393d6b90 *DESCRIPTION
+97a793dcbee68e2014b142d248d7cec3 *ChangeLog
+cbc564c37cf7c7d9dbc5fdd9be2a1c3f *DESCRIPTION
 3fd3377b0c9bf0c36ac181d4f6116bc9 *NAMESPACE
 70dcd85b26294ec6754871f733917caf *R/ARIMAS3functions.R
 798e0c3dc4a60018059715e49ed5f4b3 *R/ARIMAestim.R
@@ -104,14 +104,14 @@ a35dca4dc886ac416693f7e1ed2b8c0f *man/zplane.Rd
 3a646f01784b06e82df43d916a34ed59 *src/ARIMAmodel.h
 b78d79de8571f73dea2ded5798ae4abb *src/ARMAmodel.h
 ee7e100a534a736fd9891302c848dc51 *src/BSMmodel.h
-80379c14ac0342d4a1bc56c414cd8917 *src/DJPTtools.h
+bbf8c99876d339b38b9a629cda8757c3 *src/DJPTtools.h
 c22643bba45bf05fc757fff985e8c314 *src/ETSmodel.h
 1f1c9459bfd04b8aadd22a2be152d203 *src/Makevars
 1f1c9459bfd04b8aadd22a2be152d203 *src/Makevars.win
 ddd65f2b63043c7ec5bc84e71d7f3c2d *src/RcppExports.cpp
 9106795727744df5cb927b842dac253e *src/SSpace.h
 039f77b82129f1b2c43196e15ecbb63b *src/TETSmodel.h
-89c640058a519fa172f9e4b2d38cd447 *src/UCompC.cpp
+bca67f0d90416971aa7df05a6f6e3b44 *src/UCompC.cpp
 980758e4a1dcb1e82fcd2ea5455afe9f *src/boxcox.h
 d1718b91dacde293d2a912ba14327d2e *src/optim.h
 ec355cf5bc53acbfc2aae938efa7c7cb *src/stats.h

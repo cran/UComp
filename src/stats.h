@@ -185,7 +185,8 @@ void harmonicRegress(vec& y, mat& u, vec period, uword trendPow, vec& beta, vec&
     if (seasonal){
         // Setting cos/sin regressors
         X.cols(0, nHarm - 1) = kron(w, t);
-        X.cols(nHarm, 2 * nHarm - 1 - minus) = sin(X.cols(0, nHarm - 1 - minus));
+        if (nHarm > 1)
+            X.cols(nHarm, 2 * nHarm - 1 - minus) = sin(X.cols(0, nHarm - 1 - minus));
         X.cols(0, nHarm - 1) = cos(X.cols(0, nHarm - 1));
     }
     pos = 2 * nHarm - minus;

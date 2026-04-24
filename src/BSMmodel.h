@@ -343,11 +343,6 @@ void BSM(vec y, mat u, string model, int h, double outlier, bool tTest, string c
         }
         // next lines to correct cycles
         BSMmodel aux2 = m.getInputs();
-        
-        
-        Rprintf("line 348: antes de corregir: %s %s %s\n", aux2.model.c_str(), aux2.cycle.c_str(), aux2.cycle0.c_str());
-        
-        
         if (aux2.cycle[0] != 'n' && aux2.cycle != "?"){
                 string model1 = aux2.model, cycle = aux2.cycle, cycle0 = aux2.cycle0;
                 vec periods = aux2.periods, rhos = aux2.rhos;
@@ -1343,7 +1338,7 @@ void BSMclass::ident(string show, bool VERBOSE){
         // Selecting harmonics
         uvec harmonics = regspace<uvec>(0, periods.n_elem - 1);
         uvec harmonics0 = harmonics;
-        if (inputSeasonal[0] != 'n' && inputSeasonal[0] != 'l' && !inputs.MSOE){
+        if (inputSeasonal[0] != 'n' && inputSeasonal[0] != 'l' && !inputs.MSOE && periods.n_elem > 1){
                 vec betaHR;
                 selectHarmonics(SSmodel::inputs.y, SSmodel::inputs.u, periods, harmonics, betaHR, isSeasonal);
                 if (harmonics.n_rows == 0){
